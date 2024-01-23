@@ -1,6 +1,6 @@
 @extends("layouts.adminindex")
 
-@section("caption","Category List")
+@section("caption","Day List")
 @section("content")
                          
      <!-- Start Page Content Area -->
@@ -26,23 +26,23 @@
                     </thead>
           
                     <tbody>
-                         @foreach($categories as $idx=>$category)
+                         @foreach($days as $idx=>$day)
                          <tr>
                               <td>{{++$idx}}</td>
-                              <td>{{$category["name"]}}</td>
+                              <td>{{$day["name"]}}</td>
                               <td>
                                    <div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input" {{ $category->status_id === 3 ? "checked" : "" }} />
+                                        <input type="checkbox" class="form-check-input" {{ $day->status_id === 3 ? "checked" : "" }} />
                                    </div>
                               </td>
-                              <td>{{ $category["user"]["name"] }}</td>
-                              <td>{{ $category->created_at->format('d M Y') }}</td>
-                              <td>{{ $category->updated_at->format('d M Y') }}</td>
+                              <td>{{ $day["user"]["name"] }}</td>
+                              <td>{{ $day->created_at->format('d M Y') }}</td>
+                              <td>{{ $day->updated_at->format('d M Y') }}</td>
                               <td>
-                                   <a href="javascript:void(0);" class="text-info editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$category->id}}" data-name="{{$category->name}}" data-status="{{$category->status_id}}"><i class="fas fa-pen"></i></a>
+                                   <a href="javascript:void(0);" class="text-info editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$day->id}}" data-name="{{$day->name}}" data-status="{{$day->status_id}}"><i class="fas fa-pen"></i></a>
                                    <a href="#" class="text-danger ms-2 delete-btns" data-idx="{{$idx}}"><i class="fas fa-trash-alt"></i></a>
                               </td>
-                              <form id="formdelete-{{ $idx }}" class="" action="{{route('categories.destroy',$category->id)}}" method="POST">
+                              <form id="formdelete-{{ $idx }}" class="" action="{{route('days.destroy',$day->id)}}" method="POST">
                                    @csrf
                                    @method("DELETE")
                               </form>
@@ -68,12 +68,12 @@
                          </div>
 
                          <div class="modal-body">
-                              <form id="{{route('categories.store')}}" action="" method="POST">
+                              <form id="{{route('days.store')}}" action="" method="POST">
                                    {{ csrf_field() }}
                                    <div class="row align-items-end">
                                         <div class="col-md-7">
                                              <label for="name">Name <span class="text-danger">*</span></label>
-                                             <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter Status Name" value="{{ old('name') }}"/>
+                                             <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter Day Name" value="{{ old('name') }}"/>
                                         </div>
                                         
                                         <div class="col-md-3 form-group">
@@ -158,7 +158,7 @@
                     $("#editstatus_id").val($(this).data("status"));
                     
                     const getid = $(this).attr("data-id");
-                    $("#formaction").attr("action",`/categories/${getid}`);
+                    $("#formaction").attr("action",`/days/${getid}`);
 
                     e.preventDefault();
                });

@@ -1,6 +1,6 @@
 @extends("layouts.adminindex")
 
-@section("caption","Category List")
+@section("caption","Stage List")
 @section("content")
                          
      <!-- Start Page Content Area -->
@@ -26,23 +26,23 @@
                     </thead>
           
                     <tbody>
-                         @foreach($categories as $idx=>$category)
+                         @foreach($stages as $idx=>$stage)
                          <tr>
                               <td>{{++$idx}}</td>
-                              <td>{{$category["name"]}}</td>
+                              <td>{{$stage["name"]}}</td>
                               <td>
                                    <div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input" {{ $category->status_id === 3 ? "checked" : "" }} />
+                                        <input type="checkbox" class="form-check-input" {{ $stage->status_id === 3 ? "checked" : "" }} />
                                    </div>
                               </td>
-                              <td>{{ $category["user"]["name"] }}</td>
-                              <td>{{ $category->created_at->format('d M Y') }}</td>
-                              <td>{{ $category->updated_at->format('d M Y') }}</td>
+                              <td>{{ $stage["user"]["name"] }}</td>
+                              <td>{{ $stage->created_at->format('d M Y') }}</td>
+                              <td>{{ $stage->updated_at->format('d M Y') }}</td>
                               <td>
-                                   <a href="javascript:void(0);" class="text-info editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$category->id}}" data-name="{{$category->name}}" data-status="{{$category->status_id}}"><i class="fas fa-pen"></i></a>
+                                   <a href="javascript:void(0);" class="text-info editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$stage->id}}" data-name="{{$stage->name}}" data-status="{{$stage->status_id}}"><i class="fas fa-pen"></i></a>
                                    <a href="#" class="text-danger ms-2 delete-btns" data-idx="{{$idx}}"><i class="fas fa-trash-alt"></i></a>
                               </td>
-                              <form id="formdelete-{{ $idx }}" class="" action="{{route('categories.destroy',$category->id)}}" method="POST">
+                              <form id="formdelete-{{ $idx }}" class="" action="{{route('stages.destroy',$stage->id)}}" method="POST">
                                    @csrf
                                    @method("DELETE")
                               </form>
@@ -68,7 +68,7 @@
                          </div>
 
                          <div class="modal-body">
-                              <form id="{{route('categories.store')}}" action="" method="POST">
+                              <form id="{{route('stages.store')}}" action="" method="POST">
                                    {{ csrf_field() }}
                                    <div class="row align-items-end">
                                         <div class="col-md-7">
@@ -158,7 +158,7 @@
                     $("#editstatus_id").val($(this).data("status"));
                     
                     const getid = $(this).attr("data-id");
-                    $("#formaction").attr("action",`/categories/${getid}`);
+                    $("#formaction").attr("action",`/stages/${getid}`);
 
                     e.preventDefault();
                });

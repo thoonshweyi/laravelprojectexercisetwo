@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Post extends Model
 {
@@ -34,6 +35,10 @@ class Post extends Model
         // return $this->belongsTo(Status::class,"attshow","id");
     }
 
+    public function comments(){
+        return $this->morphMany(Comment::class,"commentable");
+    }
+
     public function user(){
         return $this->belongsTo(User::class);
     }
@@ -54,5 +59,13 @@ class Post extends Model
                                 // related, foreignKey
         return $this->belongsTo(Type::class,"type_id","id");
 
+    }
+
+    public function days(){
+        return $this->morphToMany(Day::class,"dayable");
+    }
+
+    public function checkenroll($userid){
+        return DB::table("enrolls")->where("post_id",$this->id)->where("user_id",$userid)->exists();
     }
 }

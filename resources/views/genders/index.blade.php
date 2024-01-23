@@ -85,6 +85,9 @@
                                              <div class="col-md-8">
                                                   <label for="editname">Name <span class="text-danger">*</span></label>
                                                   <input type="text" name="name" id="editname" class="form-control form-control-sm rounded-0" placeholder="Enter gender Name" value="{{ old('name') }}"/>
+                                                  @error("name")
+                                                       <span> <span>
+                                                  @enderror()
                                              </div>
                     
                                              <div class="col-md-2">
