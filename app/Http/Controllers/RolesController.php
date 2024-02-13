@@ -14,14 +14,22 @@ class RolesController extends Controller
 
     public function index()
     {
-        $roles = Role::all();
-        return view("roles.index",compact("roles"));
+        $roles = Role::where(function($query){
+            if($statusid = request("filterstatus_id")){
+                $query->where("status_id",$statusid);
+            }
+        })->paginate(5);
+        $filterstatuses = Status::whereIn("id",[3,4])->get()->pluck('name',"id")->prepend("Choose Status","");
+        // dd($filterstatuses);
+        return view("roles.index",compact("roles"),compact("filterstatuses"));
     }
+    // it doesn't need "LIKE" Sytax because status_id can be checked directly. 
 
     public function create()
     {    
          //$statuses = Status::all(); // get all statuses
-         $statuses = Status::whereIn("id",[3,4])->get();
+         $statuses = Status::whereIn("id",[3,4])->get()->pluck('name',"id");
+        //  dd($statuses);
          return view("roles.create",compact("statuses"));
     }
 

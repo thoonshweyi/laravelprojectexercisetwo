@@ -67,10 +67,15 @@
      <!-- End Page Content Area -->
 @endsection
 
+@section("css")
+     <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+@endsection
 
 @section("scripts")
+     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js" type="text/javascript"></script>
      <script type="text/javascript">
           $(document).ready(function(){
+               // Start delete btn
                $(".delete-btns").click(function(){
                     // console.log('hay');
           
@@ -84,6 +89,13 @@
                          false;
                     }
                });
+               // End delete btn
+
+
+               // for mytable
+               // let table = new DataTable('#mytable');
+               $("#mytable").DataTable();
+               
           });
 
 

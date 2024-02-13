@@ -15,7 +15,7 @@ class AttendancesController extends Controller
 {
     public function index()
     {
-        $attendances = Attendance::all();
+        $attendances = Attendance::orderBy('updated_at','desc')->get();
         // $posts = Post::where("attshow",3)->get();
         $posts = DB::table("posts")->where("attshow",3)->orderBy("title","asc")->get();
         return view("attendances.index",compact("attendances","posts"));
@@ -55,7 +55,6 @@ class AttendancesController extends Controller
         $attendance = Attendance::findOrFail($id);
         $attendance->post_id = $request["post_id"];
         $attendance->attcode = $request["attcode"];
-        $attendance->user_id = $user_id;
         $attendance->save();
         return redirect(route("attendances.index"));
     }

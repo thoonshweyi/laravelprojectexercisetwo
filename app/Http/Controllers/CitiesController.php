@@ -15,7 +15,7 @@ class CitiesController extends Controller
             if($getname = request("filtername")){
                 $query->where("name","LIKE","%".$getname."%");
             }
-        })->get();
+        })->paginate(4);
         // dd($cities);
         return view("cities.index",compact("cities"));
     }

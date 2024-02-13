@@ -1,43 +1,33 @@
 @extends("layouts.adminindex")
 
-@section("caption","Attendance List")
+@section("caption","Enrolls List")
 @section("content")
                          
      <!-- Start Page Content Area -->
      <div class="container-fluid">
           
           <div class="col-md-12">
-               <form action="{{route('attendances.store')}}" method="POST">
+               <form action="{{route('enrolls.store')}}" method="POST">
                     {{ csrf_field() }}
 
                     <div class="row align-items-end">
                          <div class="col-md-3">
                               <label for="classdate">Class Date <span class="text-danger">*</span></label>
-                              @error("classdate")
-                                   <span class="text-danger">{{ $message }}<span>
-                              @enderror
                               <input type="date" name="classdate" id="classdate" class="form-control form-control-sm rounded-0" value="{{ old('classdate') }}"/>
                          </div>
 
                          <div class="col-md-3">
                               <label for="post_id">Class <span class="text-danger">*</span></label>
-                              @error("post_id")
-                                   <span class="text-danger">{{ $message }}<span>
-                              @enderror
                               <select name="post_id" id="post_id" class="form-control form-control-sm rounded-0">
-                                   <option selected disabled>Choose class</option>
-                                   @foreach($posts as $post)
+                                   @foreach($enrolls as $enroll)
                                         {{-- <option value="{{$post['id']}}">{{$post['title']}}</option> --}}
-                                        <option value="{{$post->id}}">{{$post->title}}</option> 
+                                        <option value="{{$enroll->id}}">{{$enroll->title}}</option> 
                                    @endforeach     
                               </select>
                          </div>
 
                          <div class="col-md-3">
                               <label for="attcode">Attendance Code <span class="text-danger">*</span></label>
-                              @error("attcode")
-                                   <span class="text-danger">{{ $message }}<span>
-                              @enderror
                               <input type="text" name="attcode" id="attcode" class="form-control form-control-sm rounded-0" value="{{ old('attcode') }}"/>
                          </div>
 
@@ -59,27 +49,23 @@
                          <th>No</th>
                          <th>Student Id</th>
                          <th>Class</th>
-                         <th>Att Code</th>
-                         <th>By</th>
-                         <th>Class Date</th>
+                         <th>Stage</th>
                          <th>Created At</th>
                          <th>Updated At</th>
                          <th>Action</th>
                     </thead>
-          
                     <tbody>
-                         @foreach($attendances as $idx=>$attendance)
+                         @foreach($enrolls as $idx=>$enroll)
                          <tr>
                               <td>{{++$idx}}</td>
-                              <td>{{ $attendance->student($attendance->user_id) }}</td>
-                              <td>{{$attendance->post["title"]}}</td>
-                              <td>{{ $attendance->attcode }}</td>
-                              <td>{{  $attendance->user->name }}</td>
-                              <td>{{ $attendance->classdate }}</td>
-                              <td>{{ $attendance->created_at->format('d M Y') }}</td>
-                              <td>{{ $attendance->updated_at->format('d M Y') }}</td>
+                              {{-- <td>{{ $enroll->student($enroll->user_id) }}</td> --}}
+                              <td><a href="{{route('students.show',$enroll->studenturl())}}">{{$enroll->student()}}</a></td>
+                              <td>{{$enroll->post["title"]}}</td>
+                              <td>{{ $enroll->stage->name }}</td>
+                              <td>{{ $enroll->created_at->format('d M Y') }}</td>
+                              <td>{{ $enroll->updated_at->format('d M Y') }}</td>
                               <td>
-                                   <a href="javascript:void(0);" class="text-info editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$attendance->id}}" data-post_id="{{$attendance->post_id}}" data-attcode="{{$attendance->attcode}}"><i class="fas fa-pen"></i></a>
+                                   <a href="javascript:void(0);" class="text-info editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$enroll->id}}" data-post_id="{{$enroll->post_id}}" data-attcode="{{$enroll->attcode}}"><i class="fas fa-pen"></i></a>
                               </td>
                          </tr>
                          @endforeach
@@ -111,9 +97,9 @@
                                         <div class="col-md-7 form-group">
                                              <label for="editpost_id">Class <span class="text-danger">*</span></label>
                                              <select name="post_id" id="editpost_id" class="form-control form-control-sm rounded-0">
-                                                  @foreach($posts as $post)
+                                                  @foreach($enrolls as $enroll)
                                                        {{-- <option value="{{$post['id']}}">{{$post['title']}}</option> --}} 
-                                                       <option value="{{$post->id}}">{{$post->title}}</option> 
+                                                       <option value="{{$enroll->id}}">{{$enroll->title}}</option> 
                                                   @endforeach     
                                              </select>
                                         </div>
@@ -152,7 +138,7 @@
                     $("#editattcode").val($(this).data("attcode"));
                     
                     const getid = $(this).attr("data-id");
-                    $("#formaction").attr("action",`/attendances/${getid}`);
+                    $("#formaction").attr("action",`/enrolls/${getid}`);
 
                     e.preventDefault();
                });

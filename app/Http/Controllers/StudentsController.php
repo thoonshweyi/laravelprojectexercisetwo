@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Enroll;
 use App\Models\Student;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -63,7 +63,12 @@ class StudentsController extends Controller
     public function show(string $id)
     {
         $student = Student::findOrFail($id);
-        return view("students.show",["student"=>$student]);
+
+        // $enrolls = Enroll::where("user_id",$student["user_id"])->get();
+        $enrolls = $student->enrolls();
+        // dd($enrolls);
+        return view("students.show",["student"=>$student,"enrolls"=>$enrolls]);
+    
     }
 
     /**

@@ -12,11 +12,13 @@ class TagsController extends Controller
 {
     public function index()
     {
-        $tags = Tag::all();
+        $tags = Tag::orderBy("id","asc")->paginate(5);
         $statuses = Status::whereIn("id",[3,4])->get();
         return view("tags.index",compact("tags","statuses"));
     }
-
+    // paginate(limitnumber)
+    // -retrive only limited number of rows
+    // *paginate() should be placed at the last because it is the data retriever.
 
     public function create()
     {

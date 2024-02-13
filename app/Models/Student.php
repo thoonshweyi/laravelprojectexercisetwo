@@ -30,4 +30,8 @@ class Student extends Model
         // return $this->belongsTo(Status::class)->select("name"); // send single column
         return $this->belongsTo(Status::class)->select(["id","name","slug"]); // send multi column
     }
+
+    public function enrolls(){
+        return Enroll::where("user_id",$this->user_id)->get();
+    }
 }

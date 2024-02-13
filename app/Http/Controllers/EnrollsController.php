@@ -7,6 +7,7 @@ use App\Models\Enroll;
 use App\Models\Stage;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
@@ -14,7 +15,7 @@ class EnrollsController extends Controller
 {
     public function index()
     {
-        $enrolls = Enroll::all();
+        $enrolls = Enroll::orderBy("updated_at","desc")->get();
         return view("enrolls.index",compact("enrolls"));
     }
 

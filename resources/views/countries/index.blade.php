@@ -12,6 +12,9 @@
                     <div class="row align-items-end">
                          <div class="col-md-6">
                               <label for="name">Name <span class="text-danger">*</span></label>
+                              @error("name")
+                                   <span class="text-danger">{{ $message }}<span>
+                              @enderror
                               <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter Country Name" value="{{ old('name') }}"/>
                          </div>
 
@@ -30,17 +33,16 @@
                     <div class="row justify-content-end">
                          <div class="col-md-2 col-sm-6 mb-2">
                               <div class="input-group">
-                                   <input type="text" name="filtername" id="filtername" class="form-control form-control-sm rounded-0"/>
+                                   <input type="text" name="filtername" id="filtername" class="form-control form-control-sm rounded-0" placeholder="Search...."/>
                                    <button type="submit" id="btn-search" class="btn btn-secondary btn-sm"><i class="fas fa-search"></i></button>
                               </div>
                          </div>
                     </div>
                </form>
           </div>
-
+     
           <div class="col-md-12">
 
-               
                <table id="mytable" class="table table-sm table-hover border">
           
                     <thead>
@@ -74,6 +76,7 @@
                     </tbody>
           
                </table>
+               {{ $countries->links("pagination::bootstrap-4") }}
           
 
           </div>

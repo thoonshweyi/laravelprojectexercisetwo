@@ -28,11 +28,17 @@
                                    <div class="col-md-6 mb-3">
                                         <label for="image">Image</label>
                                         <input type="file" name="image" id="image" class="form-control form-control-sm rounded-0" value="{{ $role->image }}"/>
+                                        @error("image")
+                                             <span class="text-danger">{{ $message }}<span>
+                                        @enderror
                                    </div>
 
                                    <div class="col-md-6 mb-3">
                                         <label for="name">Name <span class="text-danger">*</span></label>
                                         <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter Role Name" value="{{ $role->name }}"/>
+                                        @error("name")
+                                             <span class="text-danger">{{ $message }}<span>
+                                        @enderror
                                    </div>
 
                                    <div class="col-md-6">
@@ -46,6 +52,9 @@
                                                   >{{ $status->name }}</option>
                                              @endforeach
                                         </select>
+                                        @error("status_id")
+                                             <span class="text-danger">{{ $message }}<span>
+                                        @enderror
                                    </div>
 
                                    <div class="col-md-6 d-flex justify-content-end align-items-end">

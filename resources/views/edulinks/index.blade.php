@@ -1,13 +1,13 @@
 @extends("layouts.adminindex")
 
-@section("caption","Attendance List")
+@section("caption","Edulinks List")
 @section("content")
                          
      <!-- Start Page Content Area -->
      <div class="container-fluid">
           
           <div class="col-md-12">
-               <form action="{{route('attendances.store')}}" method="POST">
+               <form action="{{route('edulinks.store')}}" method="POST">
                     {{ csrf_field() }}
 
                     <div class="row align-items-end">
@@ -26,19 +26,18 @@
                               @enderror
                               <select name="post_id" id="post_id" class="form-control form-control-sm rounded-0">
                                    <option selected disabled>Choose class</option>
-                                   @foreach($posts as $post)
-                                        {{-- <option value="{{$post['id']}}">{{$post['title']}}</option> --}}
-                                        <option value="{{$post->id}}">{{$post->title}}</option> 
+                                   @foreach($posts as $id=>$title)
+                                        <option value="{{$id}}">{{$title}}</option> 
                                    @endforeach     
                               </select>
                          </div>
 
                          <div class="col-md-3">
-                              <label for="attcode">Attendance Code <span class="text-danger">*</span></label>
-                              @error("attcode")
+                              <label for="url">Url <span class="text-danger">*</span></label>
+                              @error("url")
                                    <span class="text-danger">{{ $message }}<span>
                               @enderror
-                              <input type="text" name="attcode" id="attcode" class="form-control form-control-sm rounded-0" value="{{ old('attcode') }}"/>
+                              <input type="text" name="url" id="url" class="form-control form-control-sm rounded-0" placeholder="Enter url" value="{{ old('url') }}"/>
                          </div>
 
                          <div class="col-md-3">
@@ -52,41 +51,65 @@
           <hr/>
 
           <div class="col-md-12">
-               
+               <form action="" method="">
+                    <div class="row justify-content-end">
+                         <div class="col-md-2 col-sm-6 mb-2">
+                              <div class="form-group">
+                                   <select name="filter" id="filter" class="form-control form-control-sm rounded-0">
+                                        @foreach($filterposts as $id=>$name)
+                                             <option value="{{$id}}" {{ $id == request('filter') ? 'selected' : '' }}>{{ $name }}</option>
+                                        @endforeach
+                                   </select>
+                              </div>
+                         </div>
+
+                         <div class="col-md-2 col-sm-6 mb-2">
+                              <div class="input-group">
+                                   <input type="text" name="search" id="search" class="form-control form-control-sm rounded-0" placeholder="Search...." value="{{ request('search') }}"/>
+                                   <button type="button" id="btn-clear" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i></button>
+                                   <button type="submit" id="btn-search" class="btn btn-secondary btn-sm"><i class="fas fa-search"></i></button>
+                              </div>
+                         </div>
+
+                         
+                    </div>
+               </form>
+          </div>
+
+          <div class="col-md-12">
                <table id="mytable" class="table table-sm table-hover border">
           
                     <thead>
-                         <th>No</th>
-                         <th>Student Id</th>
+                         <th>ID</th>
                          <th>Class</th>
-                         <th>Att Code</th>
+                         <th>URL</th>
                          <th>By</th>
                          <th>Class Date</th>
                          <th>Created At</th>
                          <th>Updated At</th>
                          <th>Action</th>
                     </thead>
-          
                     <tbody>
-                         @foreach($attendances as $idx=>$attendance)
+                         @foreach($edulinks as $idx=>$edulink)
                          <tr>
-                              <td>{{++$idx}}</td>
-                              <td>{{ $attendance->student($attendance->user_id) }}</td>
-                              <td>{{$attendance->post["title"]}}</td>
-                              <td>{{ $attendance->attcode }}</td>
-                              <td>{{  $attendance->user->name }}</td>
-                              <td>{{ $attendance->classdate }}</td>
-                              <td>{{ $attendance->created_at->format('d M Y') }}</td>
-                              <td>{{ $attendance->updated_at->format('d M Y') }}</td>
+                              <td>{{$idx + $edulinks->firstItem()}}</td>
+                              <td><a href="{{route('posts.show',$edulink->post_id)}}">{{$edulink->post['title']}}</a></td>
+                              <td><a href="javascript:void(0);" class="link-btns" data-url="{{ $edulink->url}}" title="Copy Link">{{ Str::limit($edulink->url,30) }}</a></td>
+                              <td>{{ $edulink["user"]["name"] }}</td>
+                              <td>{{ date("d M Y",strtotime($edulink->classdate)) }}</td>
+                              <td>{{ $edulink->created_at->format('d M Y h:i A') }}</td>
+                              <td>{{ $edulink->updated_at->format('d M Y') }}</td>
                               <td>
-                                   <a href="javascript:void(0);" class="text-info editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$attendance->id}}" data-post_id="{{$attendance->post_id}}" data-attcode="{{$attendance->attcode}}"><i class="fas fa-pen"></i></a>
+                                   <a href="{{$edulink->url}}" class="text-primary" target="_blank" download="abc"><i class="fas fa-download"></i></a>
+                                   <a href="javascript:void(0);" class="text-info ms-2 editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$edulink->id}}" data-post_id="{{$edulink->post_id}}" data-attcode="{{$edulink->attcode}}"><i class="fas fa-pen"></i></a>
                               </td>
                          </tr>
                          @endforeach
                     </tbody>
           
                </table>
-          
+               {{-- $edulinks->links("pagination::bootstrap-4") --}}
+               {{ $edulinks->appends(request()->only("filter"))->links("pagination::bootstrap-4") }}
 
           </div>
      </div>
@@ -111,9 +134,9 @@
                                         <div class="col-md-7 form-group">
                                              <label for="editpost_id">Class <span class="text-danger">*</span></label>
                                              <select name="post_id" id="editpost_id" class="form-control form-control-sm rounded-0">
-                                                  @foreach($posts as $post)
+                                                  @foreach($edulinks as $edulink)
                                                        {{-- <option value="{{$post['id']}}">{{$post['title']}}</option> --}} 
-                                                       <option value="{{$post->id}}">{{$post->title}}</option> 
+                                                       <option value="{{$edulink->id}}">{{$edulink->title}}</option> 
                                                   @endforeach     
                                              </select>
                                         </div>
@@ -144,6 +167,15 @@
 
 @section("scripts")
      <script type="text/javascript">
+
+          // Start Filter
+          document.getElementById("filter").addEventListener("click",function(){
+               let getfilterid = this.value || this.options[this.selectedIndex].value;
+               // console.log(getid);
+               window.location.href = window.location.href.split("?")[0]+"?filter="+getfilterid;
+          });
+          // End Filter
+
           $(document).ready(function(){
                // Start Edit Form
                $(document).on("click",".editform",function(e){
@@ -152,12 +184,22 @@
                     $("#editattcode").val($(this).data("attcode"));
                     
                     const getid = $(this).attr("data-id");
-                    $("#formaction").attr("action",`/attendances/${getid}`);
+                    $("#formaction").attr("action",`/edulinks/${getid}`);
 
                     e.preventDefault();
                });
                // End Edit Form
                
+
+               // Start link btn
+               $(".link-btns").click(function(){
+                    var geturl = $(this).data("url");
+                    // console.log(geturl);
+                    navigator.clipboard.writeText(geturl);
+               });
+               // End link btn
+
+
           });
 
 

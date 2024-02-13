@@ -13,11 +13,17 @@
                     <div class="row align-items-end">
                          <div class="col-md-4">
                               <label for="name">Name <span class="text-danger">*</span></label>
+                              @error("name")
+                                   <span class="text-danger">{{ $message }}<span>
+                              @enderror
                               <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter Tag Name" value="{{ old('name') }}"/>
                          </div>
 
                          <div class="col-md-4">
                               <label for="status_id">Status</label>
+                              @error("status_id")
+                                   <span class="text-danger">{{ $message }}<span>
+                              @enderror
                               <select name="status_id" id="status_id" class="form-control form-control-sm rounded-0">
                                    @foreach($statuses as $status)
                                         <option value="{{$status['id']}}">{{$status['name']}}</option>
@@ -36,7 +42,8 @@
           <hr/>
 
           <div class="col-md-12">
-               
+               {{$tags->firstItem()}}
+               {{-- $idx+ $tags->lastItem() --}}
                <table id="mytable" class="table table-sm table-hover border">
           
                     <thead>
@@ -52,7 +59,8 @@
                     <tbody>
                          @foreach($tags as $idx=>$tag)
                          <tr>
-                              <td>{{++$idx}}</td>
+                              {{-- <td>{{++$idx}}</td> --}}
+                              <td>{{$idx+ $tags->firstItem()}}</td>
                               <td>{{$tag["name"]}}</td>
                               <td>{{ $tag->status->name }}</td>
                               <td>{{ $tag["user"]["name"] }}</td>
@@ -71,6 +79,7 @@
                     </tbody>
           
                </table>
+               {{ $tags->links('pagination::bootstrap-4') }}
           
 
           </div>

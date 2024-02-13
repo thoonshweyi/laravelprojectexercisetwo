@@ -10,6 +10,7 @@ use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\CountriesController;
 use App\Http\Controllers\DashboardsController;
 use App\Http\Controllers\DaysController;
+use App\Http\Controllers\EdulinksController;
 use App\Http\Controllers\EnrollsController;
 use App\Http\Controllers\GendersController;
 use App\Http\Controllers\ProfileController;
@@ -58,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::resource("comments",CommentsController::class);
     Route::resource("countries",CountriesController::class);
     Route::resource("days",DaysController::class);
+    Route::resource("edulinks",EdulinksController::class);
     Route::resource("enrolls",EnrollsController::class);
     Route::resource("genders",GendersController::class);
     Route::resource("posts",PostsController::class);

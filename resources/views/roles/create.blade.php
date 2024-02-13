@@ -22,23 +22,42 @@
                                    <div class="col-md-6 mb-3">
                                         <label for="image">Image</label>
                                         <input type="file" name="image" id="image" class="form-control form-control-sm rounded-0" value="{{ old('image')}}"/>
+                                        @error("image")
+                                             <span class="text-danger">{{ $message }}<span>
+                                        @enderror
                                    </div>
 
                                    <div class="col-md-6 mb-3">
                                         <label for="name">Name <span class="text-danger">*</span></label>
                                         <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter Role Name" value="{{ old('name') }}"/>
+                                        @error("name")
+                                             <span class="text-danger">{{ $message }}<span>
+                                        @enderror
                                    </div>
 
                                    <div class="col-md-6">
                                         <label for="name">Status <span class="text-danger">*</span></label>
                                         <select type="text" name="status_id" id="status_id" class="form-control form-control-sm rounded-0">
-                                             <!-- <option value="3">On</option>
-                                             <option value="4">On</option> -->
+                                             <option selected disabled>Choose Status</option>
 
-                                             @foreach($statuses as $status)
+                                             {{-- @foreach($statuses as $status)
                                                   <option value="{{$status->id}}">{{ $status->name }}</option>
                                              @endforeach
+                                             --}}
+
+                                             {{-- 
+                                             @foreach($statuses as $id=>$name)
+                                                  <option value="{{ $id}}">{{ $name }}</option>
+                                             @endforeach
+                                             --}}
+
+                                             @foreach($statuses as $idx=>$status)
+                                                  <option value="{{ $idx}}">{{ $status }}</option>
+                                             @endforeach
                                         </select>
+                                        @error("status_id")
+                                             <span class="text-danger">{{ $message }}<span>
+                                        @enderror
                                    </div>
 
                                    <div class="col-md-6 d-flex justify-content-end align-items-end">

@@ -12,6 +12,9 @@
                     <div class="row align-items-end">
                          <div class="col-md-6">
                               <label for="name">Name <span class="text-danger">*</span></label>
+                              @error("name")
+                                   <span class="text-danger">{{ $message }}<span>
+                              @enderror
                               <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter City Name" value="{{ old('name') }}"/>
                          </div>
 
@@ -30,7 +33,7 @@
                     <div class="row justify-content-end">
                          <div class="col-md-2 col-sm-6 mb-2">
                               <div class="input-group">
-                                   <input type="text" name="filtername" id="filtername" class="form-control form-control-sm rounded-0"/>
+                                   <input type="text" name="filtername" id="filtername" class="form-control form-control-sm rounded-0" placeholder="Search...." value="{{ request('filtername') }}"/>
                                    <button type="button" id="btn-search" class="btn btn-secondary btn-sm"><i class="fas fa-search"></i></button>
                               </div>
                          </div>
@@ -74,6 +77,7 @@
                     </tbody>
           
                </table>
+               {{ $cities->links("pagination::bootstrap-4") }}
           
 
           </div>
@@ -122,14 +126,19 @@
      <script type="text/javascript">
 
           // Start Filter
-          const getfilterbtn = document.getEleentById("btn-search");
-          getfilterbtn.addEventListener("click",function(){
+          const getfilterbtn = document.getElementById("btn-search");
+          getfilterbtn.addEventListener("click",function(e){
                // console.log("hay");
 
-               const getfiltername = document.getElementByid("filtername");
+               const getfiltername = document.getElementById("filtername").value;
                const getcururl = window.location.href;
+               
+               // console.log(getfiltername); // search value
+               // console.log(getcururl); // http://127.0.0.1:8000/cities?filtername=yan
+               // console.log(getcururl.split("?")); // ['http://127.0.0.1:8000/cities', 'filtername=yan']
+               // console.log(getcururl.split("?")[0]); // 
+               window.location.href = getcururl.split("?")[0] + "?filtername="+getfiltername;
 
-               console.log(getcururl);
                e.preventDefault();
           });
           // End Filter

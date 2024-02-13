@@ -1,5 +1,5 @@
 <!-- Start Footer Section -->
-<footer class="mt-5">
+<footer class="footers">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-10 col-md-8 ms-auto">
@@ -71,7 +71,7 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.2.9/justgage.min.js"></script>
         <!-- custom js js1 -->
-        <script src="{{ asset('assets/disc/js/app.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('assets/dist/js/app.js') }}" type="text/javascript"></script>
 
         <!-- Extra js -->
         @yield('scripts')

@@ -10,9 +10,18 @@
                <form action="{{route('genders.store')}}" method="POST">
                     {{ csrf_field() }}
                     <div class="row align-items-end">
-                         <div class="col-md-6">
+                         <div class="col-md-6 form-group">
                               <label for="name">Name <span class="text-danger">*</span></label>
-                              <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter Gender Name" value="{{ old('name') }}"/>
+                              @error("name")
+                                   <span class="text-danger">{{ $message }}<span>
+                              @enderror
+                              <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0 @error('name') is-invalid @enderror" placeholder="Enter Gender Name" value="{{ old('name') }}"/>
+                              {{-- @error("name")
+                                   <span class="invalid-feedback">{{ $message }}<span>
+                              @enderror
+                              --}}
+
+                              
                          </div>
 
                          <div class="col-md-6 ">
@@ -84,10 +93,8 @@
                                         <div class="row align-items-end">
                                              <div class="col-md-8">
                                                   <label for="editname">Name <span class="text-danger">*</span></label>
-                                                  <input type="text" name="name" id="editname" class="form-control form-control-sm rounded-0" placeholder="Enter gender Name" value="{{ old('name') }}"/>
-                                                  @error("name")
-                                                       <span> <span>
-                                                  @enderror()
+                                                  <input type="text" name="name" id="editname" class="form-control form-control-sm rounded-0 " placeholder="Enter gender Name" value="{{ old('name') }}"/>
+                                                 
                                              </div>
                     
                                              <div class="col-md-2">
