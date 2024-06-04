@@ -3,6 +3,10 @@
     <head>
         <!-- Application Name -->
         <title>{{ config('app.name') }}</title>
+
+        <meta charseet="utf-8" />
+        <meta name="csrf-token" content="{{ csrf_token() }}"/>
+
         <!-- fav icon -->
         <link href="{{ asset('assets/img/fav/favicon.png') }}" rel="icon" type="image/png" sizes="16x16"/>
         <!-- bootstrap css1 js1 -->
@@ -13,7 +17,9 @@
         <link href="{{asset('./assets/libs/jquery-ui-1.13.2.custom/jquery-ui.min.css')}}" rel="stylesheet" type="text/css">
         <!-- custom css css1 -->
         <link href="{{ asset('assets/dist/css/style.css') }}" rel="stylesheet" type="text/css"/>
-    
+
+        <!-- toastr css1 js1 -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
         <!-- Extra CSS -->
         @yield('css')
     </head>

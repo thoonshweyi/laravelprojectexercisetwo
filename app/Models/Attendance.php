@@ -55,4 +55,10 @@ class Attendance extends Model
             return $student;
         }
     }
+
+    public function checkattcode($classdate,$postid,$attcode){
+        $checkresult = \DB::table("attcodegenerators")->whereDate("classdate",$classdate)->where("post_id",$postid)->where("attcode",$attcode)->where("status_id",3)->exists();
+        // dd($checkresult);
+        return $checkresult;
+    }
 }

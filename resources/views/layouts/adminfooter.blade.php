@@ -70,6 +70,35 @@
         <!-- https://github.com/toorshia/justgage -->
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.2.9/justgage.min.js"></script>
+        
+        <!-- toastr css1 js1 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" type="text/javascript"></script>
+        <script>
+                toastr.options = {
+                    "progressBar":true,
+                    "closeButton":true
+                };
+        </script> 
+
+            @if(Session::has("success"))
+                <script>toastr.success('{{ session()->get("success") }}', 'Successful')</script>
+            @endif
+
+            @if(session()->has("info"))
+                <script>toastr.info('{{ session()->get("info") }}', 'Information')</script>
+            @endif
+
+            @if(session()->has("error"))
+                <script>toastr.error('{{ session()->get("error") }}', 'Inconceivable')</script>
+            @endif
+
+            @if($errors)
+                @foreach($errors->all() as $error)
+                    <script>toastr.error('{{$error}}', 'Warning!',{timeOut:3000})</script>
+                @endforeach
+            @endif
+        
+        
         <!-- custom js js1 -->
         <script src="{{ asset('assets/dist/js/app.js') }}" type="text/javascript"></script>
 

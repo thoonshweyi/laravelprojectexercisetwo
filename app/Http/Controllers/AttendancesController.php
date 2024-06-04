@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
+use Carbon\Carbon;
+
 class AttendancesController extends Controller
 {
     public function index()
@@ -18,7 +20,8 @@ class AttendancesController extends Controller
         $attendances = Attendance::orderBy('updated_at','desc')->get();
         // $posts = Post::where("attshow",3)->get();
         $posts = DB::table("posts")->where("attshow",3)->orderBy("title","asc")->get();
-        return view("attendances.index",compact("attendances","posts"));
+        $gettoday = Carbon::today()->format("Y-m-d");
+        return view("attendances.index",compact("attendances","posts","gettoday"));
     }
 
     public function store(Request $request)
@@ -32,14 +35,24 @@ class AttendancesController extends Controller
        $user = Auth::user();
        $user_id = $user->id;
 
-       $attendance = new attendance();
-       $attendance->classdate = $request["classdate"];
-       $attendance->post_id = $request["post_id"];
-       $attendance->attcode = $request["attcode"];
-       $attendance->user_id = $user_id;
+       $getclassdate = $request["classdate"];
+       $getpostid = $request["post_id"];
+       $getattcode = Str::upper($request["attcode"]);
 
-       $attendance->save();
+       $attendance = new Attendance();
+       if($attendance->checkattcode($getclassdate,$getpostid,$getattcode)){
+            $attendance->classdate = $getclassdate;
+            $attendance->post_id = $getpostid;
+            $attendance->attcode = $getattcode;
+            $attendance->user_id = $user_id;
+    
+            $attendance->save();
+            session()->flash("success","Att Created");
+       }else{
+            session()->flash("error","Failed Try Again!");
+       }
        return redirect(route("attendances.index"));
+       
     }
 
     public function update(Request $request, string $id)

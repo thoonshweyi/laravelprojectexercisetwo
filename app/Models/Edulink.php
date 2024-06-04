@@ -61,4 +61,26 @@ class Edulink extends Model
         }
         return $query;
     }
+
+    public function scopefilteronly($query){
+        if($getfilter = request("filter")){
+            $query->where("post_id",$getfilter);
+        } 
+        
+        return $query;
+    }
+
+    public function scopesearchonly($query){
+     
+        if($getsearch = request("search")){
+        
+            $query->where("classdate","LIKE","%${getsearch}%")
+                ->orWhere("created_at","LIKE","%${getsearch}%")
+                ->orWhere("updated_at","LIKE","%${getsearch}%")
+                ->orWhereHas("post",function($query) use($getsearch){
+                    $query->where("title","LIKE","%${getsearch}%");
+                });
+        }
+        return $query;
+    }
 }

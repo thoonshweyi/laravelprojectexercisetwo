@@ -7,6 +7,15 @@
      <div class="container-fluid">
           
           <div class="col-md-12">
+               
+               {{-- @if($getsuccess = session("success"))
+                    <div class="alert alert-success rounded-0">{{ $getsuccess }}</div>
+               @endif
+               --}}
+
+               @if(session("success"))
+                    <div class="alert alert-success rounded-0">{{ session("success") }}</div>
+               @endif
                <form action="{{route('edulinks.store')}}" method="POST">
                     {{ csrf_field() }}
 
@@ -101,8 +110,13 @@
                               <td>{{ $edulink->updated_at->format('d M Y') }}</td>
                               <td>
                                    <a href="{{$edulink->url}}" class="text-primary" target="_blank" download="abc"><i class="fas fa-download"></i></a>
-                                   <a href="javascript:void(0);" class="text-info ms-2 editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$edulink->id}}" data-post_id="{{$edulink->post_id}}" data-attcode="{{$edulink->attcode}}"><i class="fas fa-pen"></i></a>
+                                   <a href="javascript:void(0);" class="text-info ms-2 editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$edulink->id}}" data-classdate="{{$edulink->classdate}}" data-post="{{$edulink->post_id}}" data-url="{{$edulink->url}}"  ><i class="fas fa-pen"></i></a>
+                                   <a href="#" class="text-danger ms-2 delete-btns" data-idx="{{$idx + $edulinks->firstItem()}}"><i class="fas fa-trash-alt"></i></a>
                               </td>
+                              <form id="formdelete-{{ $idx + $edulinks->firstItem() }}" class="" action="{{route('edulinks.destroy',$edulink->id)}}" method="POST">
+                                   @csrf
+                                   @method("DELETE")
+                              </form>
                          </tr>
                          @endforeach
                     </tbody>
@@ -130,24 +144,27 @@
                                    {{ csrf_field() }}
                                    {{ method_field('PUT') }}
                                    <div class="row align-items-end">
+
+                                        <div class="col-md-6">
+                                             <label for="editclassdate">Class Date<span class="text-danger">*</span></label>
+                                             <input type="date" name="editclassdate" id="editclassdate" class="form-control form-control-sm rounded-0" />
+                                        </div>
                                         
-                                        <div class="col-md-7 form-group">
+                                        <div class="col-md-6 form-group">
                                              <label for="editpost_id">Class <span class="text-danger">*</span></label>
-                                             <select name="post_id" id="editpost_id" class="form-control form-control-sm rounded-0">
-                                                  @foreach($edulinks as $edulink)
-                                                       {{-- <option value="{{$post['id']}}">{{$post['title']}}</option> --}} 
-                                                       <option value="{{$edulink->id}}">{{$edulink->title}}</option> 
+                                             <select name="editpost_id" id="editpost_id" class="form-control form-control-sm rounded-0">
+                                                  @foreach($posts as $id=>$title)
+                                                       <option value="{{$id}}">{{$title}}</option> 
                                                   @endforeach     
                                              </select>
                                         </div>
 
-                                        <div class="col-md-3">
-                                             <label for="editattcode">Att Code <span class="text-danger">*</span></label>
-                                             <input type="text" name="attcode" id="editattcode" class="form-control form-control-sm rounded-0" value="{{ old('classdate') }}"/>
+                                        <div class="col-md-12">
+                                             <label for="editurl">URL<span class="text-danger">*</span></label>
+                                             <input type="text" name="editurl" id="editurl" class="form-control form-control-sm rounded-0" />
                                         </div>
-                                        
-               
-                                        <div class="col-md-2">
+
+                                        <div class="col-md-12 d-flex justify-content-end mt-2">
                                              <button type="submit" class="btn btn-primary btn-sm rounded-0">Update</button>
                                         </div>
                                    </div>
@@ -176,12 +193,41 @@
           });
           // End Filter
 
+          // Start Clear btn
+          document.getElementById("btn-clear").addEventListener("click",function(){
+               const getfilter = document.getElementById("filter");
+               const getsearch = document.getElementById("search");
+
+               getfilter.selectedIndex = 0;
+               getsearch.value = "";
+
+               window.location.href = window.location.href.split("?")[0];
+          });
+          // End Clear btn
+
+          // Start Autoshow Btn Clear
+          const autoshowbtn = function(){
+               let getbtnclear = document.getElementById("btn-clear");
+               let geturlquery = window.location.search; // ?filter=16&search=09
+               // console.log(geturlquery); 
+               let pattern = /[?&]search=/;
+
+               if(pattern.test(geturlquery)){
+                    getbtnclear.style.display ="block";
+               }else{
+                    getbtnclear.style.display ="none";
+               }
+          }
+          autoshowbtn();
+          // End Autoshow Btn Clear
+
           $(document).ready(function(){
                // Start Edit Form
                $(document).on("click",".editform",function(e){
                     
-                    $("#editpost_id").val($(this).attr("data-post_id"));
-                    $("#editattcode").val($(this).data("attcode"));
+                    $("#editclassdate").val($(this).data("classdate"));
+                    $("#editpost_id").val($(this).data("post"));
+                    $("#editurl").val($(this).data("url"));
                     
                     const getid = $(this).attr("data-id");
                     $("#formaction").attr("action",`/edulinks/${getid}`);
@@ -189,6 +235,40 @@
                     e.preventDefault();
                });
                // End Edit Form
+
+
+               // Start Delete Item
+               // $(".delete-btns").click(function(){
+               //      // console.log('hay');
+          
+               //      var getidx = $(this).data("idx");
+               //      // console.log(getidx);
+
+               //      if(confirm(`Are you sure !!! you want to Delete ${getidx} ?`)){
+               //           $('#formdelete-'+getidx).submit();
+               //           return true;
+               //      }else{
+               //           false;
+               //      }
+               // });
+               
+               var deletebtns = document.querySelectorAll(".delete-btns");
+               deletebtns.forEach(function(deletebtn){
+                    deletebtn.addEventListener("click",function(){
+                         var getidx = this.getAttribute("data-idx");
+                         console.log(getidx);
+
+                         if(confirm(`Are you sure !!! you want to Delete ${getidx} ?`)){
+                              document.getElementById('formdelete-'+getidx).submit();
+                              return true;
+                         }else{
+                              false;
+                         }
+                    });
+               });
+               
+               // End Delete Item
+               
                
 
                // Start link btn

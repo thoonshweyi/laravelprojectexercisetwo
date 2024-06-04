@@ -46,4 +46,24 @@ class User extends Authenticatable
     public function comments(){
         return $this->morphMany(Comment::class,"commentable");
     }
+
+    public function likes(){
+        return $this->belongsToMany(Post::class,"post_like")->withTimestamps();
+    }
+    public function checkpostlike($postid){
+        return $this->likes()->where("post_id",$postid)->exists();
+    }
+
+    public function followings(){
+                                                                // fk           // rk (relative key)
+        return $this->belongsToMany(User::class,"follower_user","follower_id","user_id")->withTimestamps();
+    }
+
+    public function checkuserfollowing($followingid){
+        return $this->followings()->where("user_id",$followingid)->exists();
+    
+        // Note:: user_id mean = Oher Person 
+        // Note:: follower_id mean = I
+        // Note:: $followingid mean = Other Person
+    }
 }

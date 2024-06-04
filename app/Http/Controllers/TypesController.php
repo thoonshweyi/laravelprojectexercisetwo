@@ -64,11 +64,30 @@ class TypesController extends Controller
     }
 
 
-    public function destroy(string $id)
+    // public function destroy(string $id)
+    // {
+    //     $type = Type::findOrFail($id);
+    //     $type->delete();
+
+    //     session()->flash("info","Delete Successfully");
+    //     return redirect()->back();
+    // }
+
+    public function destroy(Request $request)
     {
-        $type = Type::findOrFail($id);
+        $type = Type::findOrFail($request["id"]);
         $type->delete();
-        return redirect()->back();
+
+        session()->flash("info","Delete Successfully");
+        return response()->json(["success"=>"Delete Successfully."]);
+    }
+
+    public function typestatus(Request $request){
+        $type = Type::findOrFail($request["id"]);
+        $type->status_id = $request["status_id"];
+        $type->save();
+
+        return response()->json(["success"=>"Status Change Successfully"]);
     }
 }
 

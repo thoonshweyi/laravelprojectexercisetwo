@@ -30,6 +30,8 @@ class DaysController extends Controller
         $this->validate($request,[
             "name" => "required|max:50|unique:days",
             "status_id" => "required|in:3,4",
+        ],[
+            "name.required"=>"Day Name is required"
         ]);
 
        $user = Auth::user();

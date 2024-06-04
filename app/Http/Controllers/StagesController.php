@@ -70,4 +70,12 @@ class StagesController extends Controller
         $stage->delete();
         return redirect()->back();
     }
+
+    public function typestatus(Request $request){
+        $stage = Stage::findOrFail($request["id"]);
+        $stage->status_id = $request["status_id"];
+        $stage->save();
+
+        return response()->json(["success"=>"Stage Change Successfully"]);
+   }
 }

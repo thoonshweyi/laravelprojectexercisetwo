@@ -16,7 +16,7 @@
                               @error("classdate")
                                    <span class="text-danger">{{ $message }}<span>
                               @enderror
-                              <input type="date" name="classdate" id="classdate" class="form-control form-control-sm rounded-0" value="{{ old('classdate') }}"/>
+                              <input type="date" name="classdate" id="classdate" class="form-control form-control-sm rounded-0" value="{{ $gettoday }}"/>
                          </div>
 
                          <div class="col-md-3">
@@ -63,8 +63,6 @@
                          <th>By</th>
                          <th>Class Date</th>
                          <th>Created At</th>
-                         <th>Updated At</th>
-                         <th>Action</th>
                     </thead>
           
                     <tbody>
@@ -77,10 +75,6 @@
                               <td>{{  $attendance->user->name }}</td>
                               <td>{{ $attendance->classdate }}</td>
                               <td>{{ $attendance->created_at->format('d M Y') }}</td>
-                              <td>{{ $attendance->updated_at->format('d M Y') }}</td>
-                              <td>
-                                   <a href="javascript:void(0);" class="text-info editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$attendance->id}}" data-post_id="{{$attendance->post_id}}" data-attcode="{{$attendance->attcode}}"><i class="fas fa-pen"></i></a>
-                              </td>
                          </tr>
                          @endforeach
                     </tbody>

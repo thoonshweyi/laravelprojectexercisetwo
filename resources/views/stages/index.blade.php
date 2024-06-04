@@ -32,7 +32,7 @@
                               <td>{{$stage["name"]}}</td>
                               <td>
                                    <div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input" {{ $stage->status_id === 3 ? "checked" : "" }} />
+                                        <input type="checkbox" class="form-check-input change-btn" {{ $stage->status_id === 3 ? "checked" : "" }}  data-id="{{ $stage->id }}"/>
                                    </div>
                               </td>
                               <td>{{ $stage["user"]["name"] }}</td>
@@ -180,7 +180,26 @@
                });
                // End Delete Item
 
-               
+               //Start change-btn
+               $(".change-btn").change(function(){
+                    var getid = $(this).data("id");
+                    // console.log(getid); // 1 2
+
+                    var setstatus = $(this).prop("checked") === true ? 3 : 4;
+                    // console.log(setstatus); // 3 4
+
+                     $.ajax({
+                         url:"stagesstatus",
+                         type:"GET",
+                         dataType:"json",
+                         data:{"id":getid,"status_id":setstatus},
+                         success:function(response){
+                              console.log(response); // {success: 'Status Change Successfully'}
+                              console.log(response.success); // Status Change Successfully
+                         }
+                    });
+               });
+               // End change btn
           });
 
 

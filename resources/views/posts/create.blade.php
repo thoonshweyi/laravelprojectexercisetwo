@@ -83,7 +83,7 @@
                                         @enderror
                                    </div>
 
-                                   <div class="col-md-6">
+                                   <div class="col-md-6 mb-3">
                                         <label for="type_id">Type <span class="text-danger">*</span></label>
                                         <select name="type_id" id="type_id" class="form-control form-control-sm rounded-0">
                                              @foreach($types as $type)
@@ -111,7 +111,7 @@
                                         @enderror
                                    </div>
 
-                                   <div class="col-md-3">
+                                   <div class="col-md-3 mb-3">
                                         <label for="tag_id">Type <span class="text-danger">*</span></label>
                                         <select name="tag_id" id="tag_id" class="form-control form-control-sm rounded-0">
                                              @foreach($tags as $tag)

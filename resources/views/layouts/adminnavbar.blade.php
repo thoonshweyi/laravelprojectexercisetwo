@@ -15,87 +15,53 @@
                <!-- notify & userlogout-->
                <ul class="navbar-nav me-5 pe-5">
                     <!-- notify -->
-                    <li class="nav-item dropdowns">
+                    <li class="nav-item dropdowns me-3">
                     <a href="javascript:void(0);" class="nav-link dropbtn" onclick="dropbtn(event)">
                          <i class="fas fa-bell"></i>
-                         <span class="badge bg-danger">5+</span>
+                         {{-- <span class="badge bg-danger">{{ $userdata->unreadNotifications->count() }}</span> --}}
+                         <span class="badge bg-danger">{{ auth()->user()->unreadNotifications->count() }}</span>
                     </a>
-                    <div class="dropdown-contents mydropdowns">
-                         <h6>Alert Center</h6>
-                         <a href="javascript:void(0);" class="d-flex">
-                              <div>
-                                   <i class="fas fa-file-alt"></i>
-                              </div>
-                              <div>
-                                   <p class="small text-muted">3 May 2023</p>
-                                   <i>A new members created.</i>
-                              </div>
-                         </a>
-                         <a href="javascript:void(0);" class="d-flex">
-                              <div>
-                                   <i class="fas fa-database text-warnning"></i>
-                              </div>
-                              <div>
-                                   <p class="small text-muted">3 May 2023</p>
-                                   <i>Some of your data are missing.</i>
-                              </div>
-                         </a>
-                         <a href="javascript:void(0);" class="d-flex">
-                              <div>
-                                   <i class="fas fa-user text-info"></i>
-                              </div>
-                              <div>
-                                   <p class="small text-muted">3 May 2023</p>
-                                   <i>A new user are invited you</i>
-                              </div>
-                         </a>
 
-                         <a href="javascript:void(0);" class="small text-muted">Show All Notification</a>
+                    <div class="dropdown-contents mydropdowns">
+                    
+                         @if($userdata->unreadNotifications->count() > 0)
+                              <a href="{{ route('leaves.markasread') }}" class="small text-muted text-center">Mark all as read</a>
+                         
+                              @foreach($userdata->unreadNotifications as $notification)
+                              <a href="{{ route($notification->type === 'App\Notifications\AnnouncementNotify'?'announcements.show':'leaves.show',$notification->data['id']) }}" class="d-flex">
+                                   <div class="me-3">
+                                        @if($notification->type === "App\Notifications\AnnouncementNotify")
+                                        <img src="{{ $notification->data['img'] }}" class="rounded-circle" width="30" alt="{{ $notification->data['id'] }}">
+                                        @else
+                                        <i class="fas fa-bell fa-xs text-primary"></i>
+                                        @endif
+                                   </div>
+                                   <div class="small">
+                                        <ul class="list-unstyled">
+                                        @if($notification->type == "App\Notifications\AnnouncementNotify")
+                                             <li>{{ Str::limit($notification->data["title"],20) }}</li>
+                                             <li>{{ $notification->created_at->format("d M Y h:i:s A") }}</li>
+                                        @else
+                                             <li>{{ $notification->data["studentid"] }}</li>
+                                             <li>{{ Str::limit($notification->data["title"],20) }}</li>
+                                             <li>{{ $notification->created_at->format("d M Y h:i:s A") }}</li>
+                                        </ul>
+                                        @endif
+                                   </div>
+                              </a>
+                              @endforeach
+                              
+                              <a href="javascript:void(0);" class="small text-muted text-center">Show All Notification</a>
+                         @else
+                              <a href="javascript:void(0);" class="small text-muted text-center">No New Notification</a>
+                         @endif 
+                    
+                         
                     </div>
                     </li>
                     <!-- notify -->
 
-                    <!-- message -->
-                    <li class="nav-item dropdowns mx-3">
-                    <a href="javascript:void(0);" class="nav-link dropbtn" onclick="dropbtn(event)">
-                         <i class="fas fa-envelope"></i>
-                    </a>
-                    <div class="dropdown-contents mydropdowns">
-                         <h6>Message Center</h6>
-                         <a href="javascript:void(0);" class="d-flex">
-                              <div class="me-3">
-                                   <img src="./assets/img/users/user1.jpg" class="rounded-circle" width="30" alt="user1"/>
-                              </div>
-                              <div>
-                                   <p class="small text-muted">Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
-                                   <i>Ms.July - 25m ago</i>
-                              </div>
-                         </a>
-                         <a href="javascript:void(0);" class="d-flex">
-                              <div class="me-3">
-                                   <img src="./assets/img/users/user2.jpg" class="rounded-circle" width="30" alt="user1"/>
-                                   
-                              </div>
-                              <div>
-                                   <p class="small text-muted">Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
-                                   <i>Ms.July - 25m ago</i>
-                              </div>
-                         </a>
-                         <a href="javascript:void(0);" class="d-flex">
-                              <div class="me-3">
-                                   <img src="./assets/img/users/user3.jpg" class="rounded-circle" width="30" alt="user3"/>
-
-                              </div>
-                              <div>
-                                   <p class="small text-muted">Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
-                                   <i>Ms.PaPa - 55m ago</i>
-                              </div>
-                         </a>
-
-                         <a href="javascript:void(0);" class="small text-muted text-center">Read More Message</a>
-                    </div>
-                    </li>
-                    <!-- message -->
+                   
 
                     <!-- user logout -->
                     <li class="nav-item dropdown">

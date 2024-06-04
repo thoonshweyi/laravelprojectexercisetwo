@@ -26,7 +26,22 @@
 
                                    <div class="w-100 d-flex flex-row justify-content-between mb-3">
                                         <button type="button" class="w-100 btn btn-primary btn-sm rounded-0 me-2">Like</button>
-                                        <button type="button" class="w-100 btn btn-outline-primary btn-sm rounded-0">Follow</button>
+                                        
+                                        @if($userdata->id !== $student->user_id)
+                                             @if($userdata->checkuserfollowing($student->user_id))
+                                                  <form class="w-100" action="{{ route('users.unfollow',$student->user_id) }}" method="POST">
+                                                       @csrf
+                                                       <button type="submit" class="w-100 btn btn-outline-primary btn-sm rounded-0">Unfollow</button>
+                                                  </form>
+                                             @else 
+                                                  <form class="w-100" action="{{ route('users.follow',$student->user_id) }}" method="POST">
+                                                       @csrf
+                                                       <button type="submit" class="w-100 btn btn-outline-primary btn-sm rounded-0">Follow</button>
+                                                  </form>
+                                             @endif
+                                        @endif 
+                                        
+                                        
                                    </div>
 
                                    <div class="mb-5">
@@ -153,6 +168,39 @@
                          </div>
                     </div>
                     <div class="col-md-8 col-lg-9">
+                         <h6>Compose</h6>
+                         <div class="card border-0 rounded-0 shadow mb-4">
+                              <div class="card-body">
+                                   <div class="accordion">
+                                        <div class="acctitle shown">Email</div>
+                                        <div class="acccontent">
+                                             <div class="col-md-12 py-3">
+                                                  <form action="{{ route('students.mailbox') }}" method="POST">
+                                                       @csrf
+                                                       <div class="row">
+                                                            <div class="col-md-6 form-group mb-3">
+                                                                 <input type="email" name="cmpemail" id="cmpemail" class="form-control form-control-sm border-0 rounded-0" placeholder="To:" value="{{ $student->user['email'] }}" readonly />
+                                                            </div>
+                                                            <div class="col-md-6 form-group mb-3">
+                                                                 <input type="ext" name="cmpsubject" id="cmpsubject" class="form-control form-control-sm border-0 rounded-0" placeholder="Subject" value="" />
+                                                            </div>
+                                                            <div class="col-md-12 form-group mb-3">
+                                                                 <textarea name="cmpcontent" id="cmpcontent" class="form-control form-control-sm border-0 rounded-0" style="resize:none;" rows="3" placeholder="Your message here...."></textarea>
+                                                            </div>
+
+                                                            <div class="col d-flex justify-content-end align-items-end">
+                                                                 <button type="submit" class="btn btn-secondary btn-sm rounded-0">Send</button>
+                                                            </div>
+
+                                                       </div>
+                                                  </form>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+                         </div>
+
+                         
                          
                          <h6>Enrolls</h6>
                          <div class="card border-0 rounded-0 shadow mb-4">
@@ -228,6 +276,54 @@
 
 @section("css")
      <style type="text/css">
+          /* Start Accordion */
+               .accordion{
+               width: 100%;
+               }
+               .acctitle{
+               font-size: 13px;
+               user-select: none;
+
+               padding: 5px;
+               margin: 0;
+
+               cursor: pointer;
+
+               user-select: none;
+
+               position: relative;
+               }
+               .acctitle::after{
+               content: '\f0e0';
+               font-family: 'Font Awesome 5 Free';
+
+               /* position: absolute;
+               right: 15px;
+               top: 50%;
+               transform: translateY(-50%); */
+
+               float: right;
+               }
+               /* .active.acctitle::after{
+               content: '\f068';
+               } */
+               .shown::after{
+               content: '\f2B6';
+               }
+               .acccontent{
+               height: 0;
+               background-color: #f4f4f4;
+               text-align: justify;
+
+               padding: 0 10px;
+
+               overflow: hidden;
+
+               transition: height 0.3s ease-in-out;
+               }
+          /* End Accordion */
+
+
           /* Start Tag Box */
           .nav{
           display: flex;
@@ -306,6 +402,38 @@
 
                document.getElementById('autoclick').click();
           // End Tag Box
+
+          // Start Accordion
+               var getacctitles = document.getElementsByClassName('acctitle');
+               // console.log(getacctitles);
+               var getacccontents = document.querySelectorAll('.acccontent');
+               // console.log(getacccontents);
+
+
+               for(var x = 0 ; x < getacctitles.length ; x++){
+               
+               getacctitles[x].addEventListener('click',function(e){
+                    // console.log(e.target);
+                    // console.log(this);
+
+                    this.classList.toggle('shown');
+
+                    var getcontent = this.nextElementSibling;
+                    // console.log(getcontent);
+
+                    if(getcontent.style.height){
+                         getcontent.style.height = null; //beware can't set 0
+                    }else{
+                         // console.log(getcontent.scrollHeight);
+                         getcontent.style.height = getcontent.scrollHeight + 'px';
+                    }
+               });
+
+               if(getacctitles[x].classList.contains('shown')){
+                    getacccontents[x].style.height = getacccontents[x].scrollHeight + 'px';
+               }
+               }
+          // End Accordion
      </script>
 @endsection
 

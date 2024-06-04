@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 use App\Models\Enroll;
 use App\Models\Student;
+use App\Mail\MailBox;
+use App\Jobs\MailBoxJob;
+use App\Jobs\StudentMailBoxJob;
+use App\Mail\StudentMailBox;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Http\Request;
 
@@ -126,5 +130,37 @@ class StudentsController extends Controller
         return redirect()->back();
     }
 
+    public function mailbox(Request $request){
+        // dd($request["cmpemail"]);        // "admin@gmail.com"
+        // dd($request["cmpsubject"]);      // "very important" // app\Http\Controllers\StudentsController.php:131
+        // dd($request["cmpcontent"]);      // "hello" // app\Http\Controllers\StudentsController.php:132
+        
+        // Method 1 (to MailBox)
+        // $to = $request["cmpemail"];
+        // $subject = $request["cmpsubject"];
+        // $content = $request["cmpcontent"];
+        // Mail::to($to)->send(new MailBox($subject,$content));
+        // Mail::to($to)->cc("admin@dlt.com")->bcc("info@dlt.com")->send(new MailBox($subject,$content));
+
+        // =>Usng Jog Method 1 (to MailBox)
+        // dispatch(new MailBoxJob($to,$subject,$content));
+        // MailBoxJob::dispatch($to,$subject,$content);
+
+        // =>Method 2 (to StudentMailBox)
+        // $data["to"] = $request["cmpemail"];
+        // $data["subject"] = $request["cmpsubject"];
+        // $data["content"] = $request["cmpcontent"];
+
+        $data = [
+            "to" => $request["cmpemail"],
+            "subject" => $request["cmpsubject"],
+            "content" => $request["cmpcontent"]
+        ];
+        
+        // Mail::to($data["to"])->send(new StudentMailBox($data));
+        dispatch(new StudentMailBoxJob($data));
+
+        return redirect()->back();
+    }
     
 }

@@ -68,4 +68,8 @@ class Post extends Model
     public function checkenroll($userid){
         return DB::table("enrolls")->where("post_id",$this->id)->where("user_id",$userid)->exists();
     }
+
+    public function likes(){
+        return $this->belongsToMany(User::class,"post_like")->withTimestamps();
+    }
 }

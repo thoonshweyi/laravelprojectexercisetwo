@@ -37,7 +37,11 @@ class EdulinksController extends Controller
         // dd( \DB::getQueryLog());
 
         // \DB::enableQueryLog();
-        $data["edulinks"] = Edulink::filter()->zaclassdate()->paginate(5);
+        // $data["edulinks"] = Edulink::filter()->zaclassdate()->paginate(5);
+        // dd( \DB::getQueryLog());
+
+        // \DB::enableQueryLog();
+        $data["edulinks"] = Edulink::filteronly()->searchonly()->zaclassdate()->paginate(5);
         // dd( \DB::getQueryLog());
         
         
@@ -73,7 +77,11 @@ class EdulinksController extends Controller
        $edulink->user_id = $user_id;
 
        $edulink->save();
-       return redirect()->route("edulinks.index");
+        //    return redirect()->route("edulinks.index");
+        // return redirect()->route("edulinks.index")->with("success","New Link Created");
+
+        session()->flash("success","New Link Created!!");
+        return redirect()->route("edulinks.index");
     }
 
     public function show(string $id)
@@ -83,46 +91,39 @@ class EdulinksController extends Controller
     }
 
 
-    public function edit(string $id)
-    {
-        $edulink = Edulink::findOrFail($id);
-        $statuses = Status::whereIn("id",[3,4])->get();
-        return view("edulinks.edit")->with("edulink",$edulink)->with("statuses",$statuses);
-    }
 
     public function update(Request $request, string $id)
     {
         $this->validate($request,[
-            "name" => ["required","max:50","unique:edulinks,name,".$id],
-            "image" => ["image","mimes:jpg,jpeg,png","max:1024"],
-            "status_id" => ["required","in:3,4"],
-        ]);
+            "editclassdate"=>"required|date",
+            "editpost_id"=>'required',
+            "editurl"=>"required"
+         ]);
 
         $user = Auth::user();
         $user_id = $user->id;
 
         $edulink = Edulink::findOrFail($id);
-        $edulink->name = $request["name"];
-        $edulink->slug = Str::slug($request["name"]);
-        $edulink->status_id = $request["status_id"];
+        $edulink->classdate = $request["editclassdate"];
+        $edulink->post_id = Str::slug($request["editpost_id"]);
+        $edulink->url = $request["editurl"];
         $edulink->user_id = $user_id;
 
         $edulink->save();
-        return redirect(route("edulinks.index"));
+        // return redirect(route("edulinks.index"));
+        // return redirect()->route("edulinks.index")->with("success","Update Successfully");
+         
+        session()->flash("success","Update Successfully!!");
+        return redirect()->route("edulinks.index");
     }
 
 
     public function destroy(string $id)
     {
         $edulink = Edulink::findOrFail($id);
-        
-        // Remove Old Image
-        $path = $edulink->image;
-        if(File::exists($path)){
-            File::delete($path);
-        }
-        
         $edulink->delete();
+
+        session()->flash("success","Delete Successfully!!");
         return redirect()->back();
     }
 }

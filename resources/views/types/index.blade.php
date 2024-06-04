@@ -60,18 +60,24 @@
                          <tr>
                               <td>{{++$idx}}</td>
                               <td>{{$type["name"]}}</td>
-                              <td>{{ $type->status->name }}</td>
+                              <td>
+                                   <div class="form-checkbox form-switch">
+                                        <input type="checkbox" class="form-check-input change-btn" {{  $type->status_id === 3 ? 'checked' : '' }} data-id="{{ $type->id }}" />
+                                   </div>
+                              </td>
                               <td>{{ $type["user"]["name"] }}</td>
                               <td>{{ $type->created_at->format('d M Y') }}</td>
                               <td>{{ $type->updated_at->format('d M Y') }}</td>
                               <td>
                                    <a href="javascript:void(0);" class="text-info editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$type->id}}" data-name="{{$type->name}}" data-status="{{$type->status_id}}"><i class="fas fa-pen"></i></a>
-                                   <a href="#" class="text-danger ms-2 delete-btns" data-idx="{{$idx}}"><i class="fas fa-trash-alt"></i></a>
+                                   <!-- <a href="javascript:void(0);" class="text-danger ms-2 delete-btns" data-idx="{{$idx}}"><i class="fas fa-trash-alt"></i></a> -->
+                                   <a href="javascript:void(0);" class="text-danger ms-2 delete-btns" data-idx="{{$idx}}" data-id="{{$type->id}}"><i class="fas fa-trash-alt"></i></a>
                               </td>
+                              {{-- 
                               <form id="formdelete-{{ $idx }}" class="" action="{{route('types.destroy',$type->id)}}" method="POST">
                                    @csrf
                                    @method("DELETE")
-                              </form>
+                              </form> --}}
                          </tr>
                          @endforeach
                     </tbody>
@@ -130,9 +136,16 @@
      <!-- END MODAL AREA -->
 @endsection
 
+@section("css")
+     <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+@endsection
 
 @section("scripts")
+     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js" type="text/javascript"></script>
+
      <script type="text/javascript">
+          
+
           $(document).ready(function(){
                // Start Edit Form
                $(document).on("click",".editform",function(e){
@@ -148,22 +161,73 @@
                // End Edit Form
 
                // Start Delete Item
-               $(".delete-btns").click(function(){
-                    // console.log('hay');
+               // $(".delete-btns").click(function(){
+               //      // console.log('hay');
           
-                    var getidx = $(this).data("idx");
-                    // console.log(getidx);
+               //      var getidx = $(this).data("idx");
+               //      // console.log(getidx);
 
+               //      if(confirm(`Are you sure !!! you want to Delete ${getidx} ?`)){
+               //           $('#formdelete-'+getidx).submit();
+               //           return true;
+               //      }else{
+               //           false;
+               //      }
+               // });
+
+               // by ajax 
+               $(".delete-btns").click(function(){
+                    const getidx = $(this).attr("data-idx");
+                    const getid = $(this).data("id");
+                    // console.log(getid);
+                    
                     if(confirm(`Are you sure !!! you want to Delete ${getidx} ?`)){
-                         $('#formdelete-'+getidx).submit();
+                         $(this).parent().parent().remove();
+                         //       <td>       <tr>
+                        
+                         // data remove 
+                         $.ajax({
+                              url:"typesdelete",
+                              type:"GET",
+                              dataType:"json",
+                              data:{"id":getid},
+                              success:function(response){
+                                   window.alert(response.success);
+                              }
+                         });
                          return true;
                     }else{
-                         false;
+                         return false;
                     }
                });
+
                // End Delete Item
 
-               
+
+               // for mytable
+               $("#mytable").DataTable();
+
+               //Start change-btn
+               $(".change-btn").change(function(){
+                    var getid = $(this).data("id");
+                    // console.log(getid); // 1 2
+
+                    var setstatus = $(this).prop("checked") === true ? 3 : 4;
+                    // console.log(setstatus); // 3 4
+
+                    $.ajax({
+                         url:"typesstatus",
+                         type:"GET",
+                         dataType:"json",
+                         data:{"id":getid,"status_id":setstatus},
+                         success:function(response){
+                              console.log(response); // {success: 'Status Change Successfully'}
+                              console.log(response.success); // Status Change Successfully
+                         }
+                    });
+               });
+               // End change btn
+                    
           });
 
 

@@ -60,9 +60,17 @@
      <!-- End Page Content Area -->
 @endsection
 
+@section("css")
+     <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+@endsection
 
 @section("scripts")
+     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js" type="text/javascript"></script>
+
      <script type="text/javascript">
+          // for mytable
+          $("#mytable").DataTable();
+
           $(document).ready(function(){
                $(".delete-btns").click(function(){
                     // console.log('hay');

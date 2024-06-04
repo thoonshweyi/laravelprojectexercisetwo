@@ -6,110 +6,257 @@
      <!-- Start Page Content Area -->
      <div class="container-fluid">
           <div class="col-md-12">
+               <a href="javascript:void(0);" id="btn-back" class="btn btn-secondary btn-sm rounded-0">Back</a>
                <a href="{{route('posts.index')}}" class="btn btn-secondary btn-sm rounded-0">Close</a>
-               @if(!$post->checkenroll($userdata->id))
-                    <a href="#createmodal" class="btn btn-primary btn-sm rounded-0" data-bs-toggle="modal">Enroll</a>
-               @endif;    
+
                <hr/>
                
                <div class="row">
+               
                     <div class="col-md-4">
-                         <div class="card rounded-0">
+                         <h6>Info</h6>
+                         <div class="card border-0 rounded-0 shadow">
                               <div class="card-body">
-                                   <h5 class="card-title">{{ $post->title }} | <span class="text-muted">{{ $post->status["name"] }}</span></h5>
-                              </div>
-
-                              <ul class="list-group text-center">
-                                   <li class="list-group-item fw-bold"><img src="{{ asset($post->image) }}" class="" alt="{{$post->title}}" width="200"/></li>
-                              </ul>
-
-                              <div class="card-body">
-                                   <div class="row">
-                                        <div class="col-md-6">
-                                             <i class="fas fa-user fa-sm"></i> <span>{{$post["tag"]["name"]}}</span>
-                                             <br/>
-                                             <i class="fas fa-user fa-sm"></i> <span>{{$post["type"]["name"]}} : {{$post->fee}} </span>
-                                             <br/>
-                                             <i class="fas fa-user fa-sm"></i> <span>{{$post["user"]["name"]}}</span>
+                                   <div class="d-flex flex-column align-items-center mb-3">
+                                        <div class="h5 mb-1">{{ $post->title }} </div>
+                                        <div class="text-muted">
+                                             <span>{{ $post["type"]["name"] }} : {{ $post->fee }}</span>
                                         </div>
-                                        <div class="col-md-6">
-                                             <i class="fas fa-file fa-sm"></i> <span>{{$post["attstatus"]["name"]}}</span>
-                                             <br/>
-                                             <i class="fas fa-calendar-alt fa-sm"></i> <span>{{date('d M Y',strtotime($post->created_at))}} | {{date('h:i:s A',strtotime($post->created_at))}}</span>
-                                             <br/>
-                                             <i class="fas fa-edit fa-sm"></i> <span>{{date('d M Y h:i:s A',strtotime($post->updated_at))}}</span>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                             <i class="fas fa-calendar fa-sm"></i>
-                                             <span>
-                                                  @foreach($dayables as $dayable)
-                                                            {{$dayable["name"]}}, 
-                                                  @endforeach
-                                             </span>
-                                        </div>
+                                        <img src="{{ asset($post->image) }}" class="" alt="{{$post->title}}" width="200"/>
                                    </div>
-                              </div>
-                         </div>
-                    </div>
-                    <div class="col-md-8">
-                         <div class="card-box rounded-0">
-                              <ul class="list-group text-center rounded-0">
-                                   <li class="list-group-item active">Information</li>
-                              </ul>
-                              <!-- start remark -->
-                              <table class="table table-sm table-bordered">
-                                   <thead>
-                                        <tr>
-                                             <th>Info....</th>
-                                        </tr>
-                                   </thead>
-                                   <tbody>
-                                        <tr>
-                                             <!-- <td>{{-- $post->content --}}</td> -->
-                                             <td>{!! $post->content !!}</td>
-                                        </tr>
-                                   </tbody>
-                              </table>
-                              <!-- end remark -->
-                         </div>
 
-                         <div class="col-md-12">
-                              <div class="card rounded-0">
-                                   <div class="card-body">
-                                        <ul class="list-group chat-boxs">
-                                             @foreach($comments as $comment)
-                                                  <li class="list-group-item mt-2">
-                                                       <div>
-                                                            <p>{{$comment->description}}</p>
-                                                       </div>
-                                                       <div>
-                                                            <span class="small fw-bold  float-end">{{$comment->user["name"] }} | {{$comment->created_at->diffForHumans()}}</span>
-                                                            
-                                                       </div>
-                                                       
-                                                  </li>
-                                             @endforeach
-                                        </ul>
+                                   <div class="w-100 d-flex flex-row justify-content-between mb-3">
+                                        @if(!$post->checkenroll($userdata->id))
+                                             <a href="#createmodal" class="w-100 btn btn-primary btn-sm rounded-0" data-bs-toggle="modal">Enroll</a>
+                                        @endif; 
+
+                                        @if($userdata->checkpostlike($post->id))
+                                             <form class="w-100" action="{{route('posts.unlike',$post->id)}}" method="POST">
+                                                  @csrf
+                                                  <button type="submit" class="w-100 btn btn-outline-primary btn-sm rounded-0">Unlike</button>
+                                             </form>
+                                        @else 
+                                             <form class="w-100" action="{{route('posts.like',$post->id)}}" method="POST">
+                                                  @csrf
+                                                  <button type="submit" class="w-100 btn btn-outline-primary btn-sm rounded-0">Like</button>
+                                             </form>
+                                        @endif;
+                                       
                                    </div>
-                                   <div class="card-body border-top">
-                                        <form action="{{route('comments.store')}}" method="POST">
-                                             @csrf
-                                             <div class="col-md-12 d-flex justify-between">
-                                                  <textarea name="description" id="description"  class="form-control border-0 rounded-0" rows="1" style="resize:none;" placeholder="Comment here...."></textarea>
-                                                  <button type="submit" class="btn btn-info btn-sm text-light ms-3"><i class="fas fa-paper-plane"></i></button>
+
+                                   <div class="mb-5">
+                                        <div class="row g-0 mb-2">
+                                             <div class="col-auto">
+                                                  <i class="fas fa-user"></i>
                                              </div>
+                                             <div class="col ps-3">
+                                                  <div class="row">
+                                                       <div class="col">
+                                                            <div class="">Status</div>
+                                                       </div>
+                                                       <div class="col-auto">
+                                                            <div class="">{{ $post->status["name"] }}</div>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                        <div class="row g-0 mb-2">
+                                             <div class="col-auto">
+                                                  <i class="fas fa-user"></i>
+                                             </div>
+                                             <div class="col ps-3">
+                                                  <div class="row">
+                                                       <div class="col">
+                                                            <div class="">Status</div>
+                                                       </div>
+                                                       <div class="col-auto">
+                                                            <div class="">{{ $post["attstatus"]["name"] }}</div>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
 
-                                             <!-- Start Hidden Fields -->
-                                             <input type="hidden" name="commentable_id" id="commentable_id" value="{{$post->id}}" />
-                                             <input type="hidden" name="commentable_type" id="commentable_type" value="App\Models\Post" />
-                                             <!-- Start Hidden Fields -->
+                                        <div class="row g-0 mb-2">
+                                             <div class="col-auto">
+                                                  <i class="fas fa-user"></i>
+                                             </div>
+                                             <div class="col ps-3">
+                                                  <div class="row">
+                                                       <div class="col">
+                                                            <div class="">Authorize</div>
+                                                       </div>
+                                                       <div class="col-auto">
+                                                            <div class="">{{ $post["user"]["name"] }}</div>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
 
-                                        </form>
+                                        <div class="row g-0 mb-2">
+                                             <div class="col-auto">
+                                                  <i class="fas fa-calendar-alt fa-sm"></i>
+                                             </div>
+                                             <div class="col ps-3">
+                                                  <div class="row">
+                                                       <div class="col">
+                                                            <div class="">Created</div>
+                                                       </div>
+                                                       <div class="col-auto">
+                                                            <div class="">{{date('d M Y',strtotime($post->created_at))}} | {{date('h:i:s A',strtotime($post->created_at))}}</div>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
+
+                                        <div class="row g-0 mb-2">
+                                             <div class="col-auto">
+                                                  <i class="fas fa-edit fa-sm"></i>
+                                             </div>
+                                             <div class="col ps-3">
+                                                  <div class="row">
+                                                       <div class="col">
+                                                            <div class="">Updated</div>
+                                                       </div>
+                                                       <div class="col-auto">
+                                                            <div class="">{{date('d M Y h:i:s A',strtotime($post->updated_at))}}</div>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
                                    </div>
-                              </div>    
+
+                                   <div class="mb-5">
+                                        <p class="text-small text-muted text-uppercase mb-2">Class Day</p>
+                                        @foreach($dayables as $dayable)
+                                             <div class="row g-0 mb-2">
+                                                  <div class="col-auto me-2">
+                                                       <i class="fas fa-calender-alt"></i>
+                                                  </div>
+                                                  <div class="col">{{$dayable['name']}}</div>
+                                             </div>
+                                        @endforeach
+                                   </div>
+
+                                   <div class="mb-5">
+                                        <p class="text-small text-muted text-uppercase mb-2">Other</p>
+                                        <div class="row g-0 mb-2">
+                                             <div class="col-auto me-2">
+                                                  <i class="fas fa-thumbs-up"></i>
+                                             </div>
+                                             <div class="col">{{ $post->likes()->count() }}</div>
+                                        </div>
+                                        <div class="row g-0 mb-2">
+                                             <div class="col-auto me-2">
+                                                  <i class="fas fa-info"></i>
+                                             </div>
+                                             <div class="col">Sample Data</div>
+                                        </div>
+                                        <div class="row g-0 mb-2">
+                                             <div class="col-auto me-2">
+                                                  <i class="fas fa-info"></i>
+                                             </div>
+                                             <div class="col">Sample Data</div>
+                                        </div>
+                                        <div class="row g-0 mb-2">
+                                             <div class="col-auto me-2">
+                                                  <i class="fas fa-info"></i>
+                                             </div>
+                                             <div class="col">Sample Data</div>
+                                        </div>
+                                   </div>
+                              </div>
                          </div>
                     </div>
+
+                    <div class="col-md-8">
+                         <h6>Comments</h6>
+                         <div class="card border-0 rounded-0 shadow mb-4">
+                              <div class="card-body d-flex flex-wrap gap-3">
+                                   
+                                   <div class="col-md-12">
+                                        <div class="card rounded-0">
+                                             <div class="card-body">
+                                                  <ul class="list-group chat-boxs">
+                                                       @forelse($comments as $comment)
+                                                            <li class="list-group-item mt-2">
+                                                                 <div>
+                                                                      <p>{{$comment->description}}</p>
+                                                                 </div>
+                                                                 <div>
+                                                                      <span class="small fw-bold  float-end">{{$comment->user["name"] }} | {{$comment->created_at->diffForHumans()}}</span>
+                                                                      
+                                                                 </div>
+                                                                 
+                                                            </li>
+                                                            @empty
+                                                            <li class="list-group-item mt-2">No Comments Found</li>
+                                                       @endforelse
+                                                  </ul>
+                                             </div>
+                                             <div class="card-body border-top">
+                                                  <form action="{{route('comments.store')}}" method="POST">
+                                                       @csrf
+                                                       <div class="col-md-12 d-flex justify-between">
+                                                            <textarea name="description" id="description"  class="form-control border-0 rounded-0" rows="1" style="resize:none;" placeholder="Comment here...."></textarea>
+                                                            <button type="submit" class="btn btn-info btn-sm text-light ms-3"><i class="fas fa-paper-plane"></i></button>
+                                                       </div>
+
+                                                       <!-- Start Hidden Fields -->
+                                                       <input type="hidden" name="commentable_id" id="commentable_id" value="{{$post->id}}" />
+                                                       <input type="hidden" name="commentable_type" id="commentable_type" value="App\Models\Post" />
+                                                       <!-- Start Hidden Fields -->
+
+                                                  </form>
+                                             </div>
+                                        </div>    
+                                   </div>
+                              </div>
+                         </div>
+
+                         <h6>Additional Info</h6>
+                         <div class="card border-0 rounded-0 shadow mb-4">
+                              <ul class="nav">
+                                   <li class="nav-item">
+                                        <button type="button" id="autoclick" class="tablinks" onclick="gettab(event,'follower')">Follower</button>
+                                   </li>
+                                   <li class="nav-item">
+                                        <button type="button" class="tablinks" onclick="gettab(event,'following')">Following</button>
+                                   </li>
+                                   <li class="nav-item">
+                                        <button type="button" class="tablinks" onclick="gettab(event,'liked')">Liked</button>
+                                   </li>
+                                   <li class="nav-item">
+                                        <button type="button" class="tablinks" onclick="gettab(event,'remark')">Remark</button>
+                                   </li>
+                              </ul>
+
+                              <div class="tab-content">
+
+                                   <div id="follower" class="tab-pane">
+                                        <h3>This is Home Information</h3>
+                                        <p>{{ $post->content }}</p>
+                                   </div>
+
+                                   <div id="following" class="tab-pane">
+                                        <h3>This is Profile Information</h3>
+                                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                                   </div>
+
+                                   <div id="liked" class="tab-pane">
+                                        <h3>This is Contact Information</h3>
+                                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                                   </div>
+
+                                   <div id="remark" class="tab-pane">
+                                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+
+                                   </div>
+
+                              </div>
+                         </div>
+                    </div>
+
+                    
 
                </div>
           
@@ -202,12 +349,88 @@
                display: none;
           }
           /* End Image Preview */
+
+
+           /* Start Tag Box */
+           .nav{
+          display: flex;
+
+          padding: 0;
+          margin: 0;
+          }
+          .nav .nav-item{
+          list-style-type: none;
+          }
+          .nav .tablinks{
+          border: none;
+          font-size: 16px;
+          padding: 15px 20px;
+          cursor: pointer;
+
+          transition: background-color 0.3s ease-in;
+          }
+          .nav .tablinks:hover{
+          background-color: #f3f3f3;
+          }
+
+          .nav .tablinks.active{
+               color: blue;
+          }
+
+          .tab-pane{
+
+          padding: 5px 15px;
+
+          display: none;
+          }
+          /* End Tag Box */
      </style>     
 
 @endsection
 
 @section("scripts")
      <script type="text/javascript">
+          // Start Back Btn
+          const getbtnback = document.getElementById("btn-back");
+               getbtnback.addEventListener("click",function(){
+                    // window.history.back();
+                    window.history.go(-1);
+               });
+          // End Back Btn
+
+           // Start Tag Box
+           var gettablinks = document.getElementsByClassName('tablinks');  //HTMLCollection
+               var gettabpanes = document.getElementsByClassName('tab-pane');
+               // console.log(gettabpanes);
+
+               var tabpanes = Array.from(gettabpanes);
+
+               function gettab(evn,linkid){
+
+               tabpanes.forEach(function(tabpane){
+                    tabpane.style.display = 'none';
+               });
+
+               for(var x = 0 ; x < gettablinks.length ; x++){
+                    gettablinks[x].className = gettablinks[x].className.replace(' active','');
+               }
+
+
+               document.getElementById(linkid).style.display = 'block';
+
+
+               // evn.target.className += ' active';
+               // evn.target.className = evn.target.className.replace('tablinks','tablinks active');
+               // evn.target.classList.add('active');
+
+               // evn.target = evn.currentTarget
+               evn.currentTarget.className += ' active';
+
+               }
+
+               document.getElementById('autoclick').click();
+          // End Tag Box
+
           $(document).ready(function(){
 
                var previewimages = function(input,output){

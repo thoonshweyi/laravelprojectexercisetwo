@@ -10,13 +10,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class EnrollsController extends Controller
 {
     public function index()
     {
         $enrolls = Enroll::orderBy("updated_at","desc")->get();
-        return view("enrolls.index",compact("enrolls"));
+        $stages = Stage::whereIn("id",[1,2,3])->get();
+        return view("enrolls.index",compact("enrolls","stages"));
     }
 
     public function create()
@@ -72,43 +75,25 @@ class EnrollsController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $this->validate($request,[
-            "name" => ["required","max:50","unique:enrolls,name,".$id],
-            "image" => ["image","mimes:jpg,jpeg,png","max:1024"],
-            "status_id" => ["required","in:3,4"],
-        ]);
 
         $user = Auth::user();
         $user_id = $user->id;
 
-        $enroll = Enroll::findOrFail($id);
-        $enroll->name = $request["name"];
-        $enroll->slug = Str::slug($request["name"]);
-        $enroll->status_id = $request["status_id"];
-        $enroll->user_id = $user_id;
-
-        // Remove Old Image
-        if($request->hasFile("image")){
-            $path = $enroll->image;
-
-            if(File::exists($path)){
-                File::delete($path);
+        try{
+            $enroll = Enroll::findOrFail($id);
+            $enroll->stage_id = $request["editstage_id"];
+            $enroll->remark = $request["editremark"];
+            $enroll->user_id = $user_id;
+            $enroll->save();   
+            if($enroll){
+                return response()->json(["status"=>"success","data"=>$enroll]);
             }
+
+            return response()->json(["status"=>"failed","message"=>"Failed to update"]);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(["status"=>"failed","message"=>$e->getMessage()]);
         }
-
-        // Single Image Upload
-        if($request->hasFile("image")){
-            $file = $request->file("image");
-            $fname = $file->getClientOriginalName();
-            $imagenewname = uniqid($user_id).$enroll['id'].$fname;
-            $file->move(public_path("assets/img/enrolls"),$imagenewname);
-            
-            $filepath = "assets/img/enrolls/".$imagenewname;
-            $enroll->image = $filepath;
-        }    
-
-        $enroll->save();
-        return redirect(route("enrolls.index"));
     }
 
 
