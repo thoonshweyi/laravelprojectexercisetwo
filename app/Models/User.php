@@ -66,4 +66,15 @@ class User extends Authenticatable
         // Note:: follower_id mean = I
         // Note:: $followingid mean = Other Person
     }
+
+    public function scopeOnlineusers($query){
+        return $query->where("is_online",1)->get();
+    }
+    public function scopeOfflineusers($query){
+        return $query->where("is_online",0)->get();
+    }
+
+    public function carts(){
+        return $this->hasMany(Cart::class);
+    }
 }

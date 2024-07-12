@@ -70,4 +70,13 @@ class CategoriesController extends Controller
         $category->delete();
         return redirect()->back();
     }
+
+    public function typestatus(Request $request){
+        $category = Category::findOrFail($request["id"]);
+        $category->status_id = $request["status_id"];
+        $category->save();
+    
+        return response()->json(["success"=>"Status Change Successfully"]);
+    }
+        
 }

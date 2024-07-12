@@ -126,4 +126,22 @@ class EdulinksController extends Controller
         session()->flash("success","Delete Successfully!!");
         return redirect()->back();
     }
+
+    public function bulkdeletes(Request $request)
+    {
+        try{
+            $getselectedids = $request->selectedids;
+            Edulink::whereIn("id",$getselectedids)->delete();
+            return response()->json(["success"=>"Selected data have been deleted successfully"]);
+        }catch(Exception $e){
+            Log::error($e->getMEssage());
+            return response()->json(["status"=>"failed","message"=>$e->getMessage()]);
+        }
+    }
+
+    public function download($id){
+        $edulink = Edulink::findOrFail($id);
+        $edulink->increment("counter");
+        return redirect($edulink->url);
+    }
 }

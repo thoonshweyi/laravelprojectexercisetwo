@@ -142,6 +142,7 @@
 
 @section("scripts")
      <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js" type="text/javascript"></script>
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
      <script type="text/javascript">
           
@@ -223,6 +224,12 @@
                          success:function(response){
                               console.log(response); // {success: 'Status Change Successfully'}
                               console.log(response.success); // Status Change Successfully
+
+                              Swal.fire({
+                                   title: "Updated!",
+                                   text: "Updated Successfully",
+                                   icon: "success"
+                              });
                          }
                     });
                });

@@ -61,4 +61,16 @@ class StatusesController extends Controller
         $student->delete();
         return redirect()->back();
     }
+
+    public function bulkdeletes(Request $request)
+    {
+        try{
+            $getselectedids = $request->selectedids;
+            Status::whereIn("id",$getselectedids)->delete();
+            return response()->json(["success"=>"Selected data have been deleted successfully"]);
+        }catch(Exception $e){
+            Log::error($e->getMEssage());
+            return response()->json(["status"=>"failed","message"=>$e->getMessage()]);
+        }
+    }
 }

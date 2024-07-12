@@ -32,7 +32,7 @@
                               <td>{{$category["name"]}}</td>
                               <td>
                                    <div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input" {{ $category->status_id === 3 ? "checked" : "" }} />
+                                        <input type="checkbox" class="form-check-input change-btn" {{ $category->status_id === 3 ? "checked" : "" }} data-id="{{ $category->id }}"/>
                                    </div>
                               </td>
                               <td>{{ $category["user"]["name"] }}</td>
@@ -149,6 +149,8 @@
 
 
 @section("scripts")
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
      <script type="text/javascript">
           $(document).ready(function(){
                // Start Edit Form
@@ -179,6 +181,34 @@
                     }
                });
                // End Delete Item
+               
+               //Start change-btn
+               $(document).on("change",".change-btn",function(){
+
+                    var getid = $(this).data("id");
+                    // console.log(getid); // 1 2
+
+                    var setstatus = $(this).prop("checked") === true ? 3 : 4;
+                    // console.log(setstatus); // 3 4
+
+                    $.ajax({
+                         url:"categoriessstatus",
+                         type:"GET",
+                         dataType:"json",
+                         data:{"id":getid,"status_id":setstatus},
+                         success:function(response){
+                              console.log(response); // {success: 'Status Change Successfully'}
+                              console.log(response.success); // Status Change Successfully
+                         
+                              Swal.fire({
+                                   title: "Updated!",
+                                   text: "Updated Successfully",
+                                   icon: "success"
+                              });
+                         }
+                    });
+               });
+               // End change btn
 
                
           });

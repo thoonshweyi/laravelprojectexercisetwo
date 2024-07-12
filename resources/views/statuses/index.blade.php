@@ -29,12 +29,33 @@
 
           <hr/>
 
+          <div class="col-md-12 mb-2">
+               <div>
+                    <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0">Bulk Delete</a>
+               </div>
+               <div>
+                    <form action="" method="">
+                         <div class="row justify-content-end">
+                              <div class="col-md-2 col-sm-6 mb-2">
+                                   <div class="input-group">
+                                        <input type="text" name="filtername" id="filtername" class="form-control form-control-sm rounded-0" placeholder="Search...." value="{{ request('filtername') }}"/>
+                                        <button type="button" id="btn-search" class="btn btn-secondary btn-sm"><i class="fas fa-search"></i></button>
+                                   </div>
+                              </div>
+                         </div>
+                    </form>
+               </div>
+          </div>
+
           <div class="col-md-12">
 
                
                <table id="mytable" class="table table-sm table-hover border">
           
                     <thead>
+                         <th>
+                              <input type="checkbox" name="selectalls" id="selectalls" class="form-check-input selectalls" />
+                         </th>
                          <th>No</th>
                          <th>Name</th>
                          <th>By</th>
@@ -44,27 +65,13 @@
                     </thead>
           
                     <tbody>
-                         @foreach($statuses as $idx=>$status)
-                         <tr>
-                              <td>{{++$idx}}</td>
-                              <td>{{ $status->name }}</td>
-                              <td>{{ $status->user["name"] }}</td>
-                              <td>{{ $status->created_at->format('d M Y') }}</td>
-                              <td>{{ $status->updated_at->format('d M Y') }}</td>
-                              <td>
-                                   <a href="javascript:void(0);" class="text-info editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$status->id}}" data-name="{{$status->name}}"><i class="fas fa-pen"></i></a>
-                                   <a href="#" class="text-danger ms-2 delete-btns" data-idx="{{$idx}}"><i class="fas fa-trash-alt"></i></a>
-                              
-                              </td>
-                              <form id="formdelete-{{ $idx }}" class="" action="{{route('statuses.destroy',$status->id)}}" method="POST">
-                                   @csrf
-                                   @method("DELETE")
-                              </form>
-                         </tr>
-                         @endforeach
+                        
                     </tbody>
           
                </table>
+
+               <div class="loading">Loading....</div>
+
           
 
           </div>
@@ -82,7 +89,7 @@
                               </div>
 
                               <div class="modal-body">
-                                   <form id="formaction" action="{{route('statuses.update',$status->id)}}" method="POST">
+                                   <form id="formaction" action="{{-- route('statuses.update',$status->id) --}}" method="POST">
                                         {{ csrf_field() }}
                                         {{ method_field('PUT') }}
                                         <div class="row align-items-end">
@@ -108,11 +115,107 @@
      <!-- END MODAL AREA -->
 @endsection
 
+@section("css")
+     <style type="text/css">
+          .loading{
+               font-weight:bold;
+
+               position:fixed;
+               left:50%;
+               top:50%;
+
+               transform:translate(-50%,-50%);
+
+               display:none;
+          }
+     </style>
+@endsection
 
 @section("scripts")
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
      <script type="text/javascript">
 
+         
+
           $(document).ready(function(){
+
+                // Start Passing Header Token
+               $.ajaxSetup({
+                    header:{
+                         'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr("content"),
+                    }
+               })
+               // End Passing Header Token
+                    
+               // Start Fetch All Datas 
+               async function fetchalldatas(query=""){
+                    await $.ajax({
+                         // url:"{{url('api/statusessearch')}}",
+                         url:"{{'api/statusessearch'}}",
+                         method:"GET",
+                         data:{"query":query},
+                         dataType:"json",
+                         success:function(response){
+                              console.log(response); // {status: 'scuccess', data: Array(2)}
+                              
+                              $(".loading").hide();
+                              $("#mytable tbody").empty();
+                             
+                              const datas = response.data;
+                              // console.log(datas);
+                              
+                              let html;
+                              datas.forEach(function(data,idx){
+                                   // console.log(data);
+                                   html += `
+                                   <tr id="delete_${data.id}">
+                                        <td><input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="${data.id}" /></td>
+                                        <td>${++idx}</td>
+                                        <td>${data.name}</td>
+                                        <td>${data.user.name}</td>
+                                        <td>${data.created_at}</td>
+                                        <td>${data.updated_at}</td>
+                                        <td>
+                                             <a href="javascript:void(0);" class="text-info edit-btns" data-id="${data.id}" ><i class="fas fa-pen"></i></a>
+                                             <a href="javascript:void(0);" class="text-danger ms-2 delete-btns" data-idx="${idx}" data-id="${data.id}"><i class="fas fa-trash-alt"></i></a>
+                                        </td>
+                                   </tr>
+                                   `;
+
+                              });
+                              // $("#mytable tbody").html(html);
+
+                              $("#mytable tbody").prepend(html);
+                         }
+                    });
+               }
+               fetchalldatas();
+               // End Fetch All Datas
+
+               // Start Filter by search query
+
+               // actively searching while typing
+               // $("#filtername").on("keyup",function(e){
+               //      e.preventDefault();
+               //      const query = $(this).val();
+               //      // console.log(query);
+
+               //      fetchalldatas(query);
+               // });
+
+               $("#btn-search").on("click",function(e){
+                    e.preventDefault();
+                    const query = $("#filtername").val();
+                    // console.log(query);
+
+                    if(query.length > 0){
+                         $(".loading").show();
+                    }
+                    fetchalldatas(query);
+               });
+               // End Filter by search query
+
                // Start Delete Item
                $(".delete-btns").click(function(){
                     // console.log('hay');
@@ -140,11 +243,71 @@
                     e.preventDefault();
                });
                // End Edit Form
+
+               // Start Bulk Delete 
+               $("#selectalls").click(function(){
+                    $(".singlechecks").prop("checked",$(this).prop("checked"));
+               });
+
+               $("#bulkdelete-btn").click(function(){
+                    let getselectedids = [];
+                    
+                    // console.log($("input:checkbox[name=singlechecks]:checked"));
+                    $("input:checkbox[name='singlechecks']:checked").each(function(){
+                         getselectedids.push($(this).val());
+                    });                
+                    
+                    // console.log(getselectedids); // (4) ['1', '2', '3', '4']
+
+                    Swal.fire({
+                         title: "Are you sure?",
+                         text: `You won't be able to revert!`,
+                         icon: "warning",
+                         showCancelButton: true,
+                         confirmButtonColor: "#3085d6",
+                         cancelButtonColor: "#d33",
+                         confirmButtonText: "Yes, delete it!"
+                    }).then((result) => {
+                         if (result.isConfirmed) {
+                              // data remove 
+                              $.ajax({
+                                   url:"{{ route('statuses.bulkdeletes') }}",
+                                   type:"DELETE",
+                                   dataType:"json",
+                                   data:{
+                                        selectedids:getselectedids,
+                                        _token:"{{ csrf_token() }}"
+                                   },
+                                   success:function(response){
+                                        console.log(response);   // 1
+                                        
+                                        if(response){
+                                             // ui remove
+                                             $.each(getselectedids,function(key,val){
+                                                  $(`#delete_${val}`).remove();
+                                             });
+                                        
+                                             Swal.fire({
+                                                  title: "Deleted!",
+                                                  text: "Your file has been deleted.",
+                                                  icon: "success"
+                                             });
+                                        }
+                                   },
+                                   error:function(response){
+                                        console.log("Error: ",response)
+                                   }
+                              });
+                              
+                         }
+                    });   
+               });
+               // End Bulk Delete
           });
 
 
      </script>
 @endsection
 
-<!-- {{route('statuses.update',$status->id)}} -->
+<!-- {{-- route('statuses.update',$status->id) --}} -->
 <!-- http://127.0.0.1:8000/statuses/14 -->

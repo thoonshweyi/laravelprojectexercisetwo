@@ -72,4 +72,12 @@ class DaysController extends Controller
         $day->delete();
         return redirect()->back();
     }
+
+    public function typestatus(Request $request){
+        $day = Day::findOrFail($request["id"]);
+        $day->status_id = $request["status_id"];
+        $day->save();
+    
+        return response()->json(["success"=>"Status Change Successfully"]);
+    }
 }

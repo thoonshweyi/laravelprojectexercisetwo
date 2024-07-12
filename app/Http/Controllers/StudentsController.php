@@ -40,7 +40,6 @@ class StudentsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-            "regnumber" => "required|unique:students,regnumber",
             "firstname"=>"required",
             "lastname"=>"required",
             "remark" => "max:1000"
@@ -50,7 +49,6 @@ class StudentsController extends Controller
        $user_id = $user->id;
 
        $student = new Student();
-       $student->regnumber = $request["regnumber"];
        $student->firstname = $request["firstname"];
        $student->lastname = $request["lastname"];
        $student->slug = Str::slug($request["firstname"]);
@@ -161,6 +159,15 @@ class StudentsController extends Controller
         dispatch(new StudentMailBoxJob($data));
 
         return redirect()->back();
+    }
+
+    public function quicksearch(Request $request){
+        $students = "";
+
+        if($request->keyword != ""){
+            $students = Student::where("regnumber","LIKE","%".$request->keyword."%")->get();
+        }
+        return response()->json(["datas"=>$students]);
     }
     
 }

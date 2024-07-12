@@ -147,15 +147,23 @@
                                         </div>
                                         <div class="row g-0 mb-2">
                                              <div class="col-auto me-2">
-                                                  <i class="fas fa-info"></i>
+                                                  <i class="fas fa-hand-pointer"></i>
                                              </div>
-                                             <div class="col">Sample Data</div>
+                                             <div class="col">
+                                                  @php 
+                                                       $getpageurl = url()->current();
+                                                       $pageview = \App\Models\Pageview::where("pageurl",$getpageurl)->first()->counter;
+                                                  @endphp 
+                                                  Clicked {{$pageview}} times
+                                             </div>
                                         </div>
                                         <div class="row g-0 mb-2">
                                              <div class="col-auto me-2">
-                                                  <i class="fas fa-info"></i>
+                                                  <i class="fas fa-eye"></i>
                                              </div>
-                                             <div class="col">Sample Data</div>
+                                             <div class="col">
+                                                  <span id="liveviewer">0</span> watching
+                                             </div>
                                         </div>
                                         <div class="row g-0 mb-2">
                                              <div class="col-auto me-2">
@@ -228,6 +236,9 @@
                                    <li class="nav-item">
                                         <button type="button" class="tablinks" onclick="gettab(event,'remark')">Remark</button>
                                    </li>
+                                   <li class="nav-item">
+                                        <button type="button" class="tablinks" onclick="gettab(event,'duration')">Duration</button>
+                                   </li>
                               </ul>
 
                               <div class="tab-content">
@@ -249,7 +260,28 @@
 
                                    <div id="remark" class="tab-pane">
                                         <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                                   </div>
 
+                                   <div id="duration" class="tab-pane">
+                                        <h6>This is frequently viewer's duration</h6>
+                                        <table class="table table-sm table-hover border">
+                                             <thead>
+                                                  <tr>
+                                                       <th>User</th>
+                                                       <th>Duration</th>
+                                                       <th>Date</th>
+                                                  </tr>
+                                             </thead>
+                                             <tbody>
+                                                  @foreach($postviewdurations as $postviewduration)
+                                                       <tr>
+                                                            <td>{{ $postviewduration->user->name }}</td>
+                                                            <td>{{ $postviewduration->duration }} s</td>
+                                                            <td>{{ $postviewduration->created_at->format("d M Y h:m A") }}</td>
+                                                       </tr>
+                                                  @endforeach
+                                             </tbody>
+                                        </table>
                                    </div>
 
                               </div>
@@ -264,6 +296,10 @@
           </div>
      </div>
      <!-- End Page Content Area -->
+
+     {{-- Start Hidden Area --}}
+     <input type="hidden" id="setpostid" data-id="{{$post->id}}" />
+     {{-- End Hidden Area --}}
 
 
      <!-- START MODAL AREA -->
@@ -431,39 +467,101 @@
                document.getElementById('autoclick').click();
           // End Tag Box
 
-          $(document).ready(function(){
 
-               var previewimages = function(input,output){
+          // Start Post View Duration 
 
-                    // console.log(input.files);
+          // beforeunload = working in reload
+          $(window).on("beforeunload",function(){
 
-                    if(input.files){
-                         var totalfiles = input.files.length;
-                         // console.log(totalfiles);
-                         if(totalfiles > 0){
-                              $('.gallery').addClass('removetxt');
-                         }else{
-                              $('.gallery').removeClass('removetxt');
+                                             // toString() // Wed Jun 26 2024 14:44:52 GMT+0630 (Myanmar Time)
+                    const exittime = new Date().toISOString(); // 2024-06-26T08:17:31.516Z
+                    // console.log(exittime);
+
+                    $.ajax({
+                         url:"/trackdurations",
+                         type:"POST",
+                         data:{
+                              exittime:exittime,
+                              _token:"{{csrf_token()}}"
+                         },       
+                         success:function(response){
+                              console.log(response);
+                         },
+                         error:function(response){
+                              console.log(response);
                          }
-                         for(var i = 0 ; i < totalfiles ; i++){
-                              var filereader = new FileReader();
-
-
-                              filereader.onload = function(e){
-                                   $(output).html(""); 
-                                   $($.parseHTML('<img>')).attr('src',e.target.result).appendTo(output);
-                              }
-
-                              filereader.readAsDataURL(input.files[i]);
-
-                         }
-                    }
-               
-               };
-
-               $('#image').change(function(){
-                    previewimages(this,'.gallery');
+                    })
                });
-          });
+          // End Post View Duration
+
+          // Start Pusher  Post Live Viewer  
+
+               // Enable pusher logging - don't include this in production
+               // Pusher.logToConsole = true;
+
+               var pusher = new Pusher('e202c50a573fa42ec8ed', {
+                    cluster: 'ap1'
+               });
+
+               function mainchannel(postid){
+                    var channel = pusher.subscribe('postliveviewer-channel_'+postid);
+                    
+                    // global event binding
+                    //             postliveviewer-event
+                    channel.bind('App\\Events\\PostLiveViewerEvent', function(data) {
+                        console.log(data);
+                        document.getElementById("liveviewer").textContent = data.count;
+                    });
+               }
+
+               function incrementviewer(postid){
+                    $.ajax({
+                         url:`/postliveviewerinc/${postid}`,
+                         type:'POST',
+                         data:{
+                              _token:$("meta[name='csrf-token']").attr("content")
+                         },
+                         success:function(response){
+                              console.log(response);
+                              console.log("Increment = ",response.success)
+                         },
+                         error:function(response){
+                              console.log(response);
+                         }
+                    });
+               }
+               function decrementviewer(postid){
+                    $.ajax({
+                         url:`/postliveviewerdec/${postid}`,
+                         type:'POST',
+                         data:{
+                              _token:$("meta[name='csrf-token']").attr("content")
+                         },
+                         success:function(response){
+                              console.log("Decrement Status = ",response.success)
+                         }
+                    });
+               }
+               window.addEventListener("DOMContentLoaded",function(){
+                    // console.log("i am loaded");
+                    const getpostid = document.getElementById("setpostid").getAttribute("data-id");
+                    console.log(getpostid);
+
+                    incrementviewer(getpostid);
+                    mainchannel(getpostid);
+               });
+               window.addEventListener("beforeunload",function(){
+
+                    const getpostid = document.getElementById("setpostid").getAttribute("data-id");;
+
+                    // console.log("i am unloaded");
+                    decrementviewer(getpostid)
+               });
+
+              
+          // End Pusher Post Live Viewer 
+
+
+          
      </script>
 @endsection

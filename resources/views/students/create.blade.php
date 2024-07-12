@@ -10,7 +10,7 @@
                     @csrf
 
                     <div class="row">
-                         <div class="col-md-4 mb-3">
+                         <div class="col-md-6 mb-3">
                               <label for="firstname">First Name <span class="text-danger">*</span></label>
                               <input type="text" name="firstname" id="firstname" class="form-control form-control-sm rounded-0" placeholder="Enter First name" value="{{ old('firstname') }}"/>
                               @error("firstname")
@@ -18,7 +18,7 @@
                               @enderror
                          </div>
 
-                         <div class="col-md-4 mb-3">
+                         <div class="col-md-6 mb-3">
                               <label for="lastname">Last Name <span class="text-danger">*</span></label>
                               <input type="text" name="lastname" id="lastname" class="form-control form-control-sm rounded-0" placeholder="Enter Last Name" value="{{ old('lastname')}}"/>
                               @error("lastname")
@@ -26,13 +26,15 @@
                               @enderror
                          </div>
 
-                         <div class="col-md-4 mb-3">
+                         {{-- <div class="col-md-4 mb-3">
                               <label for="regnumber">Register Number <span class="text-danger">*</span></label>
                               <input type="text" name="regnumber" id="regnumber" class="form-control form-control-sm rounded-0" placeholder="Enter Register Number" autocomplete="off" value="{{ old('regnumber')}}"/>
                               @error("regnumber")
                                    <span class="text-danger">{{ $message }}<span>
                               @enderror
                          </div>
+
+                         --}}
 
                          <div class="col-md-12 mb-3">
                               <label for="remark">Remark</label>

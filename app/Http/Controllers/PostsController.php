@@ -131,7 +131,11 @@ class PostsController extends Controller
         $comments = $post->comments()->orderBy("updated_at","desc")->get();
         $dayables = $post->days()->get();
         // dd($dayables);
-        return view("posts.show",["post"=>$post,"comments"=>$comments,"dayables"=>$dayables]);
+
+        $user_id = Auth::user()->id;;
+        $postviewdurations = $post->postviewdurations()->whereNot("user_id",$user_id)->orderBy("id","desc")->take("10")->get();
+
+        return view("posts.show",["post"=>$post,"comments"=>$comments,"dayables"=>$dayables,"postviewdurations"=>$postviewdurations]);
     }
 
 

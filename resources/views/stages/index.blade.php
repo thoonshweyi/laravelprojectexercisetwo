@@ -149,7 +149,10 @@
 
 
 @section("scripts")
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     
      <script type="text/javascript">
+
           $(document).ready(function(){
                // Start Edit Form
                $(document).on("click",".editform",function(e){
@@ -196,6 +199,12 @@
                          success:function(response){
                               console.log(response); // {success: 'Status Change Successfully'}
                               console.log(response.success); // Status Change Successfully
+
+                              Swal.fire({
+                                   title: "Updated!",
+                                   text: "Updated Successfully",
+                                   icon: "success"
+                              });
                          }
                     });
                });

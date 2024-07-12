@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\AttcodegeneratorsController;
 use App\Http\Controllers\AttendancesController;
+use App\Http\Controllers\CartsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CitiesController;
 use App\Http\Controllers\CommentsController;
@@ -17,22 +18,31 @@ use App\Http\Controllers\EdulinksController;
 use App\Http\Controllers\EnrollsController;
 use App\Http\Controllers\GendersController;
 use App\Http\Controllers\LeavesController;
+use App\Http\Controllers\OtpsController;
+use App\Http\Controllers\PackagesController;
+use App\Http\Controllers\PaymenttypesController;
 use App\Http\Controllers\PaymentmethodsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostsController;
+use App\Http\Controllers\PlansController;
 use App\Http\Controllers\PostsLikeController;
+use App\Http\Controllers\PostLiveViewersController;
+use App\Http\Controllers\PostViewDurationsController;
 use App\Http\Controllers\RelativesController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\StagesController;
 use App\Http\Controllers\StatusesController;
 use App\Http\Controllers\SocialapplicationsController;
 use App\Http\Controllers\StudentsController;
+use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\TagsController;
 use App\Http\Controllers\TypesController;
 use App\Http\Controllers\UsersFollowerController;
+use App\Http\Controllers\UserPointsController;
+use App\Http\Controllers\WarehousesController;
 
 
-
+use App\Http\Controllers\ChatsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -67,28 +77,65 @@ Route::middleware('auth')->group(function () {
     Route::resource("attcodegenerators",AttcodegeneratorsController::class);
     Route::get("/attcodegeneratorssstatus",[AttcodegeneratorsController::class,"typestatus"]);
     
-    Route::resource("attendances",AttendancesController::class);
+    Route::get("/carts",[CartsController::class,"index"])->name("carts.index");
+    Route::post("/carts/add",[CartsController::class,"add"])->name("carts.add");
+    Route::post("/carts/remove",[CartsController::class,"remove"])->name("carts.remove");
+    Route::post("/carts/paybypoints",[CartsController::class,"paybypoints"])->name("carts.paybypoints");
+
     Route::resource("categories",CategoriesController::class);
+    Route::get("/categoriessstatus",[CategoriesController::class,"typestatus"]);
+
     Route::resource("cities",CitiesController::class);
+    Route::delete("/citiesbulkdeletes",[CitiesController::class,"bulkdeletes"])->name("cities.bulkdeletes");
+
     Route::resource("comments",CommentsController::class);
     Route::resource("contacts",ContactsController::class);
+
     Route::resource("countries",CountriesController::class);
+    Route::get("/countriesstatus",[CountriesController::class,"typestatus"]);
+    Route::delete("/countriesbulkdeletes",[CountriesController::class,"bulkdeletes"])->name("countries.bulkdeletes");
+
     Route::resource("days",DaysController::class);
+    Route::get("/dayssstatus",[DaysController::class,"typestatus"]);
+    
     Route::resource("edulinks",EdulinksController::class);
+    Route::delete("/edulinksbulkdeletes",[EdulinksController::class,"bulkdeletes"])->name("edulinks.bulkdeletes");
+    Route::get("/edulinks/download/{id}",[EdulinksController::class,"download"])->name("edulinks.download");
+    
+
     Route::resource("enrolls",EnrollsController::class);
     Route::resource("genders",GendersController::class);
 
     Route::resource("leaves",LeavesController::class);
     Route::get("notify/markasread",[LeavesController::class,"markasread"])->name('leaves.markasread');
 
+    Route::post("/generateotps",[OtpsController::class,"generate"]);
+    Route::post("/verifyotps",[OtpsController::class,"verify"]);
+
+    Route::resource("packages",PackagesController::class);
+    Route::post("/packages/setpackage",[PackagesController::class,"setpackage"])->name("packages.setpackage");
+    Route::delete("/packagesbulkdeletes",[PackagesController::class,"bulkdeletes"])->name("packages.bulkdeletes");
+    Route::get("/packagessearch",[PackagesController::class,"search"])->name("packages.search");
+
     Route::resource("paymentmethods",PaymentmethodsController::class);
     Route::get("/paymentmethodsstatus",[PaymentmethodsController::class,"typestatus"]);
+    Route::delete("/paymentmethodsbulkdeletes",[PaymentmethodsController::class,"bulkdeletes"])->name("paymentmethods.bulkdeletes");
 
+
+    Route::resource("paymenttypes",PaymenttypesController::class);
+    Route::get("/paymenttypesstatus",[PaymenttypesController::class,"typestatus"]);
+    Route::delete("/paymenttypesbulkdeletes",[PaymenttypesController::class,"bulkdeletes"])->name("paymenttypes.bulkdeletes");
+
+    Route::resource("plans",PlansController::class);
 
     Route::resource("posts",PostsController::class);
     Route::post("posts/{post}/like",[PostsLikeController::class,"like"])->name("posts.like");
     Route::post("posts/{post}/unlike",[PostsLikeController::class,"unlike"])->name("posts.unlike");
 
+    Route::post("/postliveviewerinc/{post}",[PostLiveViewersController::class,"incrementviewer"]); // here must be {post}, ca't {id} cuz controller using (Post $post)
+    Route::post("/postliveviewerdec/{post}",[PostLiveViewersController::class,"decrementviewer"]);
+
+    Route::post("/trackdurations",[PostViewDurationsController::class,"trackduration"]);
 
     Route::resource("relatives",RelativesController::class);
     Route::resource("roles",RolesController::class);
@@ -102,9 +149,13 @@ Route::middleware('auth')->group(function () {
     
 
     Route::resource("statuses",StatusesController::class);
+    Route::delete("/statusesbulkdeletes",[StatusesController::class,"bulkdeletes"])->name("statuses.bulkdeletes");
 
     Route::resource("students",StudentsController::class);
     Route::post("compose/mailbox",[StudentsController::class,"mailbox"])->name("students.mailbox");
+    Route::post("students/quicksearch",[StudentsController::class,"quicksearch"])->name("students.quicksearch");
+
+    Route::get("/subscribesexpired",[SubscriptionsController::class,"expired"])->name("subscriptions.expired");
 
     Route::resource("tags",TagsController::class);
 
@@ -115,6 +166,31 @@ Route::middleware('auth')->group(function () {
     Route::post("users/{user}/follow",[UsersFollowerController::class,"follow"])->name("users.follow");
     Route::post("users/{user}/unfollow",[UsersFollowerController::class,"unfollow"])->name("users.unfollow");
 
+    Route::resource("userpoints",UserPointsController::class);
+    Route::post("userpoints/verifystudent",[UserPointsController::class,"verifystudent"])->name("userpoints.verifystudent");
+    Route::get("/userpointssearch",[UserPointsController::class,"search"])->name("userpoints.search");
+
+    Route::resource("warehouses",WarehousesController::class);
+    Route::delete("/warehousesbulkdeletes",[WarehousesController::class,"bulkdeletes"])->name("warehouses.bulkdeletes");
+    
+    // pusher test
+    Route::get("/pushers",function(){
+        return view("pusher");
+    });
+    // pusher test by chat box
+
+    Route::get("/chatboxs",function(){
+        return view("chatbox");
+    });
+    Route::post("/chatmessages",[ChatsController::class,"sendmessage"]);
+    
 });
+
+Route::middleware(["auth","validate.subscriptions"])->group(function(){
+    Route::resource("attendances",AttendancesController::class);
+});
+
+
+
 
 require __DIR__.'/auth.php';

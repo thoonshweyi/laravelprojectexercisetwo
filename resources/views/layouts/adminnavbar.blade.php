@@ -2,11 +2,11 @@
      <div class="row">
           <nav class="navbar navbar-expand navbar-light bg-white shadow">
                <!-- search -->
-               <form class="me-auto" action="" method="">
+               <form id="quicksearchform" class="me-auto" action="" method="">
                     <div class="input-group">
-                    <input type="text" name="search" id="search" class="form-control border-0 shadow-none" placeholder="Search Something..."/>
+                    <input type="text" name="quicksearch" id="quicksearch" class="form-control border-0 shadow-none" placeholder="Search Something..."/>
                     <div class="input-group-append">
-                         <button type="submit" class="btn btn-primary "><i class="fas fa-search"></i></button>
+                         <button type="submit" id="quicksearch-btn" class="btn btn-primary "><i class="fas fa-search"></i></button>
                     </div>
                     </div>
                </form>
@@ -15,11 +15,21 @@
                <!-- notify & userlogout-->
                <ul class="navbar-nav me-5 pe-5">
                     <!-- notify -->
+
+                    <li class="nav-item me-2">
+                         <a href="{{ route('carts.index') }}" class="nav-link">
+                              <i class="fas fa-shopping-cart"></i>
+                              @if(Auth::user()->carts()->exists())
+                              <sup class="badge bg-danger">{{ Auth::user()->carts()->count() }}</sup>
+                              @endif
+                         </a>
+                    </li>
+
                     <li class="nav-item dropdowns me-3">
-                    <a href="javascript:void(0);" class="nav-link dropbtn" onclick="dropbtn(event)">
+                    <a href="javascript:void(0);" id="noticenter" class="nav-link dropbtn">
                          <i class="fas fa-bell"></i>
-                         {{-- <span class="badge bg-danger">{{ $userdata->unreadNotifications->count() }}</span> --}}
-                         <span class="badge bg-danger">{{ auth()->user()->unreadNotifications->count() }}</span>
+                         {{-- <sup class="badge bg-danger">{{ $userdata->unreadNotifications->count() }}</sup> --}}
+                         <sup class="badge bg-danger">{{ auth()->user()->unreadNotifications->count() }}</sup>
                     </a>
 
                     <div class="dropdown-contents mydropdowns">

@@ -33,31 +33,50 @@
 
         <!-- Start Right Navbar -->
         <div class="right-panels">
-            <h6>Custom your template</h6>
-            <p class="small">Hifi!! here you can change your theme</p>
+            <form action="" method="">
+                <input type="text" name="usersearch" id="usersearch" class="form-control form-control-sm rounded-0 mb-2" placeholder="Search...."/>
+            </form>
+            <ul id="onoffusers" class="list-group list-group-flush">
+                @foreach($onlineusers as $onlineuser)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="small">{{ $onlineuser->name }}</div>
+                            <div class="small">{{  \Carbon\Carbon::parse($onlineuser->last_active)->format("m-d-Y h:m:s a") }}</div>
+                        </div>
+                        <div class="text-success">
+                            <i class="fas fa-circle fa-xs"></i>
+                        </div>
+                    </li>
+                @endforeach
+            </ul>
 
-            <hr/>
 
-            <div class="themecolors">
-                <a href="javascript:void(0);"><i class="fas fa-square text-primary shadow fa-lg"></i></a>
-                <a href="javascript:void(0);"><i class="fas fa-square text-secondary shadow fa-lg"></i></a>
-                <a href="javascript:void(0);"><i class="fas fa-square text-info shadow fa-lg"></i></a>
-                <a href="javascript:void(0);"><i class="fas fa-square text-success shadow fa-lg"></i></a>
-                <a href="javascript:void(0);"><i class="fas fa-square text-warnning shadow fa-lg"></i></a>
-                <a href="javascript:void(0);"><i class="fas fa-square text-danger shadow fa-lg"></i></a>
-                <a href="javascript:void(0);"><i class="fas fa-square text-muted shadow fa-lg"></i></a>
-                <a href="javascript:void(0);"><i class="fas fa-square text-white shadow fa-lg"></i></a>
-                <a href="javascript:void(0);"><i class="fas fa-square text-black shadow fa-lg"></i></a>
-                <a href="javascript:void(0);"><i class="fas fa-square text-light shadow fa-lg"></i></a>
-            </div>
         </div>
         <!-- End Right Navbar -->
 
-
+        <!-- START MODAL AREA -->
+            <!-- Start Quicksearch Modal -->
+            <div id="quicksearchmodal" class="modal fade">
+                <div class="modal-dialog modal-dialog-center">
+                    <div class="modal-content rounded-0">
+                        <div class="modal-header">
+                            <h6 class="modal-title">Result</h6>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="list-group">
+                                <!-- <li><a href=""></a></li> -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Quicksearch Modal -->
+        <!-- END MODAL AREA -->
 
 
         <!-- bootstrap css1 js1 -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script> -->
         <!-- jquery js1 -->
         <script src="https://code.jquery.com/jquery-3.6.3.min.js" type="text/javascript"></script>
         <!-- jqueryui css1 js1 -->
@@ -98,11 +117,93 @@
                 @endforeach
             @endif
         
+
         
         <!-- custom js js1 -->
-        <script src="{{ asset('assets/dist/js/app.js') }}" type="text/javascript"></script>
+        <!-- <script src="{{ asset('assets/dist/js/app.js') }}" type="text/javascript"></script> -->
+        @vite(["public/assets/dist/js/app.js"]) 
 
         <!-- Extra js -->
         @yield('scripts')
+
+        <script>
+
+            // Start Quick Search
+            $("#quicksearch-btn").on("click",function(e){
+                e.preventDefault();
+                quicksearch();
+            });
+
+            async function quicksearch(){
+                // console.log("hay");
+
+                const getsearch = $("#quicksearch").val();
+                // console.log(getsearch);
+
+                await $.post("{{ route('students.quicksearch') }}",
+                {
+                    _token:$("meta[name='csrf-token']").attr("content"),
+                    keyword: getsearch
+                }
+                ,function(response){
+                    // console.log(response);
+                    showresulttodom(response);
+                });
+            }
+            function showresulttodom(response){
+                console.log(response);
+                let newlis="";
+                $("#quicksearchmodal").modal("show"); // toggle
+
+                if(response.datas.length <= 0){
+                    newlis += `<li class='list-group-item'>No Data</li>`;
+                }else{
+                    for(let x=0; x<response.datas.length; x++){
+                        newlis += `<li class='list-group-item'><a href="{{ URL::to('students/${response.datas[x].id}') }}">${response.datas[x].regnumber} / ${response.datas[x].firstname} ${response.datas[x].lastname}</a></li>`;
+                    }
+                }
+                $("#quicksearchmodal .modal-body ul.list-group").html(newlis);
+
+                // clear form 
+                // $("#quicksearchform")[0].reset();
+                $("#quicksearchform").trigger("reset")
+            }
+            // End Quick Search
+
+
+            // Start Onoffuser Search 
+            var getusersearch = document.getElementById('usersearch');
+            
+            var getonoffusers = document.getElementById('onoffusers');
+            var getonoffuserlis = getonoffusers.getElementsByTagName('li');
+            // console.log(getonoffusers);
+            // console.log(getonoffuserlis);//HTMLCollection
+
+            // Event Listener
+            getusersearch.addEventListener('keyup',filter);
+        
+            function filter(){
+                // console.log(this.value);
+
+
+                var inputfilter = this.value.toLowerCase();
+                // console.log(inputfilter);
+
+                for(var x = 0 ; x < getonoffuserlis.length ; x++){
+       
+                    var getlink = getonoffuserlis[x].getElementsByTagName('div')[1];
+                    // console.log(getlink);
+
+                    var getdivtext = getlink.textContent || getlink.innerText;
+
+                    if(getdivtext.toLowerCase().indexOf(inputfilter) > -1){
+                        getonoffuserlis[x].classList.remove("d-none")
+                    }else{
+                        getonoffuserlis[x].classList.add("d-none")
+                    }
+                }
+            }
+            // End Onoffuser Search
+        </script>
     </body>
 </html>

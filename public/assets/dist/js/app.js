@@ -27,6 +27,10 @@ function dropbtn(e){
 
 		e.target.parentElement.nextElementSibling.classList.toggle('show');
 }
+document.getElementById("noticenter").addEventListener("click",function(e){
+	e.target.parentElement.nextElementSibling.classList.toggle('show');
+});
+
 // end dropdown
 
 // end notify & user logout

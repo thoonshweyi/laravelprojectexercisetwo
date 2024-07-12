@@ -59,6 +59,12 @@
           
           <hr/>
 
+          <div class="col-md-12 mb-2">
+               <div>
+                    <a href="javascript:void(0);" id="bulkdelete-btn" class="btn btn-danger btn-sm rounded-0">Bulk Delete</a>
+               </div>
+          </div>
+
           <div class="col-md-12">
                <form action="" method="">
                     <div class="row justify-content-end">
@@ -89,9 +95,13 @@
                <table id="mytable" class="table table-sm table-hover border">
           
                     <thead>
+                         <th>
+                              <input type="checkbox" name="selectalls" id="selectalls" class="form-check-input selectalls" />
+                         </th>
                          <th>ID</th>
                          <th>Class</th>
                          <th>URL</th>
+                         <th>Counter</th>
                          <th>By</th>
                          <th>Class Date</th>
                          <th>Created At</th>
@@ -101,15 +111,18 @@
                     <tbody>
                          @foreach($edulinks as $idx=>$edulink)
                          <tr>
+                              <td><input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="{{$edulink->id}}" /></td>
                               <td>{{$idx + $edulinks->firstItem()}}</td>
                               <td><a href="{{route('posts.show',$edulink->post_id)}}">{{$edulink->post['title']}}</a></td>
                               <td><a href="javascript:void(0);" class="link-btns" data-url="{{ $edulink->url}}" title="Copy Link">{{ Str::limit($edulink->url,30) }}</a></td>
+                              <td>{{ $edulink->counter }}</td>
                               <td>{{ $edulink["user"]["name"] }}</td>
                               <td>{{ date("d M Y",strtotime($edulink->classdate)) }}</td>
                               <td>{{ $edulink->created_at->format('d M Y h:i A') }}</td>
                               <td>{{ $edulink->updated_at->format('d M Y') }}</td>
                               <td>
-                                   <a href="{{$edulink->url}}" class="text-primary" target="_blank" download="abc"><i class="fas fa-download"></i></a>
+                                   <a href="{{route('edulinks.download',$edulink->id)}}" class="text-primary me-2" target="_blank"><i class="fas fa-download"></i></a>
+                                   {{--<a href="{{$edulink->url}}" class="text-primary" target="_blank" download="abc"><i class="fas fa-download"></i></a> --}}
                                    <a href="javascript:void(0);" class="text-info ms-2 editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$edulink->id}}" data-classdate="{{$edulink->classdate}}" data-post="{{$edulink->post_id}}" data-url="{{$edulink->url}}"  ><i class="fas fa-pen"></i></a>
                                    <a href="#" class="text-danger ms-2 delete-btns" data-idx="{{$idx + $edulinks->firstItem()}}"><i class="fas fa-trash-alt"></i></a>
                               </td>
@@ -183,6 +196,8 @@
 
 
 @section("scripts")
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
      <script type="text/javascript">
 
           // Start Filter
@@ -278,6 +293,67 @@
                     navigator.clipboard.writeText(geturl);
                });
                // End link btn
+
+
+               // Start Bulk Delete 
+               $("#selectalls").click(function(){
+                    $(".singlechecks").prop("checked",$(this).prop("checked"));
+               });
+
+               $("#bulkdelete-btn").click(function(){
+                    let getselectedids = [];
+                    
+                    // console.log($("input:checkbox[name=singlechecks]:checked"));
+                    $("input:checkbox[name='singlechecks']:checked").each(function(){
+                         getselectedids.push($(this).val());
+                    });                
+                    
+                    // console.log(getselectedids); // (4) ['1', '2', '3', '4']
+
+                    Swal.fire({
+                         title: "Are you sure?",
+                         text: `You won't be able to revert!`,
+                         icon: "warning",
+                         showCancelButton: true,
+                         confirmButtonColor: "#3085d6",
+                         cancelButtonColor: "#d33",
+                         confirmButtonText: "Yes, delete it!"
+                    }).then((result) => {
+                         if (result.isConfirmed) {
+                              // data remove 
+                              $.ajax({
+                                   url:"{{ route('edulinks.bulkdeletes') }}",
+                                   type:"DELETE",
+                                   dataType:"json",
+                                   data:{
+                                        selectedids:getselectedids,
+                                        _token:"{{ csrf_token() }}"
+                                   },
+                                   success:function(response){
+                                        console.log(response);   // 1
+                                        
+                                        if(response){
+                                             // ui remove
+                                             $.each(getselectedids,function(key,val){
+                                                  $(`#delete_${val}`).remove();
+                                             });
+                                        
+                                             Swal.fire({
+                                                  title: "Deleted!",
+                                                  text: "Your file has been deleted.",
+                                                  icon: "success"
+                                             });
+                                        }
+                                   },
+                                   error:function(response){
+                                        console.log("Error: ",response)
+                                   }
+                              });
+                              
+                         }
+                    });   
+               });
+               // End Bulk Delete 
 
 
           });
