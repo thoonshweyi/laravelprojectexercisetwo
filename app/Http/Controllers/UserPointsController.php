@@ -63,7 +63,7 @@ class UserPointsController extends Controller
         $query = $request->input("query");
         if($query){
             
-            $users = UserPoint::users($query);
+            $users = UserPoint::searchstus($query);
             // dd($users);
             
 

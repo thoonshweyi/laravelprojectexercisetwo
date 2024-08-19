@@ -10,15 +10,7 @@
                <form id="createform">
                     {{ csrf_field() }}
                     <div class="row align-items-end">
-                         <div class="col-md-3 form-group mb-3">
-                              <label for="name">Name <span class="text-danger">*</span></label>
-                              {{-- @error("name")
-                                   <span class="text-danger">{{ $message }}<span>
-                              @enderror --}}
-                              <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter City Name" value="{{ old('name') }}"/>
-                         </div>
-
-                         <div class="col-md-3 form-group mb-3">
+                         <div class="col-md-2 form-group mb-3">
                               <label for="country_id">Country</label>
                               <select name="country_id" id="country_id" class="form-control form-control-sm rounded-0">
                                    @foreach($countries as $country)
@@ -26,8 +18,17 @@
                                    @endforeach     
                               </select>
                          </div>
+                         <div class="col-md-2 form-group mb-3">
+                              <label for="name">Name <span class="text-danger">*</span></label>
+                              {{-- @error("name")
+                                   <span class="text-danger">{{ $message }}<span>
+                              @enderror --}}
+                              <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter City Name" value="{{ old('name') }}"/>
+                         </div>
 
-                         <div class="col-md-3 form-group mb-3">
+                        
+
+                         <div class="col-md-2 form-group mb-3">
                               <label for="status_id">Status</label>
                               <select name="status_id" id="status_id" class="form-control form-control-sm rounded-0">
                                    @foreach($statuses as $status)
@@ -38,7 +39,7 @@
 
                          <input type="hidden" name="user_id" id="user_id" value="{{ $userdata['id'] }}">
 
-                         <div class="col-md-3 mb-3 text-sm-end text-md-start">
+                         <div class="col-md-2 mb-3 text-sm-end text-md-start">
                               <button type="reset" class="btn btn-secondary btn-sm rounded-0">Cancel</button>
                               <button type="submit" id="create-btn" class="btn btn-primary btn-sm rounded-0 ms-3">Submit</button>
                          </div>
@@ -123,10 +124,6 @@
                                    <form id="editform">
                             
                                         <div class="row align-items-end">
-                                             <div class="col-md-5 form-group mb-3">
-                                                  <label for="editname">Name <span class="text-danger">*</span></label>
-                                                  <input type="text" name="editname" id="editname" class="form-control form-control-sm rounded-0" placeholder="Enter city Name" value="{{ old('name') }}"/>
-                                             </div>
                                              <div class="col-md-4 form-group mb-3">
                                                   <label for="editcountry_id">Country</label>
                                                   <select name="editcountry_id" id="editcountry_id" class="form-control form-control-sm rounded-0">
@@ -135,6 +132,11 @@
                                                        @endforeach     
                                                   </select>
                                              </div>
+                                             <div class="col-md-5 form-group mb-3">
+                                                  <label for="editname">Name <span class="text-danger">*</span></label>
+                                                  <input type="text" name="editname" id="editname" class="form-control form-control-sm rounded-0" placeholder="Enter city Name" value="{{ old('name') }}"/>
+                                             </div>
+                                             
 
                                              <div class="col-md-3 form-group mb-3">
                                                   <label for="status_id">Status</label>

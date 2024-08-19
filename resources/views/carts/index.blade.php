@@ -57,6 +57,41 @@
      </div>
      <!-- End Page Content Area -->
 
+
+      <!-- START MODAL AREA -->
+
+          <!-- start otp modal -->
+          <div id="otpmodal" class="modal fade">
+               <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content">
+
+                         <div class="modal-body">
+                              <form id="verifyform" action="" method="">
+                         
+                                   <div class="row">
+                                        <div class="col-md-12 form-group mb-3">
+                                             <label for="otpcode">OTP Code <span class="text-danger">*</span></label>
+                                             <input type="text" name="otpcode" id="otpcode" class="form-control form-control-sm rounded-0" placeholder="Enter your otp" />
+                                        </div>
+                                        
+                                        <input type="hidden" name="otpuser_id" id="otpuser_id" value="{{ $userdata['id'] }}"/>
+
+               
+                                        <div class="col-md-12 text-end mb-3">
+                                             <button type="submit" class="btn btn-primary btn-sm rounded-0">Submit</button>
+                                        </div>
+                                   </div>
+                                   <p id="otpmessage"></p>
+                                   <p id="">Expire in <span id="otptimer"></span> seconds</p>
+                              </form>
+                         </div>
+
+                    </div>
+               </div>
+          </div>
+          <!-- end otp modal -->
+     <!-- END MODAL AREA -->
+
 @endsection
 
 @section("css")
@@ -64,10 +99,17 @@
 @endsection
 
 @section("scripts")
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
      <script type="text/javascript">
           
           $(document).ready(function(){
-               
+               // Start Passing Header Token
+               $.ajaxSetup({
+                    headers:{
+                         "X-CSRF-TOKEN": $("meta[name='csrf-token']").attr("content")
+                    }
+               });
+               // End Passing Header Token
 
                // Remove from cart 
                $(document).on("click","#removefromcart",function(){
@@ -102,35 +144,163 @@
                });
 
                // Start Pay with Points
+               // $("#paybypoints").click(function(){
+                    
+               //      let packageid; 
+
+               //      $(".package").each(function(){
+               //           packageid = $(this).data("packageid");
+               //           // console.log(packageid); // 2, 3
+
+
+               //           $.ajax({
+               //                url:"{{ route('carts.paybypoints') }}",
+               //                type:"POST",
+               //                data:{
+               //                     _token:$("meta[name='csrf-token']").attr("content"),
+               //                     packageid:packageid
+               //                },
+               //                success:function(response){
+               //                     window.alert(response.message);
+               //                },
+               //                error:function(response){
+               //                     window.alert(response.responseJSON.message);
+               //                }
+               //           });
+               //      });
+               // });
+               // End Pay with Points
+
+               // Start Pay with Points
                $("#paybypoints").click(function(){
-                    
-                    let packageid; 
-
-                    $(".package").each(function(){
-                         packageid = $(this).data("packageid");
-                         // console.log(packageid); // 2, 3
-
-
-                         $.ajax({
-                              url:"{{ route('carts.paybypoints') }}",
-                              type:"POST",
-                              data:{
-                                   _token:$("meta[name='csrf-token']").attr("content"),
-                                   packageid:packageid
-                              },
-                              success:function(response){
-                                   window.alert(response.message);
-                              },
-                              error:function(response){
-                                   window.alert(response.responseJSON.message);
-                              }
-                         });
+                    // loading box
+                    Swal.fire({
+                         title: "Processing....",
+                         // html: "I will close in <b></b> milliseconds.",
+                         text: "Please wait while we send your OTP",
+                         allowOutsideClick:false,
+                         didOpen: () => {
+                              Swal.showLoading();
+                         }
                     });
-                    
 
+                    $.ajax({
+                         url:"/generateotps",
+                         type:"POST",
+                         success:function(response){
+                              console.log(response);
+                              Swal.close();
+
+                              $("#otpmessage").text("Your OTP code is "+response.otp);
+                              $("#otpmodal").modal("show");
+
+                              startotptimer(60); // OTP will expires in 120s (2 minute);
+                         },
+                         error:function(response){
+                              console.error("Error: ",response);
+                         }
+                    })
                     
+                    // Clear form data
+                    $("#verifyform").trigger("reset");
                });
                // End Pay with Points
+
+               // Method 1
+               // function startotptimer(duration){
+               //      // let minutes,seconds;
+               //      // let timer = duration;
+               //      // console.log(timer,minutes,seconds); // 120 undefined undefined
+
+               //      let timer = duration,minutes,seconds;
+               //      // console.log(timer,minutes,seconds); // 60 undefined undefined
+
+               
+               //      let setinv = setInterval(dectimer,1000);
+
+               //      function dectimer(){
+               //           minutes = parseInt(timer/60);
+               //           seconds = parseInt(timer%60);
+
+               //           minutes = minutes < 10 ? "0"+minutes : minutes;
+               //           seconds = seconds < 10 ? "0"+seconds : seconds;
+                         
+               //           $("#otptimer").text(`${minutes}:${seconds}`);
+
+               //           if(timer-- < 0){
+               //                clearInterval(setinv);
+               //                $("#otpmodal").modal("hide");
+               //           }
+               //      }
+               // }
+
+               // Method 2
+               function startotptimer(duration){
+                    timeleft = duration; // 60 seconds
+
+                    let setinv = setInterval(dectimer,1000);
+
+                    function dectimer(){
+                         $("#otptimer").text(timeleft);
+
+                         timeleft--;
+                         if(timeleft <= 0){
+                              clearInterval(setinv);
+                              $("#otpmodal").modal("hide");
+                         }
+                    }
+               }
+
+               $("#verifyform").on("submit",function(e){
+                    e.preventDefault();
+                    $.ajax({
+                         url:"/verifyotps",
+                         type:"POST",
+                         data:$(this).serialize(),
+                         success:function(response){
+                              console.log(response);
+                              if(response.message){
+                                   
+                                   let packageid; 
+
+                                   $(".package").each(function(){
+                                        packageid = $(this).data("packageid");
+                                        // console.log(packageid); // 2, 3
+
+
+                                        $.ajax({
+                                             url:"{{ route('carts.paybypoints') }}",
+                                             type:"POST",
+                                             data:{
+                                                  _token:$("meta[name='csrf-token']").attr("content"),
+                                                  packageid:packageid
+                                             },
+                                             success:function(response){
+                                                  window.alert(response.message);
+                                             },
+                                             error:function(response){
+                                                  window.alert(response.responseJSON.message);
+                                             }
+                                        });
+                                   });
+
+                                   $("#otpmodal").modal("hide");
+
+                              }else{
+                                   console.log("Invalid OTP");
+                              }
+                         },
+                         error:function(response){
+                              console.log("Error OTP: ",response);
+                              Swal.fire({
+                                   title: "Invalid OTP",
+                                   text: "Can't Perform Pay By Point",
+                                   icon: "error"
+                              });
+                         }
+                    });
+               });
+               // End OTP
           });
      </script>
 @endsection

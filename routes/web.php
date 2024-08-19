@@ -25,9 +25,11 @@ use App\Http\Controllers\PaymentmethodsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\PlansController;
+use App\Http\Controllers\PointTransfersController;
 use App\Http\Controllers\PostsLikeController;
 use App\Http\Controllers\PostLiveViewersController;
 use App\Http\Controllers\PostViewDurationsController;
+use App\Http\Controllers\RegionsController;
 use App\Http\Controllers\RelativesController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\StagesController;
@@ -36,6 +38,7 @@ use App\Http\Controllers\SocialapplicationsController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\TagsController;
+use App\Http\Controllers\TownshipsController;
 use App\Http\Controllers\TypesController;
 use App\Http\Controllers\UsersFollowerController;
 use App\Http\Controllers\UserPointsController;
@@ -128,9 +131,12 @@ Route::middleware('auth')->group(function () {
 
     Route::resource("plans",PlansController::class);
 
+    Route::resource("pointtransfers",PointTransfersController::class);
+    Route::post("/pointtransfers/transfer",[PointTransfersController::class,"transfers"])->name("pointtransfers.transfers");
+
     Route::resource("posts",PostsController::class);
-    Route::post("posts/{post}/like",[PostsLikeController::class,"like"])->name("posts.like");
-    Route::post("posts/{post}/unlike",[PostsLikeController::class,"unlike"])->name("posts.unlike");
+    Route::post("/posts/{post}/like",[PostsLikeController::class,"like"])->name("posts.like");
+    Route::post("/posts/{post}/unlike",[PostsLikeController::class,"unlike"])->name("posts.unlike");
 
     Route::post("/postliveviewerinc/{post}",[PostLiveViewersController::class,"incrementviewer"]); // here must be {post}, ca't {id} cuz controller using (Post $post)
     Route::post("/postliveviewerdec/{post}",[PostLiveViewersController::class,"decrementviewer"]);
@@ -139,6 +145,11 @@ Route::middleware('auth')->group(function () {
 
     Route::resource("relatives",RelativesController::class);
     Route::resource("roles",RolesController::class);
+
+    Route::resource("regions",RegionsController::class);
+    Route::get("/regionsstatus",[RegionsController::class,"typestatus"]);
+    Route::delete("/regionsbulkdeletes",[RegionsController::class,"bulkdeletes"])->name("regions.bulkdeletes");
+
 
     Route::resource("stages",StagesController::class);
     Route::get("/stagesstatus",[StagesController::class,"typestatus"]);
@@ -158,6 +169,11 @@ Route::middleware('auth')->group(function () {
     Route::get("/subscribesexpired",[SubscriptionsController::class,"expired"])->name("subscriptions.expired");
 
     Route::resource("tags",TagsController::class);
+
+    Route::resource("townships",TownshipsController::class);
+    Route::get("/townshipsstatus",[TownshipsController::class,"typestatus"]);
+    Route::delete("/townshipsbulkdeletes",[TownshipsController::class,"bulkdeletes"])->name("townships.bulkdeletes");
+
 
     Route::resource("types",TypesController::class)->except("destroy");
     Route::get("/typesstatus",[TypesController::class,"typestatus"]);

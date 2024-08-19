@@ -77,4 +77,8 @@ class User extends Authenticatable
     public function carts(){
         return $this->hasMany(Cart::class);
     }
+
+    public function userpoints(){
+        return $this->hasOne(UserPoint::class);// no need loop
+    }
 }

@@ -22,8 +22,8 @@
                                                   <img src="{{asset($leave->image)}}" width="200" alt="{{$leave->title}}"/>
                                              </div>
                                              <div class="col-md-6">
-                                                  <label for="image" class="gallery"><span>Choose Images</span></label>
-                                                  <input type="file" name="image" id="image" class="form-control form-control-sm rounded-0" value="{{ old('image',$leave->image) }}" hidden/>
+                                                  <label for="images" class="gallery"><span>Choose Images</span></label>
+                                                  <input type="file" name="images[]" id="images" class="form-control form-control-sm rounded-0" value="{{ old('image',$leave->image) }}" multiple hidden/>
                                              </div>
                                         </div>
                                    </div>
@@ -160,7 +160,7 @@
 
 
                               filereader.onload = function(e){
-                                   $(output).html(""); 
+                                   // $(output).html(""); 
                                    $($.parseHTML('<img>')).attr('src',e.target.result).appendTo(output);
                               }
 
@@ -171,7 +171,7 @@
 
                     };
 
-                    $('#image').change(function(){
+                    $('#images').change(function(){
                     previewimages(this,'.gallery');
                     });
                // End Single Image Preview 

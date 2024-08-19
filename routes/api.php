@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\CitiesController;
+use App\Http\Controllers\Api\RegionsController;
 use App\Http\Controllers\Api\StatusesController;
 use App\Http\Controllers\Api\WarehousesController;
 
@@ -27,6 +28,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::apiResource("cities",CitiesController::class,["as"=>"api"]);
 Route::put("/citiesstatus",[CitiesController::class,"typestatus"]);
+Route::get("/filter/cities/{filter}",[CitiesController::class,"filterbycountryid"]); // dyamic selectoption by countryid
+
+Route::get("/filter/regions/{filter}",[RegionsController::class,"filterbycityid"]); // dyamic selectoption by cityid
+
 
 Route::apiResource("statuses",StatusesController::class,["as"=>"api"]);
 Route::get("/statusessearch",[StatusesController::class,"search"]);

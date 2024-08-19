@@ -44,7 +44,6 @@
                                         
                                     </ul>
                                 </li>
-                            <li class="nav-item"><a href="javascript:void(0);" class="nav-lin text-white p-3 mb-2 sidebarlinks"><i class="fas fa-file-alt fa-md me-3"></i> Popups</a></li>
 
                             <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#icons"><i class="fas fa-share-alt-square fa-md me-3"></i> Apps <i class="fas fa-angle-left mores"></i></a>
                                 <ul id="icons" class="collapse ps-2">
@@ -53,6 +52,8 @@
                                 </ul>
                             </li>
 
+                            <li class="nav-item"><a href="{{ route('pointtransfers.index') }}" class="nav-link text-white p-3 mb-2 sidebarlinks"><i class="fas fa-exchange-alt fa-md me-3"></i> Transfer</a></li>
+                            
                             <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#shipdd"><i class="fas fa-shopping-cart fa-md me-3"></i> Shopping <i class="fas fa-angle-left mores"></i></a>
                                 <ul id="shipdd" class="collapse ps-2">
                                     <li><a href="{{ route('plans.index') }}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> Plans </a></li>
