@@ -8,7 +8,7 @@
           <div class="col-md-12">
 
                <a href="javascript:void(0);" id="btn-back" class="btn btn-secondary btn-sm rounded-0">Back</a>
-               <a href="{{route('students.index')}}" class="btn btn-secondary btn-sm rounded-0">Close</a>
+               <a href="{{route('leads.index')}}" class="btn btn-secondary btn-sm rounded-0">Close</a>
                
                <hr/>
                
@@ -18,23 +18,28 @@
 
                               <div class="card-body">
                                    <div class="d-flex flex-column align-items-center mb-3">
-                                        <div class="h5 mb-1">{{ $student->firstname }} {{ $student->lastname }}</div>
+                                        <div class="h5 mb-1">{{ $lead->firstname }} {{ $lead->lastname }}</div>
                                         <div class="text-muted">
-                                             <span>{{ $student->regnumber }}</span>
+                                             <span>{{ $lead->regnumber }}</span>
                                         </div>
                                    </div>
 
                                    <div class="w-100 d-flex flex-row justify-content-between mb-3">
-                                        <button type="button" class="w-100 btn btn-primary btn-sm rounded-0 me-2">Like</button>
                                         
-                                        @if($userdata->id !== $student->user_id)
-                                             @if($userdata->checkuserfollowing($student->user_id))
-                                                  <form class="w-100" action="{{ route('users.unfollow',$student->user_id) }}" method="POST">
+                                        <form action="{{ route('leads.pipeline',$lead->id) }}" method="POST" class="w-100">
+                                             @csrf
+                                             @method("POST")
+                                             <button type="SUBMIT" class="w-100 btn btn-primary btn-sm rounded-0 me-2" {{ $lead->isconverted() ? 'disabled' : '' }}>Pipeline</button>
+                                        </form>
+                                        
+                                        @if($userdata->id !== $lead->user_id)
+                                             @if($userdata->checkuserfollowing($lead->user_id))
+                                                  <form class="w-100" action="{{ route('users.unfollow',$lead->user_id) }}" method="POST">
                                                        @csrf
                                                        <button type="submit" class="w-100 btn btn-outline-primary btn-sm rounded-0">Unfollow</button>
                                                   </form>
                                              @else 
-                                                  <form class="w-100" action="{{ route('users.follow',$student->user_id) }}" method="POST">
+                                                  <form class="w-100" action="{{ route('users.follow',$lead->user_id) }}" method="POST">
                                                        @csrf
                                                        <button type="submit" class="w-100 btn btn-outline-primary btn-sm rounded-0">Follow</button>
                                                   </form>
@@ -55,7 +60,7 @@
                                                             <div class="">Status</div>
                                                        </div>
                                                        <div class="col-auto">
-                                                            <div class="">{{ $student->status["name"] }}</div>
+                                                            <div class=""></div>
                                                        </div>
                                                   </div>
                                              </div>
@@ -70,7 +75,7 @@
                                                             <div class="">Authorize</div>
                                                        </div>
                                                        <div class="col-auto">
-                                                            <div class="">{{ $student["user"]["name"] }}</div>
+                                                            <div class="">{{ $lead["user"]["name"] }}</div>
                                                        </div>
                                                   </div>
                                              </div>
@@ -86,7 +91,7 @@
                                                             <div class="">Created</div>
                                                        </div>
                                                        <div class="col-auto">
-                                                            <div class="">{{date('d M Y',strtotime($student->created_at))}} | {{date('h:i:s A',strtotime($student->created_at))}}</div>
+                                                            <div class="">{{date('d M Y',strtotime($lead->created_at))}} | {{date('h:i:s A',strtotime($lead->created_at))}}</div>
                                                        </div>
                                                   </div>
                                              </div>
@@ -102,7 +107,7 @@
                                                             <div class="">Updated</div>
                                                        </div>
                                                        <div class="col-auto">
-                                                            <div class="">{{date('d M Y h:i:s A',strtotime($student->updated_at))}}</div>
+                                                            <div class="">{{date('d M Y h:i:s A',strtotime($lead->updated_at))}}</div>
                                                        </div>
                                                   </div>
                                              </div>
@@ -146,14 +151,6 @@
 
                                    <div class="mb-5">
                                         <p class="text-small text-muted text-uppercase mb-2">Contact Info</p>
-                                        @foreach($studentphones as $studentphone)
-                                        <div class="row g-0 mb-2">
-                                             <div class="col-auto me-2">
-                                                  <i class="fas fa-info"></i>
-                                             </div>
-                                             <div class="col">{{$studentphone->phone}}</div>
-                                        </div>
-                                        @endforeach
                                         
                                    </div>
                               </div>
@@ -167,11 +164,11 @@
                                         <div class="acctitle shown">Email</div>
                                         <div class="acccontent">
                                              <div class="col-md-12 py-3">
-                                                  <form action="{{ route('students.mailbox') }}" method="POST">
+                                                  <form action="" method="POST">
                                                        @csrf
                                                        <div class="row">
                                                             <div class="col-md-6 form-group mb-3">
-                                                                 <input type="email" name="cmpemail" id="cmpemail" class="form-control form-control-sm border-0 rounded-0" placeholder="To:" value="{{ $student->user['email'] }}" readonly />
+                                                                 <input type="email" name="cmpemail" id="cmpemail" class="form-control form-control-sm border-0 rounded-0" placeholder="To:" value="{{ $lead['email'] }}" readonly />
                                                             </div>
                                                             <div class="col-md-6 form-group mb-3">
                                                                  <input type="ext" name="cmpsubject" id="cmpsubject" class="form-control form-control-sm border-0 rounded-0" placeholder="Subject" value="" />
@@ -197,22 +194,7 @@
                          <h6>Enrolls</h6>
                          <div class="card border-0 rounded-0 shadow mb-4">
                               <div class="card-body d-flex flex-wrap gap-3">
-                                   
-                                   @foreach($enrolls as $enroll)
-                                   <div class="border shadow p-3 mb-3 enrollboxes">
-                                        <a href="javascript:void(0);">{{ $enroll->post["title"] }}</a>
-                                        <div class="text-muted">{{ $enroll->stage["name"] }}</div>
-                                        <div class="text-muted">{{ date("d M Y",strtotime($enroll->created_at)) }} | {{ date("h:i:s A",strtotime($enroll->created_at)) }}</div>
-                                        <div class="text-muted">{{ $enroll->updated_at->format("d M Y | h:i:s A") }} </div>
-                                        {{-- <div class="mt-1" title="{{ $enroll->remark }}">{{ Str::limit($enroll->remark,20) }}</div> --}}
-                                        {{-- <div class="mt-1" title="{{ $enroll->remark }}">{{ Str::limit($enroll->remark,20,"---") }}</div> --}}
-                                        {{-- <div class="mt-1" title="{{ $enroll->remark }}">{{ Str::of($enroll->remark)->limit(20) }}</div> --}}
-                                        {{-- <div class="mt-1" title="{{ $enroll->remark }}">{{ Str::of($enroll->remark)->words(4) }}</div> --}}
-                                        {{-- <div class="mt-1" title="{{ $enroll->remark }}">{{ Str::of($enroll->remark)->words(4,"----") }}</div> --}}
-                                        {{-- <div class="mt-1" title="{{ $enroll->remark }}">{{ Str::words($enroll->remark,4) }}</div> --}}
-                                        <div class="mt-1" title="{{ $enroll->remark }}">{{ Str::words($enroll->remark,4,"----") }}</div>
-                                   </div>
-                                   @endforeach
+                                  
                               </div>
                          </div>
 
@@ -251,7 +233,7 @@
                                    </div>
 
                                    <div id="remark" class="tab-pane">
-                                        <p>{{ $student->remark }}</p>
+                                        <p>{{ $lead->remark }}</p>
                                    </div>
 
                               </div>

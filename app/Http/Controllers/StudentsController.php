@@ -1,8 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Enroll;
+
+use App\Models\Country;
+use App\Models\City;
+use App\Models\Gender;
+use App\Models\Lead;
 use App\Models\Student;
+use App\Models\StudentPhone;
+use App\Models\Enroll;
 use App\Mail\MailBox;
 use App\Jobs\MailBoxJob;
 use App\Jobs\StudentMailBoxJob;
@@ -38,7 +44,9 @@ class StudentsController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+    {   
+        // dd(count($request->phone)); // 1
+        // dd($request->phone); // array:1 [0 => null]
         $this->validate($request,[
             "firstname"=>"required",
             "lastname"=>"required",
@@ -54,8 +62,31 @@ class StudentsController extends Controller
        $student->slug = Str::slug($request["firstname"]);
        $student->remark = $request["remark"];
        $student->user_id = $user_id;
-
        $student->save();
+
+        //Create New Student Phone 
+        if(!empty($request["phone"])){
+            // Method 1
+
+            // foreach($request["phone"] as $phone){
+            //     $phonedatas = [
+            //         'student_id'=> $student["id"],
+            //         'phone'=>$phone
+            //     ];
+            //     StudentPhone::insert($phonedatas);
+            // }
+
+
+            // Method 2
+            foreach($request->phone as $phone){
+                $student->studentphones()->create([
+                   'student_id'=> $student["id"],
+                   'phone'=>$phone
+                ]);
+            }
+
+        }
+
        return redirect(route("students.index"));
     }
 
@@ -69,7 +100,11 @@ class StudentsController extends Controller
         // $enrolls = Enroll::where("user_id",$student["user_id"])->get();
         $enrolls = $student->enrolls();
         // dd($enrolls);
-        return view("students.show",["student"=>$student,"enrolls"=>$enrolls]);
+
+        $studentphones = $student->studentphones;
+        // dd($studentphones);
+
+        return view("students.show",["student"=>$student,"enrolls"=>$enrolls,"studentphones"=>$studentphones]);
     
     }
 
@@ -79,7 +114,13 @@ class StudentsController extends Controller
     public function edit(string $id)
     {
         $student = Student::findOrFail($id);
-        return view("students.edit")->with("student",$student);
+        $studentphones = StudentPhone::where("student_id",$id)->get();
+        
+        $genders = Gender::orderBy("name","asc")->get();
+        $countries = Country::orderBy("name","asc")->where("status_id",3)->get();
+        $cities = City::orderBy("name","asc")->where("status_id",3)->where("country_id",$student->country_id)->get();
+        
+        return view("students.edit")->with("student",$student)->with("studentphones",$studentphones)->with("genders",$genders)->with("countries",$countries)->with("cities",$cities);
     }
 
     /**
@@ -89,7 +130,7 @@ class StudentsController extends Controller
     {
         $this->validate($request,[
             // "regnumber" => "required|unique:students,regnumber",
-            "regnumber" => "required|unique:students,regnumber,".$id,
+            // "regnumber" => "required|unique:students,regnumber,".$id,
             "firstname"=>"required",
             "lastname"=>"required",
             "remark" => "max:1000"
@@ -99,14 +140,51 @@ class StudentsController extends Controller
        $user_id = $user["id"];
 
        $student = Student::findOrFail($id);
-       $student->regnumber = $request["regnumber"];
+    //    $student->regnumber = $request["regnumber"];
        $student->firstname = $request["firstname"];
        $student->lastname = $request["lastname"];
        $student->slug = Str::slug($request["firstname"]);
+       $student->gender_id = $request["gender_id"];
+       $student->age = $request["age"];
+       $student->email = $request["email"];
+       $student->country_id = $request["country_id"];
+       $student->city_id = $request["city_id"];
        $student->remark = $request["remark"];
        $student->user_id = $user_id;
 
        $student->save();
+
+       //Create/Update New Student Phone 
+        if(!empty($request["newphone"])){
+            // Method 1
+
+            // extend new phone
+            foreach($request["newphone"] as $newphone){
+                $newphonedatas = [
+                    'student_id'=> $student["id"],
+                    'phone'=>$newphone
+                ];
+                StudentPhone::insert($newphonedatas);
+
+            }
+        
+            foreach($request->phone as $key=>$phone){
+                StudentPhone::findOrFail($request["studentphoneid"][$key])->update([
+                    'phone'=>$phone
+                ]);
+            }
+
+    
+
+        }else{
+            // update existing phone 
+            foreach($request->phone as $key=>$phone){
+                StudentPhone::findOrFail($request["studentphoneid"][$key])->update([
+                    'phone'=>$phone
+                ]);
+            }
+        }
+
        return redirect(route("students.index"));
     }
     // *slug name will be updated, when the firstname is modified

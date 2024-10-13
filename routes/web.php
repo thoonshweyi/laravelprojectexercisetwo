@@ -1,6 +1,8 @@
 <?php
 
 
+use App\Http\Controllers\Auth\RegisteredUserController;
+
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AnnouncementsController;
@@ -17,6 +19,7 @@ use App\Http\Controllers\DaysController;
 use App\Http\Controllers\EdulinksController;
 use App\Http\Controllers\EnrollsController;
 use App\Http\Controllers\GendersController;
+use App\Http\Controllers\LeadsController;
 use App\Http\Controllers\LeavesController;
 use App\Http\Controllers\OtpsController;
 use App\Http\Controllers\PackagesController;
@@ -30,12 +33,14 @@ use App\Http\Controllers\PostsLikeController;
 use App\Http\Controllers\PostLiveViewersController;
 use App\Http\Controllers\PostViewDurationsController;
 use App\Http\Controllers\RegionsController;
+use App\Http\Controllers\ReligionsController;
 use App\Http\Controllers\RelativesController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\StagesController;
 use App\Http\Controllers\StatusesController;
 use App\Http\Controllers\SocialapplicationsController;
 use App\Http\Controllers\StudentsController;
+use App\Http\Controllers\StudentPhonesController;
 use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\TagsController;
 use App\Http\Controllers\TownshipsController;
@@ -57,6 +62,16 @@ use App\Http\Controllers\ChatsController;
 |
 */
 
+Route::get("/register/step1",[RegisteredUserController::class,"createstep1"])->name("register.step1");
+Route::post("/register/step1",[RegisteredUserController::class,"storestep1"])->name("register.storestep1");
+
+Route::get("/register/step2",[RegisteredUserController::class,"createstep2"])->name("register.step2")->middleware("check.registration.step:step2");
+Route::post("/register/step2",[RegisteredUserController::class,"storestep2"])->name("register.storestep2");
+
+Route::get("/register/step3",[RegisteredUserController::class,"createstep3"])->name("register.step3")->middleware("check.registration.step:step3");
+Route::post("/register/step3",[RegisteredUserController::class,"storestep3"])->name("register.storestep3");
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -67,7 +82,7 @@ Route::get('/dashboard', function () {
 
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth',"autologout","verified")->group(function () {
 
     Route::get("/dashboards",[DashboardsController::class,'index'])->name("dashboard.index");
 
@@ -108,6 +123,10 @@ Route::middleware('auth')->group(function () {
 
     Route::resource("enrolls",EnrollsController::class);
     Route::resource("genders",GendersController::class);
+
+    Route::resource("leads",LeadsController::class);
+    Route::post("leads/pipelines/{id}",[LeadsController::class,"converttostudent"])->name("leads.pipeline");
+
 
     Route::resource("leaves",LeavesController::class);
     Route::get("notify/markasread",[LeavesController::class,"markasread"])->name('leaves.markasread');
@@ -150,6 +169,10 @@ Route::middleware('auth')->group(function () {
     Route::get("/regionsstatus",[RegionsController::class,"typestatus"]);
     Route::delete("/regionsbulkdeletes",[RegionsController::class,"bulkdeletes"])->name("regions.bulkdeletes");
 
+    Route::resource("religions",ReligionsController::class);
+    Route::get("/religionsstatus",[ReligionsController::class,"typestatus"]);
+    Route::delete("/religionsbulkdeletes",[ReligionsController::class,"bulkdeletes"])->name("religions.bulkdeletes");
+
 
     Route::resource("stages",StagesController::class);
     Route::get("/stagesstatus",[StagesController::class,"typestatus"]);
@@ -165,6 +188,8 @@ Route::middleware('auth')->group(function () {
     Route::resource("students",StudentsController::class);
     Route::post("compose/mailbox",[StudentsController::class,"mailbox"])->name("students.mailbox");
     Route::post("students/quicksearch",[StudentsController::class,"quicksearch"])->name("students.quicksearch");
+
+    Route::get("studentphones/delete/{id}",[StudentPhonesController::class,'destroy'])->name("studentphones.delete");
 
     Route::get("/subscribesexpired",[SubscriptionsController::class,"expired"])->name("subscriptions.expired");
 

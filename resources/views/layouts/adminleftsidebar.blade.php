@@ -37,6 +37,11 @@
                                     <li><a href="{{route('posts.index')}}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right"></i> Post </a></li>
                                     <li><a href="{{route('announcements.index')}}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right"></i> Announcement </a></li>
                                 </ul>
+                                <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#leaddd"><i class="fas fa-users fa-md me-3"></i> Lead <i class="fas fa-angle-left mores"></i></a>
+                                    <ul id="leaddd" class="collapse ps-2">
+                                        <li><a href="{{ route('leads.index') }}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> Leads </a></li>
+                                    </ul>
+                                </li>
                                 <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#advanceui"><i class="fas fa-users fa-md me-3"></i> Students <i class="fas fa-angle-left mores"></i></a>
                                     <ul id="advanceui" class="collapse ps-2">
                                         <li><a href="{{ route('attcodegenerators.index') }}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> Att Generators </a></li>

@@ -71,5 +71,8 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     
         "validate.subscriptions" => \App\Http\Middleware\ValidateSubscriptionMid::class,
+        "check.registration.step" => \App\Http\Middleware\CheckRegistrationStepMid::class,
+        
+        'autologout'=>\App\Http\Middleware\AutoLogoutMid::class,
     ];
 }

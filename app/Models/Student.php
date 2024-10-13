@@ -13,9 +13,21 @@ class Student extends Model
     protected $primaryKey = "id";
     protected $fillable = [
         "regnumber",
+        'image',
         "firstname",
         "lastname",
         "slug",
+        'dob',
+        'gender_id',
+        'age',
+        'email',
+        'country_id',
+        'city_id',
+        'region_id',
+        'township_id',
+        'address',
+        'religion_id',
+        'nationalid',
         "remark",
         "status_id",
         "user_id"
@@ -23,6 +35,30 @@ class Student extends Model
 
     public function user(){
         return $this->belongsTo("App\Models\User"); // send all column
+    }
+
+    public function gender(){
+        return $this->belongsTo(Gender::class); // send all column
+    }
+
+    public function country(){
+        return $this->belongsTo(Country::class); // send all column
+    }
+
+    public function city(){
+        return $this->belongsTo(City::class); // send all column
+    }
+
+    public function region(){
+        return $this->belongsTo(Region::class); // send all column
+    }
+
+    public function township(){
+        return $this->belongsTo(Township::class); // send all column
+    }
+
+    public function religion(){
+        return $this->belongsTo(Religion::class); // send all column
     }
 
     public function status(){
@@ -69,4 +105,9 @@ class Student extends Model
             return $newstudentid;
         });
     }
+
+    public function studentphones(){
+        return $this->hasMany(StudentPhone::class); 
+    }
+
 }

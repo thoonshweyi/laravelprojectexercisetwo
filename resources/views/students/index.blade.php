@@ -6,7 +6,7 @@
      <!-- Start Page Content Area -->
      <div class="container-fluid">
           <div class="col-md-12">
-
+               <a href="{{route('leads.index')}}" class="btn btn-info btn-sm rounded-0">Lead</a>
                <a href="{{route('students.create')}}" class="btn btn-primary btn-sm rounded-0">Create</a>
                <hr/>
                
