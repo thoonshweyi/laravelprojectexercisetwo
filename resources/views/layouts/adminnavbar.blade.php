@@ -77,7 +77,9 @@
                     <li class="nav-item dropdown">
                     <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown">
                          <span class="text-muted small me-2">{{ $userdata["name"] }}</span>
-                         <img src="./assets/img/users/user1.jpg" class="rounded-circle" width="25" alt="">
+                         @if($userdata->lead['converted'])
+                              <img src="{{ asset($userdata->student['image']) }}" class="rounded-circle" width="25" alt="{{ $userdata->name }}">
+                         @endif
                     </a>
                     <div class="dropdown-menu">
                          <a href="{{ route('profile.edit') }}" class="dropdown-item"><i class="fas fa-user fa-sm text-muted me-2"></i>Profile</a>

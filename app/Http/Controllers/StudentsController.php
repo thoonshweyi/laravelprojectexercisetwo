@@ -140,50 +140,91 @@ class StudentsController extends Controller
        $user_id = $user["id"];
 
        $student = Student::findOrFail($id);
+
+        // check if the profile is locked
+        if($student->isProfileLocked()){
+            return redirect()->back()->with("error",'Profile Locked. PLease contact to admin');
+        }    
+
     //    $student->regnumber = $request["regnumber"];
        $student->firstname = $request["firstname"];
        $student->lastname = $request["lastname"];
        $student->slug = Str::slug($request["firstname"]);
        $student->gender_id = $request["gender_id"];
        $student->age = $request["age"];
+       $student->dob = $request["dob"];
+       $student->religion_id = $request["religion_id"];
        $student->email = $request["email"];
+       $student->nationalid = $request["nationalid"];
        $student->country_id = $request["country_id"];
+       $student->region_id = 1;
        $student->city_id = $request["city_id"];
+       $student->township_id = 1;
+       $student->address = $request["address"];
        $student->remark = $request["remark"];
        $student->user_id = $user_id;
 
        $student->save();
 
        //Create/Update New Student Phone 
-        if(!empty($request["newphone"])){
-            // Method 1
+        // if(!empty($request["newphone"])){
+        //     // Method 1
 
-            // extend new phone
-            foreach($request["newphone"] as $newphone){
-                $newphonedatas = [
-                    'student_id'=> $student["id"],
-                    'phone'=>$newphone
-                ];
-                StudentPhone::insert($newphonedatas);
+        //     // extend new phone
+        //     foreach($request["newphone"] as $newphone){
+        //         $newphonedatas = [
+        //             'student_id'=> $student["id"],
+        //             'phone'=>$newphone
+        //         ];
+        //         StudentPhone::insert($newphonedatas);
 
-            }
+        //     }
         
-            foreach($request->phone as $key=>$phone){
-                StudentPhone::findOrFail($request["studentphoneid"][$key])->update([
-                    'phone'=>$phone
-                ]);
-            }
+        //     foreach($request->phone as $key=>$phone){
+        //         StudentPhone::findOrFail($request["studentphoneid"][$key])->update([
+        //             'phone'=>$phone
+        //         ]);
+        //     }
 
     
 
-        }else{
-            // update existing phone 
-            foreach($request->phone as $key=>$phone){
-                StudentPhone::findOrFail($request["studentphoneid"][$key])->update([
-                    'phone'=>$phone
+        // }else{
+        //     // update existing phone 
+        //     foreach($request->phone as $key=>$phone){
+        //         StudentPhone::findOrFail($request["studentphoneid"][$key])->update([
+        //             'phone'=>$phone
+        //         ]);
+        //     }
+        // }
+
+        // Handling Student Phone Update / Create 
+        if($request->has('newphone')){
+            $newphones = $request->newphone;
+
+            // insert new phone numbers
+            foreach($newphones as $newphone){
+                StudentPhone::create([
+                    'student_id'=>$student->id,
+                    'phone'=>$newphone
                 ]);
+
             }
         }
+
+        // Update Existing Student Phone
+        if($request->has('phone') && $request->has('studentphoneid')){
+            foreach($request->phone as $key=>$phone){
+                if(!empty(trim($phone)) && isset($request->studentphoneid[$key])){
+                    $getphoneid = $request->studentphoneid[$key];
+                    StudentPhone::findOrFail($request->studentphoneid[$key])->update([
+                        'phone'=>$phone
+                    ]);
+                }
+            }
+        }
+
+        // Recalculate profile Score
+        $student->calculateProfileScore();
 
        return redirect(route("students.index"));
     }
@@ -248,4 +289,38 @@ class StudentsController extends Controller
         return response()->json(["datas"=>$students]);
     }
     
+    public function updateprofilepicture(Request $request,$id){
+        $request->validate([
+            'image'=>"required|image|mimes:jpeg,png,jpg,gif|max:2048"
+        ]);      
+        $student = Student::findOrFail($id);
+ 
+
+        $user = Auth::user();
+        $user_id = $user['id'];
+        if($request->hasFile('image')){
+            // Single Image Update
+            $file = $request->file("image");
+            $fname = $file->getClientOriginalName();
+            $imagenewname = uniqid($user_id).$student['id'].$fname;
+            $file->move(public_path("assets/img/profile/"),$imagenewname);
+            $filepath = "assets/img/profile/".$imagenewname;
+
+
+            // Remove Old Image 
+            if($student->image){
+                $oldfilepath = public_path($student->image);
+                if(file_exists($oldfilepath)){
+                    unlink($oldfilepath);
+                } 
+            }
+            $student->image = $filepath;
+            $student->save();
+        }
+
+        // Recalculate profile Score
+        $student->calculateProfileScore();
+        
+        return redirect()->back()->with('success','Upload Successfully');
+    }
 }

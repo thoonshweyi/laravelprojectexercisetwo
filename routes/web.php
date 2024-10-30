@@ -188,7 +188,8 @@ Route::middleware('auth',"autologout","verified")->group(function () {
     Route::resource("students",StudentsController::class);
     Route::post("compose/mailbox",[StudentsController::class,"mailbox"])->name("students.mailbox");
     Route::post("students/quicksearch",[StudentsController::class,"quicksearch"])->name("students.quicksearch");
-
+    Route::put("students/{id}/profilepicture",[StudentsController::class,"updateprofilepicture"])->name("students.updateprofilepicture");
+    
     Route::get("studentphones/delete/{id}",[StudentPhonesController::class,'destroy'])->name("studentphones.delete");
 
     Route::get("/subscribesexpired",[SubscriptionsController::class,"expired"])->name("subscriptions.expired");

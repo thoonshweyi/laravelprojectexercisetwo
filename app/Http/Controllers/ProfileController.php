@@ -9,10 +9,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+use App\Models\Religion;
 use App\Models\Gender;
 use App\Models\Country;
 use App\Models\City;
 use App\Models\Lead;
+
+use App\Models\Student;
+use App\Models\StudentPhone;
 
 class ProfileController extends Controller
 {
@@ -26,16 +30,29 @@ class ProfileController extends Controller
 
         $lead = Lead::findOrFail($user->lead['id']);
         $genders = Gender::orderBy("name","asc")->get();
+        $religions = Religion::orderBy("name","asc")->where("status_id",3)->get();
         $countries = Country::orderBy("name","asc")->where("status_id",3)->get();
         $cities = City::orderBy("name","asc")->where("status_id",3)->where("country_id",$lead->country_id)->get();
-        
+
+        $student = null;
+        $studentphones = null;
+        if($lead->converted){
+            $student = Student::findOrFail($user->student['id']);
+            $studentphones = StudentPhone::where("student_id",$student->id)->get();
+        }
         return view('profile.edit', [
             'user' => $user,
             'lead'=>$lead,
             'genders'=>$genders,
+            'religions'=>$religions,
             'countries'=>$countries,
-            'cities'=>$cities
+            'cities'=>$cities,
+            'student'=>$student,
+            'studentphones'=>$studentphones
         ]);
+
+        
+        
     }
 
     /**

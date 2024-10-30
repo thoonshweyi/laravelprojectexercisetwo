@@ -18,15 +18,53 @@
                     <div class="card border-0 rounded-0 shadow">
 
                               <div class="card-body">
+                                   
                                    <div class="d-flex flex-column align-items-center mb-3">
-                                        <div class="h5 mb-1">{{ $user->name }}</div>
-                                        <div class="text-muted">
-                                             <span></span>
-                                        </div>
+                                        @if($user->lead['converted'])
+
+                                        <form action="{{ route('students.updateprofilepicture',$user->student['id']) }}" method="POST" enctype="multipart/form-data">
+                                             @csrf
+                                             @method('PUT')
+                                             <div class="form-group col-md-12 text-center">
+                                                  <label for="image" class="gallery">
+                                                       @if($user->student['image'])
+                                                            <img src="{{ asset($user->student['image']) }}" alt="{{ $user->name }}" class="img-thumbnail" width="100" height="100"/>
+                                                       @else
+                                                            <span>Choose Images</span>
+                                                       @endif
+                                                  </label>
+                                                  <input type="file" name="image" id="image" class="form-control form-control-sm rounded-0" hidden/>
+                                                  <button type="submit" id="uploadbtn" class="btn btn-primary btn-sm text-sm rounded-0">Upload</button>
+                                             </div>
+
+                                        </form>
+
+                                        @endif
+
+                                        <h6 class="my-1">{{ $user->name }}</h6>
                                    </div>
 
 
                                    <div class="mb-5">
+                                        <div class="row g-0 mb-3">
+                                             <div class="col-auto">
+                                                  <i class="fas fa-exchange-alt"></i>
+                                             </div>
+                                             <div class="col ps-3">
+                                                  <div class="row">
+                                                       <div class="col">
+                                                            <div class="">Pipe Status</div>
+                                                       </div>
+                                                       <div class="col-auto">
+                                                            <div class="">
+                                                                 <span class="badge {{ $user->lead['converted'] ? 'bg-success' : 'bg-danger' }}">Pipeline</span>
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
+
+                                        @if($user->lead['converted'])
                                         <div class="row g-0 mb-2">
                                              <div class="col-auto">
                                                   <i class="fas fa-user"></i>
@@ -34,92 +72,130 @@
                                              <div class="col ps-3">
                                                   <div class="row">
                                                        <div class="col">
-                                                            <div class="">Status</div>
+                                                            <div class="">Account Status</div>
                                                        </div>
                                                        <div class="col-auto">
-                                                            <div class=""></div>
-                                                       </div>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                        <div class="row g-0 mb-2">
-                                             <div class="col-auto">
-                                                  <i class="fas fa-user"></i>
-                                             </div>
-                                             <div class="col ps-3">
-                                                  <div class="row">
-                                                       <div class="col">
-                                                            <div class="">Lead ID</div>
-                                                       </div>
-                                                       <div class="col-auto">
-                                                            <div class="">{{ $userdata->lead['leadnumber']}}</div>
+                                                            <div class="">
+                                                                 <span class="badge {{ $user->student['status_id'] === 1 ? 'bg-success' : 'bg-danger' }}">{{ $user->student['status']['name'] }}</span>
+                                                            </div>
                                                        </div>
                                                   </div>
                                              </div>
                                         </div>
 
-                                        <div class="row g-0 mb-2">
-                                             <div class="col-auto">
-                                                  <i class="fas fa-calendar-alt fa-sm"></i>
-                                             </div>
-                                             <div class="col ps-3">
-                                                  <div class="row">
-                                                       <div class="col">
-                                                            <div class="">Created</div>
-                                                       </div>
-                                                       <div class="col-auto">
-                                                            <div class="">{{ date('d M Y',strtotime($user->created_at)) }} | {{ date('h:i:s A',strtotime($user->created_at)) }}</div>
-                                                       </div>
-                                                  </div>
+                                        <div class="row g-0">
+                                             <div class="progress" style="height:9px" aria-valuenow="{{ $user->student['profile_score'] }}" aria-valuemin='0' aria-valuemax='100'>
+                                                  <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width:{{ $user->student['profile_score'] }}%;">{{ $user->student['profile_score'] }} %</div>
                                              </div>
                                         </div>
-
-                                        <div class="row g-0 mb-2">
-                                             <div class="col-auto">
-                                                  <i class="fas fa-edit fa-sm"></i>
-                                             </div>
-                                             <div class="col ps-3">
-                                                  <div class="row">
-                                                       <div class="col">
-                                                            <div class="">Updated</div>
-                                                       </div>
-                                                       <div class="col-auto">
-                                                            <div class="">{{ date('d M Y',strtotime($user->updated_at)) }} | {{ date('h:i:s A',strtotime($user->updated_at)) }}</div>
-
-                                                       </div>
-                                                  </div>
-                                             </div>
-                                        </div>
+                                        @endif
                                    </div>
 
                                    <div class="mb-5">
-                                        <p class="text-small text-muted text-uppercase mb-2">Personal Info</p>
+                                        <p class="text-small text-muted text-uppercase mb-2">Lead Info</p>
                                         
                                         <div class="row g-0 mb-2">
                                              <div class="col-auto me-2">
-                                                  <i class="fas fa-envelope"></i>
+                                                  <i class="fas fa-address-card"></i>
                                              </div>
-                                             <div class="col">{{ $user->email }}</div>
+                                             <div class="col">
+                                                  <a href="{{ route('leads.show',$user->lead['id']) }}">{{ $user->lead['leadnumber'] }}</a>
+                                             </div>
                                         </div>
                                         <div class="row g-0 mb-2">
                                              <div class="col-auto me-2">
-                                                  <i class="fas fa-info"></i>
+                                                  <i class="fas fa-venus"></i>
                                              </div>
-                                             <div class="col">Sample Data</div>
+                                             <div class="col">{{ $user->lead['gender']['name'] }}</div>
                                         </div>
                                         <div class="row g-0 mb-2">
                                              <div class="col-auto me-2">
-                                                  <i class="fas fa-info"></i>
+                                                  <i class="fas fa-flag-checkered"></i>
                                              </div>
-                                             <div class="col">Sample Data</div>
+                                             <div class="col">{{ $user->lead['age'] }} years old</div>
                                         </div>
+
+                                        <div class="row g-0 mb-2">
+                                             <div class="col-auto me-2">
+                                                  <i class="fas fa-flag"></i>
+                                             </div>
+                                             <div class="col">{{ $user->lead['city']['name'] }} | {{ $user->lead['country']['name'] }}</div>
+                                        </div>
+
+                                        <div class="row g-0 mb-2">
+                                             <div class="col-auto me-2">
+                                                  <i class="fas fa-calendar"></i>
+                                             </div>
+                                             <div class="col">
+                                                  {{ date('d M Y h:i:s A',strtotime($user->lead['created_at'])) }} 
+                                             </div>
+                                        </div>
+
+                                        <div class="row g-0 mb-2">
+                                             <div class="col-auto me-2">
+                                                  <i class="fas fa-calendar-alt"></i>
+                                             </div>
+                                             <div class="col">
+                                                  {{ date('d M Y h:i:s A',strtotime($user->lead['updated_at'])) }} 
+                                             </div>
+                                        </div>
+
+                                        
                                    </div>
 
-                                   <div class="mb-5">
-                                        <p class="text-small text-muted text-uppercase mb-2">Contact Info</p>
-                                        
-                                        
-                                   </div>
+                                   @if($user->lead['converted'])
+                                        <div class="mb-5">
+                                             <p class="text-small text-muted text-uppercase mb-2">Student Info</p>
+                                             
+                                             <div class="row g-0 mb-2">
+                                                  <div class="col-auto me-2">
+                                                       <i class="fas fa-address-card"></i>
+                                                  </div>
+                                                  <div class="col">
+                                                       <a href="{{ route('students.show',$user->student['id']) }}">{{ $user->student['regnumber'] }}</a>
+                                                  </div>
+                                             </div>
+                                             <div class="row g-0 mb-2">
+                                                  <div class="col-auto me-2">
+                                                       <i class="fas fa-venus"></i>
+                                                  </div>
+                                                  <div class="col">{{ $user->student['gender']['name'] }}</div>
+                                             </div>
+                                             <div class="row g-0 mb-2">
+                                                  <div class="col-auto me-2">
+                                                       <i class="fas fa-flag-checkered"></i>
+                                                  </div>
+                                                  <div class="col">{{ $user->student['age'] }} years old</div>
+                                             </div>
+
+                                             <div class="row g-0 mb-2">
+                                                  <div class="col-auto me-2">
+                                                       <i class="fas fa-flag"></i>
+                                                  </div>
+                                                  <div class="col">{{ $user->student['city']['name'] }} | {{ $user->student['country']['name'] }}</div>
+                                             </div>
+
+                                             <div class="row g-0 mb-2">
+                                                  <div class="col-auto me-2">
+                                                       <i class="fas fa-calendar"></i>
+                                                  </div>
+                                                  <div class="col">
+                                                       {{ date('d M Y h:i:s A',strtotime($user->student['created_at'])) }} 
+                                                  </div>
+                                             </div>
+
+                                             <div class="row g-0 mb-2">
+                                                  <div class="col-auto me-2">
+                                                       <i class="fas fa-calendar-alt"></i>
+                                                  </div>
+                                                  <div class="col">
+                                                       {{ date('d M Y h:i:s A',strtotime($user->student['updated_at'])) }} 
+                                                  </div>
+                                             </div>
+
+                                             
+                                        </div>
+                                   @endif
                               </div>
                          </div>
                     </div>
@@ -135,7 +211,7 @@
                                                        @csrf
                                                        <div class="row">
                                                             <div class="col-md-6 form-group mb-3">
-                                                                 <input type="email" name="cmpemail" id="cmpemail" class="form-control form-control-sm border-0 rounded-0" placeholder="To:" value="" readonly />
+                                                                 <input type="email" name="cmpemail" id="cmpemail" class="form-control form-control-sm border-0 rounded-0" placeholder="To:" value="{{ $user->lead['email'] }}" readonly />
                                                             </div>
                                                             <div class="col-md-6 form-group mb-3">
                                                                  <input type="ext" name="cmpsubject" id="cmpsubject" class="form-control form-control-sm border-0 rounded-0" placeholder="Subject" value="" />
@@ -180,6 +256,9 @@
                                    </li>
                                    <li class="nav-item">
                                         <button type="button" class="tablinks" onclick="gettab(event,'signintab')">Sign In</button>
+                                   </li>
+                                   <li class="nav-item">
+                                        <button type="button" class="tablinks" onclick="gettab(event,'linkedtab')">Linked</button>
                                    </li>
                                    <li class="nav-item">
                                         <button type="button" class="tablinks" onclick="gettab(event,'logtab')">Log</button>
@@ -252,7 +331,7 @@
                                                   </div>
 
                                                   @if($lead->isconverted())
-                                                       <small>this lead have already been converted to a student. Editing is disabled.</small>
+                                                       <small class="text-danger">This lead have already been converted to a student. Editing is disabled.</small>
                                                   @endif
 
                                                   <div class="col-md-12">
@@ -267,61 +346,150 @@
                                    <div id="studenttab" class="tab-pane">
                                         <h3>Student Information</h3>
 
-                                        <form action="/students" method="POST">
-                                             @csrf
+                                        @if($user->lead['converted'])
+                                             <form action="/students/{{$student->id}}" method="POST">
+                                                  @csrf
+                                                  @method("PUT")
 
-                                             <div class="row">
-                                                  <div class="col-md-3 mb-3">
-                                                       <label for="firstname">First Name <span class="text-danger">*</span></label>
-                                                       <input type="text" name="firstname" id="firstname" class="form-control form-control-sm rounded-0" placeholder="Enter First name" value="{{ old('firstname') }}"/>
-                                                       @error("firstname")
-                                                            <span class="text-danger">{{ $message }}<span>
-                                                       @enderror
-                                                  </div>
+                                                  <div class="row">
+                                                       <div class="col-md-3 mb-3">
+                                                            <label for="firstname">First Name <span class="text-danger">*</span></label>
+                                                            <input type="text" name="firstname" id="firstname" class="form-control form-control-sm rounded-0" placeholder="Enter First name" value="{{$student->firstname}}"/>
+                                                            @error("firstname")
+                                                                 <span class="text-danger">{{ $message }}<span>
+                                                            @enderror
+                                                       </div>
 
-                                                  <div class="col-md-3 mb-3">
-                                                       <label for="lastname">Last Name <span class="text-danger">*</span></label>
-                                                       <input type="text" name="lastname" id="lastname" class="form-control form-control-sm rounded-0" placeholder="Enter Last Name" value="{{ old('lastname')}}"/>
-                                                       @error("lastname")
-                                                            <span class="text-danger">{{ $message }}<span>
-                                                       @enderror
-                                                  </div>
+                                                       <div class="col-md-3 mb-3">
+                                                            <label for="lastname">Last Name <span class="text-danger">*</span></label>
+                                                            <input type="text" name="lastname" id="lastname" class="form-control form-control-sm rounded-0" placeholder="Enter Last Name" value="{{$student->lastname}}"/>
+                                                            @error("lastname")
+                                                                 <span class="text-danger">{{ $message }}<span>
+                                                            @enderror
+                                                       </div>
 
+                                                       <div class="col-md-3 form-group mb-3">
+                                                            <label for="gender_id">Gender <span class="text-danger">*</span></label>
+                                                            <select name="gender_id" id="gender_id" class="form-control form-control-sm rounded-0">
+                                                                 <option value="" disabled>Choose a gender</option>
+                                                                 @foreach($genders as $gender)
+                                                                      {{--  <option value="{{$gender['id']}}" {{ $gender['id'] == $student->gender_id ? 'selected' : '' }}>{{$gender['name']}}</option> --}}
+                                                                      <option value="{{$gender['id']}}" {{ $gender['id'] == old('gender_id',$student->gender_id) ? 'selected' : '' }}>{{$gender['name']}}</option>
+                                                                 @endforeach     
+                                                            </select>
+                                                       </div>
 
-                                                  <div id="multiphone" class="col-md-3 form-group mb-3 createpage">
-                                                       <label for="phone">Phone<span class="text-danger">*</span></label>
-                                                       <div class="input-group phonelimit">
-                                                            <input type="text" name="phone[]" id="phone" class="form-control form-control-sm rounded-0 phone" placeholder="Enter Mobile Number" value="{{ old('lastname')}}"/>
-                                                            <span id="addphone" class="input-group-text" style="font-size:10px; cursor:pointer;"><i class="fas fa-plus-circle"></i></span>
+                                                       
+
+                                                       <div class="col-md-3 mb-3">
+                                                            <label for="age">Age <span class="text-danger">*</span></label>
+                                                            <input type="number" name="age" id="age" class="form-control form-control-sm rounded-0" placeholder="Enter Your Age" value="{{ old('age',$student->age)}}"/>
+                                                       </div>
+
+                                                       <div class="col-md-3 mb-3">
+                                                            <label for="dob">Date Of Birth</label>
+                                                            <input type="date" name="dob" id="dob" class="form-control form-control-sm rounded-0" placeholder="Enter Your Age" value="{{ old('dob',$student->dob)}}"/>
+                                                       </div>
+
+                                                       <div class="col-md-3 form-group mb-3">
+                                                            <label for="religion_id">Religion</label>
+                                                            <select name="religion_id" id="religion_id" class="form-control form-control-sm rounded-0">
+                                                                 <option value="" disabled>Choose a religion</option>
+                                                                 @foreach($religions as $religion)
+                                                                      <option value="{{$religion['id']}}" {{ $religion['id'] == $student->religion_id ? 'selected' : '' }}>{{$religion['name']}}</option>
+                                                                 @endforeach     
+                                                            </select>
+                                                       </div>
+
+                                                       <div class="col-md-3 mb-3">
+                                                            <label for="email">Email <span class="text-danger">*</span></label>
+                                                            <input type="email" name="email" id="email" class="form-control form-control-sm rounded-0" placeholder="Enter Your Email" value="{{ old('email',$student->email)}}" readonly/>
+                                                       </div>
+
+                                                       <div class="col-md-3 mb-3">
+                                                            <label for="nationalid">National ID</label>
+                                                            <input type="text" name="nationalid" id="nationalid" class="form-control form-control-sm rounded-0" placeholder="Enter Your NRC Number" value="{{ old('nationalid',$student->nationalid)}}"/>
+                                                       </div>
+
+                                                       <div class="col-md-3 form-group mb-3">
+                                                            <label for="country_id">Country</label>
+                                                            <select name="country_id" id="country_id" class="form-control form-control-sm rounded-0 country_id">
+                                                                 <option value="" disabled>Choose a country</option>
+                                                                 @foreach($countries as $country)
+                                                                      <option value="{{$country['id']}}" {{ $country['id'] === $student->country_id ? 'selected' : '' }}>{{$country['name']}}</option>
+                                                                 @endforeach     
+                                                            </select>
+                                                       </div>
+                                                       <div class="col-md-3 form-group mb-3">
+                                                            <label for="city_id">City</label>
+                                                            <select name="city_id" id="city_id" class="form-control form-control-sm rounded-0 city_id">
+                                                                 <option value="" disabled>Choose a city</option>
+                                                                 @foreach($cities as $city)
+                                                                      <option value="{{$city['id']}}" {{ $city['id'] === $student->city_id ? 'selected' : '' }}>{{$city['name']}}</option>
+                                                                 @endforeach  
+                                                            </select>
+                                                       </div>
+
+                                                       <div class="col-md-3 mb-3">
+                                                            <label for="address">Address</label>
+                                                            <input type="text" name="address" id="address" class="form-control form-control-sm rounded-0" placeholder="Enter Your Address" value="{{ old('address',$student->address)}}"/>
+                                                       </div>
+
+                                                       <div id="multiphone" class="col-md-3 form-group mb-3 editpage">
+                                                            <label for="phone">Phone<span class="text-danger">*</span></label>
+                                                            
+                                                            @if($studentphones->isEmpty())
+                                                                 <div class="input-group phonelimit">
+                                                                      <input type="text" name="newphone[]" id="" class="form-control form-control-sm rounded-0 phone" placeholder="Enter Mobile Number" value=""/>
+                                                                      <span id="" class="input-group-text add-phone-btn" style="font-size:10px; cursor:pointer;"><i class="fas fa-plus-circle"></i></span>
+                                                                 </div>
+                                                            @else 
+                                                                 @foreach($studentphones as $studentphone)
+                                                                      <div class="input-group phonelimit">
+                                                                           <input type="hidden" name="studentphoneid[]" id="" value="{{$studentphone->id}}"/>
+                                                                           <input type="text" name="phone[]" id="" class="form-control form-control-sm rounded-0 phone" placeholder="Enter Mobile Number" value="{{ $studentphone->phone }}"/>
+                                                                           
+                                                                           <a href="{{ route('studentphones.delete',$studentphone->id) }}" class="input-group-text">
+                                                                                <span id="" class="remove-phone-btn" style="font-size:10px; cursor:pointer;color:red;"><i class="fas fa-minus-circle"></i></span>
+                                                                           </a>
+                                                                           <span id="" class="input-group-text add-phone-btn" style="font-size:10px; cursor:pointer;"><i class="fas fa-plus-circle"></i></span>
+
+                                                                      </div>
+                                                                 @endforeach
+                                                            @endif
+                                                       </div>
+
+                                                       <!-- <div class="col-md-4 mb-3">
+                                                            <label for="regnumber">Register Number <span class="text-danger">*</span></label>
+                                                            <input type="text" name="regnumber" id="regnumber" class="form-control form-control-sm rounded-0" placeholder="Enter Register Number" autocomplete="off" value="{{$student->regnumber}}"/>
+                                                            @error("regnumber")
+                                                                 <span class="text-danger">{{ $message }}<span>
+                                                            @enderror
+                                                       </div> -->
+
+                                                       <div class="col-md-12 mb-3">
+                                                            <label for="remark">Remark</label>
+                                                            <textarea name="remark" id="remark" class="form-control rounded-0" rows="5" placeholder="Enter Remark">{{$student->remark}}</textarea>
+                                                            @error("remark")
+                                                                 <span class="text-danger">{{ $message }}<span>
+                                                            @enderror
+                                                       </div>
+
+                                                       @if($user->student->isProfileLocked())
+                                                            <small class="text-danger">This profile is locked for update because the profile score is 100%.</small>
+                                                       @endif
+
+                                                       <div class="col-md-12">
+                                                            <div class="d-flex justify-content-end">
+                                                                 <button type="submit" class="btn btn-secondary btn-sm rounded-0 ms-3" {{ $user->student->isProfileLocked() ? 'disabled' : '' }}>Update</button>
+                                                            </div>
                                                        </div>
                                                   </div>
-
-                                                  {{-- <div class="col-md-4 mb-3">
-                                                       <label for="regnumber">Register Number <span class="text-danger">*</span></label>
-                                                       <input type="text" name="regnumber" id="regnumber" class="form-control form-control-sm rounded-0" placeholder="Enter Register Number" autocomplete="off" value="{{ old('regnumber')}}"/>
-                                                       @error("regnumber")
-                                                            <span class="text-danger">{{ $message }}<span>
-                                                       @enderror
-                                                  </div>
-
-                                                  --}}
-
-                                                  <div class="col-md-12 mb-3">
-                                                       <label for="remark">Remark</label>
-                                                       <textarea name="remark" id="remark" class="form-control rounded-0" rows="5" placeholder="Enter Remark">{{ old('remark')}}</textarea>
-                                                       @error("remark")
-                                                            <span class="text-danger">{{ $message }}<span>
-                                                       @enderror
-                                                  </div>
-
-                                                  <div class="col-md-12">
-                                                       <div class="d-flex justify-content-end">
-                                                            <a href="{{route('students.index')}}" class="btn btn-secondary btn-sm rounded-0 me-3">Cancel</a>
-                                                       <button type="submit" class="btn btn-secondary btn-sm rounded-0">Submit</button>
-                                                       </div>
-                                                  </div>
-                                             </div>
-                                        </form>
+                                             </form>
+                                        @else
+                                             <p>No Data</p>
+                                        @endif
+                                        
                                    </div>
 
                                    <div id="signintab" class="tab-pane">
@@ -364,6 +532,31 @@
                                         </div>
                                         
 
+                                   </div>
+
+                                   <div id="linkedtab" class="tab-pane">
+                                        <h3>Link App</h3>
+                                        <p>Github</p>
+                                        <div class="card rounded-0">
+                                             <div id="displayone" class="card-body">
+                                                  <!-- <img src="https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png" class="rounded-circle" alt="">
+                                                  <h3 class="card-title">User Name</h3>
+                                                  <p class="card-subtitle">Hello World....</p>
+                                                  <ul class="list-group">
+                                                       <li class="list-group-item">Repositories: <span class="fw-bold">100</span></li>
+                                                       <li class="list-group-item">Followers: <span class="fw-bold">200</span></li>
+                                                       <li class="list-group-item">Following: <span class="fw-bold">300</span></li>
+                                                  </ul> -->
+                                             </div>
+                                             <div id="displaytwo" class="card-footer">
+                                                  <div class="dropdown float-end">
+                                                       <a href="javascript:void(0);" class="btn btn-success btn-sm rounded-0 dropdown-toggle" data-bs-toggle="dropdown">Repositories Links</a>
+                                                       <ul id="displaylistgroup" class="dropdown-menu">
+                                                            <li><a href="#" class="dropdown-item" target="_bank">No Data</a></li>
+                                                       </ul>
+                                                  </div>
+                                             </div>
+                                        </div>
                                    </div>
 
                                    <div id="logtab" class="tab-pane">
@@ -466,6 +659,38 @@
           display: none;
           }
           /* End Tag Box */
+
+          /* Start Profile Image */
+          .gallery{
+               width: 100%;
+               height: 100%;
+               background-color: #eee;
+               color: #aaa;
+
+               display:flex;
+               justify-content:center;
+               align-items:center;
+
+               text-align: center;
+               padding: 10px;
+          }
+          .gallery img{
+               width: 100px;
+               height: 100px;
+               border: 2px dashed #aaa;
+               border-radius: 10px;
+               object-fit: cover;
+
+               padding: 5px;
+               margin: 0 5px;
+          }
+          .removetxt span{
+               display: none;
+          }
+          #uploadbtn{
+               display:none;
+          }
+          /* End Profile Image */
 </style>
 @endsection
 
@@ -479,8 +704,8 @@
                });
           // End Back Btn
 
-          // Start Tag Box
-               var gettablinks = document.getElementsByClassName('tablinks');  //HTMLCollection
+            // Start Tag Box
+            var gettablinks = document.getElementsByClassName('tablinks');  //HTMLCollection
                var gettabpanes = document.getElementsByClassName('tab-pane');
                // console.log(gettabpanes);
 
@@ -511,6 +736,7 @@
 
                document.getElementById('autoclick').click();
           // End Tag Box
+
 
           // Start Accordion
                var getacctitles = document.getElementsByClassName('acctitle');
@@ -573,7 +799,182 @@
                     });
                });
                // End Dynamic Select Option
+
+
+               // Start Add / Remove Phone for (createpage/editpage)
+               //   Note:: do not forget to put multiphone, createpage or editpage / phone selector names 
+               $(document).on("click",".add-phone-btn",function(){
+                         // console.log("hola");
+                         addnewinput();
+                    });
+                    function addnewinput(){
+                         const maxnumber = 3;
+                         let getphonelimit = $(".phonelimit").length;
+
+                         let newinput;
+                         if(getphonelimit < maxnumber){
+                              if($("#multiphone").hasClass("createpage")){
+                                   newinput = `
+                                   <div class="input-group phonelimit">
+                                        <input type="text" name="phone[]" id="phone" class="form-control form-control-sm rounded-0 phone" placeholder="Enter Mobile Number" />
+                                        <span id="" class="input-group-text remove-phone-btn" style="font-size:10px; cursor:pointer;color:red;"><i class="fas fa-minus-circle"></i></span>
+                                   </div>
+                                   `;
+                                   $("#multiphone").append(newinput);
+                              }else if($("#multiphone").hasClass("editpage")){
+                                   newinput = `
+                                   <div class="input-group phonelimit">
+                                        <input type="text" name="newphone[]" id="" class="form-control form-control-sm rounded-0 phone" placeholder="Enter Mobile Number" />
+                                        <span id="" class="input-group-text remove-phone-btn" style="font-size:10px; cursor:pointer;color:red;"><i class="fas fa-minus-circle"></i></span>
+                                   </div>
+                                   `;
+                                   $("#multiphone").append(newinput);
+                              }
+                         }
+                    }
+                    $(document).on("click",".remove-phone-btn",function(){
+                         // $(this).parent().remove();
+                         $(this).closest('.input-group').remove();
+                    });
+               // End Add / Remove Phone for (createpage/editpage)
+
+
+               // Start Single Image Preview
+               var previewimages = function(input,output){
+
+                    // console.log(input.files);
+
+                    if(input.files){
+                         var totalfiles = input.files.length;
+                         // console.log(totalfiles);
+                         if(totalfiles > 0){
+                              $('.gallery').addClass('removetxt');
+                         }else{
+                              $('.gallery').removeClass('removetxt');
+                         }
+                         for(var i = 0 ; i < totalfiles ; i++){
+                              var filereader = new FileReader();
+
+
+                              filereader.onload = function(e){
+                                   $(output).html(""); 
+                                   $($.parseHTML('<img>')).attr('src',e.target.result).appendTo(output);
+                              }
+
+                              filereader.readAsDataURL(input.files[i]);
+
+                         }
+                         $('#uploadbtn').show();
+                    }
+
+               }
+
+               $('#image').change(function(){
+                    previewimages(this,'.gallery');
+               });
+               // End Single Image Preview 
+
+               
           });
+
+
+          // Start Github User 
+          const getdisplayone = document.getElementById("displayone");
+               const getdisplaytwo = document.getElementById("displaytwo");
+               const getdisplaylistgroup = document.getElementById("displaylistgroup");
+
+               const baseurl = `https://api.github.com`;
+               // emailtouser('datalandtechnology@gmail.com'); // can get dynamic email from document by id
+               emailtouser('thoonlay779@gmail.com'); // can get dynamic email from document by id
+               async function emailtouser(email){
+                    try{
+                         const response = await axios.get(`${baseurl}/search/commits?q=author-email:${email}`)
+                         const datas = response.data.items;
+
+                         if(datas.length > 0){
+                              // console.log(datas);
+                              const username = datas[0].author.login;
+                              console.log(username);
+                              await getresult(username);
+
+                         }else{
+                              getdisplayone.innerHTML = `<div class="alert alert-danger text-center">No data found for this email</div>`;
+                         }
+                    }catch(err){
+                         console.log(err);
+                         getdisplayone.innerHTML = `<div class="alert alert-danger text-center">No data found for this email</div>`;
+                    }
+
+               }
+          
+               async function getresult(username){
+
+                    try{
+                         const response = await axios.get(`${baseurl}/users/${username}`);
+                         const {data} = response;
+
+                         // console.log(data);
+
+                         cardbodytodom(data);
+
+                         await resultrepos(username);
+                    }catch(err){
+                         console.log(err);
+                         if(err.response && err.response.status === 404){
+                              getdisplayone.innerHTML = `
+                                   <div class="alert alert-danger text-center">No Data Found !!<div>
+                              `;
+                              getdisplaylistgroup.innerHTML = "<li><a href='javascript:void(0);' class='dropdown-item'>No Data</a></li>";
+                         }
+                    }
+                    
+               
+               }
+
+               function cardbodytodom(user){
+                    // console.log(user);
+
+                    getdisplayone.innerHTML = `
+                         <div>
+                              <img src="${user.avatar_url}" class="rounded-circle" style="width:100px" alt="">
+                              <h3 class="card-title">${user.name}</h3>
+                              <p class="card-subtitle">${user.bio}</p>
+                              <ul class="list-group">
+                                   <li class="list-group-item">Repositories: <span class="fw-bold">${user.public_repos}</span></li>
+                                   <li class="list-group-item">Followers: <span class="fw-bold">${user.followers}</span></li>
+                                   <li class="list-group-item">Following: <span class="fw-bold">${user.following}</span></li>
+                              </ul>
+                         </div>
+                    `;
+               }
+
+               async function resultrepos(username){
+                    try{
+                         const response = await axios.get(`${baseurl}/users/${username}/repos`);
+                         const data = response.data;
+                         // console.log(data);
+                         cardfootertodom(data);
+                    }catch(err){
+                         console.log("error fetching repositories",err)
+                    }
+
+               }
+
+               function cardfootertodom(repositories){
+                    // console.log(repositories);
+                    getdisplaylistgroup.innerHTML = "";
+
+                    repositories.forEach(repository=>{
+                         // console.log(repository);
+                         getdisplaylistgroup.innerHTML += `
+                              <li><a href="${repository.html_url}" class="dropdown-item" target="_bank">${repository.name}</a></li>
+
+                         `;
+                    });
+               }
+               // End Github User 
+
+          
      </script>
 
 
