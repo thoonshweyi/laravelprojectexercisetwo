@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::table('cities', function (Blueprint $table) {
             $table->unsignedBigInteger("country_id")->after("slug");
-            $table->unsignedBigInteger("status_id")->after("country_id");
+            $table->unsignedBigInteger('region_id')->after("country_id");
+            $table->unsignedBigInteger("status_id")->after("region_id");
         });
     }
 
@@ -24,6 +25,7 @@ return new class extends Migration
     {
         Schema::table('cities', function (Blueprint $table) {
             $table->dropColumn("country_id");
+            $table->dropColumn("region_id");
             $table->dropColumn("status_id");
         });
     }

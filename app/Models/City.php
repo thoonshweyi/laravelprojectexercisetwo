@@ -14,6 +14,7 @@ class City extends Model
         "name",
         "slug",
         "country_id",
+        "region_id",
         "status_id",
         "user_id"
     ];

@@ -26,6 +26,8 @@ class CitiesController extends Controller
      {
          $this->validate($request,[
              "name" => "required|unique:cities,name",
+             "country_id" => "required",
+             "region_id" => "required",
              "status_id" => "required",
              "user_id" => "required"
          ]);
@@ -34,6 +36,7 @@ class CitiesController extends Controller
         $city->name = $request["name"];
         $city->slug = Str::slug($request["name"]);
         $city->country_id = $request["country_id"];
+        $city->region_id = $request["region_id"];
         $city->status_id = $request["status_id"];
         $city->user_id = $request["user_id"];
  
@@ -59,6 +62,7 @@ class CitiesController extends Controller
          $this->validate($request,[
              "editname" => "required|unique:cities,name,".$id,
              "editcountry_id" => "required",
+             "editregion_id" => "required",
              "editstatus_id" => "required",
              "user_id" => "required"
          ]);
@@ -67,6 +71,7 @@ class CitiesController extends Controller
         $city->name = $request["editname"];
         $city->slug = Str::slug($request["editname"]);
         $city->country_id = $request["editcountry_id"];
+        $city->region_id = $request["editregion_id"];
         $city->status_id = $request["editstatus_id"];
         $city->user_id = $request["user_id"];
  
@@ -95,8 +100,8 @@ class CitiesController extends Controller
          return new CitiesResource($city);
      }
 
-     public function filterbycountryid($filter){
+     public function filterbyregionid($filter){
         // return City::where("country_id",$filter)->where('status_id',3)->get();
-        return CitiesResource::collection(City::where("country_id",$filter)->where('status_id',3)->get());
+        return CitiesResource::collection(City::where("region_id",$filter)->where('status_id',3)->get());
     }
 }

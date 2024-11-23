@@ -27,10 +27,9 @@ class RegionsController extends Controller
         // dd($regions);
 
         $countries = Country::orderBy("name")->where("status_id",3)->get();
-        $cities = City::orderBy("name")->where("status_id",3)->get();
         $statuses = Status::whereIn("id",[3,4])->get();
 
-        return view("regions.index",compact("regions","countries","cities","statuses"));
+        return view("regions.index",compact("regions","countries","statuses"));
     }
     // request() - get the request form value
 
@@ -38,7 +37,7 @@ class RegionsController extends Controller
     {
         $this->validate($request,[
             "country_id"=>"required",
-            "city_id"=>"required",
+            // "city_id"=>"required",
             "name" => "required|unique:regions,name",
         ]);
 
@@ -49,7 +48,7 @@ class RegionsController extends Controller
        $region->name = $request["name"];
        $region->slug = Str::slug($request["name"]);
        $region->country_id = $request["country_id"];
-       $region->city_id = $request["city_id"];
+    //    $region->city_id = $request["city_id"];
        $region->status_id = $request["status_id"];
        $region->user_id = $user_id;
 
@@ -62,7 +61,7 @@ class RegionsController extends Controller
     {
         $this->validate($request,[
             "editcountry_id"=>"required",
-            "editcity_id"=>"required",
+            // "editcity_id"=>"required",
             "editname" => "required|unique:regions,name,".$id,
         ]);
 
@@ -73,7 +72,7 @@ class RegionsController extends Controller
        $region->name = $request["editname"];
        $region->slug = Str::slug($request["editname"]);
        $region->country_id = $request["editcountry_id"];
-       $region->city_id = $request["editcity_id"];
+    //    $region->city_id = $request["editcity_id"];
        $region->status_id = $request["editstatus_id"];
        $region->user_id = $user_id;
 

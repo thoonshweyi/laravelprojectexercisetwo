@@ -85,6 +85,8 @@
                             </li>
                             <li class="nav-item"><a href="javascript:void(0);" class="nav-link text-white p-3 mb-2 sidebarlinks" data-bs-toggle="collapse" data-bs-target="#table"><i class="fas fa-file-alt fa-md me-3"></i> Addon <i class="fas fa-angle-left mores"></i></a>
                                 <ul id="table" class="collapse ps-2">
+                                    <li><a href="{{route('permissionroles.index')}}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> Assign Permissions</a></li>
+                                    <li><a href="{{route('roleusers.index')}}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> Assign Roles</a></li>
                                     <li><a href="{{route('cities.index')}}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> City</a></li>
                                     <li><a href="{{route('paymentmethods.index')}}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> Payment Method</a></li>
                                     <li><a href="{{route('relatives.index')}}" class="nav-link text-white sidebarlinks"><i class="fas fa-long-arrow-alt-right me-4"></i> Relatives</a></li>

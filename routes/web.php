@@ -14,6 +14,7 @@ use App\Http\Controllers\CitiesController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\CountriesController;
+use App\Http\Controllers\ComposeMailsController;
 use App\Http\Controllers\DashboardsController;
 use App\Http\Controllers\DaysController;
 use App\Http\Controllers\EdulinksController;
@@ -36,6 +37,9 @@ use App\Http\Controllers\RegionsController;
 use App\Http\Controllers\ReligionsController;
 use App\Http\Controllers\RelativesController;
 use App\Http\Controllers\RolesController;
+use App\Http\Controllers\PermissionsController;
+use App\Http\Controllers\PermissionRolesController;
+use App\Http\Controllers\RoleUsersController;
 use App\Http\Controllers\StagesController;
 use App\Http\Controllers\StatusesController;
 use App\Http\Controllers\SocialapplicationsController;
@@ -84,13 +88,16 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth',"autologout","verified")->group(function () {
 
+    Route::middleware(['role:Admin,Teacher,Student'])->group(function () {
+        Route::resource("announcements",AnnouncementsController::class);
+    });
+
     Route::get("/dashboards",[DashboardsController::class,'index'])->name("dashboard.index");
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::resource("announcements",AnnouncementsController::class);
     
     Route::resource("attcodegenerators",AttcodegeneratorsController::class);
     Route::get("/attcodegeneratorssstatus",[AttcodegeneratorsController::class,"typestatus"]);
@@ -112,6 +119,8 @@ Route::middleware('auth',"autologout","verified")->group(function () {
     Route::resource("countries",CountriesController::class);
     Route::get("/countriesstatus",[CountriesController::class,"typestatus"]);
     Route::delete("/countriesbulkdeletes",[CountriesController::class,"bulkdeletes"])->name("countries.bulkdeletes");
+
+    Route::post("compose/mail",[ComposeMailsController::class,"mail"])->name("compose.mail");
 
     Route::resource("days",DaysController::class);
     Route::get("/dayssstatus",[DaysController::class,"typestatus"]);
@@ -163,11 +172,22 @@ Route::middleware('auth',"autologout","verified")->group(function () {
     Route::post("/trackdurations",[PostViewDurationsController::class,"trackduration"]);
 
     Route::resource("relatives",RelativesController::class);
+    
     Route::resource("roles",RolesController::class);
+
+    Route::resource("permissions",PermissionsController::class);
+    Route::get("/permissionsstatus",[PermissionsController::class,"typestatus"]);
+    Route::delete("/permissionsbulkdeletes",[PermissionsController::class,"bulkdeletes"])->name("permissions.bulkdeletes");
 
     Route::resource("regions",RegionsController::class);
     Route::get("/regionsstatus",[RegionsController::class,"typestatus"]);
     Route::delete("/regionsbulkdeletes",[RegionsController::class,"bulkdeletes"])->name("regions.bulkdeletes");
+
+    Route::resource("permissionroles",PermissionRolesController::class);
+    Route::delete("/permissionrolesbulkdeletes",[PermissionRolesController::class,"bulkdeletes"])->name("permissionroles.bulkdeletes");
+
+    Route::resource("roleusers",RoleUsersController::class);
+    Route::delete("/roleusersbulkdeletes",[RoleUsersController::class,"bulkdeletes"])->name("roleusers.bulkdeletes");
 
     Route::resource("religions",ReligionsController::class);
     Route::get("/religionsstatus",[ReligionsController::class,"typestatus"]);

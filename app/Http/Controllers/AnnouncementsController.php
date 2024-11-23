@@ -17,12 +17,14 @@ class AnnouncementsController extends Controller
 {
     public function index()
     {
+            $this->authorize('view',Announcement::class);
         $announcements = Announcement::all();
         return view("announcements.index",compact("announcements"));
     }
 
     public function create()
     {    
+            $this->authorize('create',Announcement::class);
         $posts = \DB::table("posts")->where("attshow",3)->orderBy("title","asc")->get()->pluck("title","id");
 
         return view("announcements.create",compact("posts"));
@@ -41,6 +43,7 @@ class AnnouncementsController extends Controller
        $user_id = $user->id;
 
        $announcement = new Announcement();
+            $this->authorize('create',$announcement);
        $announcement->title = $request["title"];
        $announcement->post_id = $request["post_id"];
        $announcement->content = $request["content"];
@@ -74,6 +77,7 @@ class AnnouncementsController extends Controller
         $user_id = $user->id;
 
         $announcement = Announcement::findOrFail($id);
+            $this->authorize('view',$announcement);
         $comments = $announcement->comments()->orderBy("updated_at","desc")->get();
         
         $type = "App\Notifications\AnnouncementNotify";
@@ -89,6 +93,7 @@ class AnnouncementsController extends Controller
     {
 
         $announcement = Announcement::findOrFail($id);
+            $this->authorize('edit',$announcement);
         $posts = \DB::table("posts")->where("attshow",3)->orderBy("title","asc")->get()->pluck("title","id");
 
         return view("announcements.edit")->with("announcement",$announcement)->with("posts",$posts);
@@ -106,6 +111,8 @@ class AnnouncementsController extends Controller
         $user_id = $user["id"];
 
         $announcement = Announcement::findOrFail($id);
+            $this->authorize('edit',$announcement);
+
         $announcement->title = $request["title"];
         $announcement->post_id = $request["post_id"];
         $announcement->content = $request["content"];
@@ -142,6 +149,7 @@ class AnnouncementsController extends Controller
     public function destroy(string $id)
     {
         $announcement = Announcement::findOrFail($id);
+            $this->authorize('delete',$announcement);
         
         // Remove Old Image
         $path = $announcement->image;

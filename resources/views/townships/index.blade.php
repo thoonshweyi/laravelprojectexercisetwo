@@ -20,15 +20,6 @@
                               </select>
                          </div>
                          <div class="col-md-2 form-group mb-3">
-                              <label for="city_id">City</label>
-                              <select name="city_id" id="city_id" class="form-control form-control-sm rounded-0 city_id">
-                                   <option value="" selected disabled>Choose a city</option>
-                                   {{-- @foreach($cities as $city)
-                                        <option value="{{$city['id']}}">{{$city['name']}}</option>
-                                   @endforeach --}}     
-                              </select>
-                         </div>
-                         <div class="col-md-2 form-group mb-3">
                               <label for="region_id">Region</label>
                               <select name="region_id" id="region_id" class="form-control form-control-sm rounded-0 region_id">
                                    <option value="" selected disabled>Choose a region</option>
@@ -37,6 +28,16 @@
                                    @endforeach --}}     
                               </select>
                          </div>
+                         <div class="col-md-2 form-group mb-3">
+                              <label for="city_id">City</label>
+                              <select name="city_id" id="city_id" class="form-control form-control-sm rounded-0 city_id">
+                                   <option value="" selected disabled>Choose a city</option>
+                                   {{-- @foreach($cities as $city)
+                                        <option value="{{$city['id']}}">{{$city['name']}}</option>
+                                   @endforeach --}}     
+                              </select>
+                         </div>
+                         
                          <div class="col-md-2 form-group mb-3">
                               <label for="name">Township Name <span class="text-danger">*</span></label>
                               @error("name")
@@ -90,9 +91,9 @@
                          </th>
                          <th>No</th>
                          <th>Name</th>
+                         <th>Country</th>
                          <th>Region</th>
                          <th>City</th>
-                         <th>Country</th>
                          <th>Status</th>
                          <th>By</th>
                          <th>Created At</th>
@@ -108,9 +109,9 @@
                               </td>
                               <td>{{++$idx}}</td>
                               <td>{{ $township->name }}</td>
+                              <td>{{ $township->country["name"] }}</td>
                               <td>{{ $township->region["name"] }}</td>
                               <td>{{ $township->city["name"] }}</td>
-                              <td>{{ $township->country["name"] }}</td>
                               
                               <td>
                                    <div class="form-check form-switch">
@@ -165,6 +166,15 @@
                                              </div>
 
                                              <div class="col-md-6 form-group mb-3">
+                                                  <label for="editregion_id">Region</label>
+                                                  <select name="editregion_id" id="editregion_id" class="form-control form-control-sm rounded-0 region_id">
+                                                       {{-- @foreach($regions as $region)
+                                                            <option value="{{$region['id']}}">{{$region['name']}}</option>
+                                                       @endforeach --}}     
+                                                  </select>
+                                             </div>
+
+                                             <div class="col-md-6 form-group mb-3">
                                                   <label for="editcity_id">City</label>
                                                   <select name="editcity_id" id="editcity_id" class="form-control form-control-sm rounded-0 city_id">
                                                        {{-- @foreach($cities as $city)
@@ -173,14 +183,7 @@
                                                   </select>
                                              </div>
 
-                                             <div class="col-md-6 form-group mb-3">
-                                                  <label for="editregion_id">Region</label>
-                                                  <select name="editregion_id" id="editregion_id" class="form-control form-control-sm rounded-0 region_id">
-                                                       {{-- @foreach($regions as $region)
-                                                            <option value="{{$region['id']}}">{{$region['name']}}</option>
-                                                       @endforeach --}}     
-                                                  </select>
-                                             </div>
+                                             
 
                                              <div class="col-md-6 form-group mb-3">
                                                   <label for="editname">Name <span class="text-danger">*</span></label>
@@ -225,51 +228,50 @@
                     const getcountryid = $(this).val();
                     // console.log(getcountryid);
 
-                    let opforcity = "";
                     let opforregion = "";
+                    let opforcity = "";
                     $.ajax({
-                         url: `/api/filter/cities/${getcountryid}`,
+                         url: `/api/filter/regions/${getcountryid}`,
                          type: "GET",
                          dataType:"json",
                          success:function(response){
-                              $(".city_id").empty();
                               $(".region_id").empty();
-                              opforcity += "<option selected disabled>Choose a city ....</option>";
+                              $(".city_id").empty();
                               opforregion += "<option selected disabled>Choose a region ....</option>";
+                              opforcity += "<option selected disabled>Choose a city ....</option>";
                               
                               console.log(response);
                               for(let x=0 ; x<response.data.length; x++){
-                                   opforcity += `<option value="${response.data[x].id}">${response.data[x].name}</option>`;
+                                   opforregion += `<option value="${response.data[x].id}">${response.data[x].name}</option>`;
                               }
-
-                              $(".city_id").append(opforcity);
                               $(".region_id").append(opforregion);
+                              $(".city_id").append(opforcity);
                          },
                          error:function(response){
                               console.log("Error:( ",response);
                          }
                     });
                });
-               $(document).on("change",".city_id",function(){
-                    const getcityid = $(this).val();
-                    // console.log(getcityid);
+               $(document).on("change",".region_id",function(){
+                    const getregionid = $(this).val();
+                    console.log(getregionid);
 
-                    let opforregion = "";
+                    let opforcity = "";
                     $.ajax({
-                         url: `/api/filter/regions/${getcityid}`,
+                         url: `/api/filter/cities/${getregionid}`,
                          type: "GET",
                          dataType:"json",
                          success:function(response){
                               // console.log(response);
-                              $(".region_id").empty();
-                              opforregion += "<option selected disabled>Choose a region ....</option>";
+                              $(".city_id").empty();
+                              opforcity += "<option selected disabled>Choose a city ....</option>";
                               
                               console.log(response);
                               for(let y=0 ; y<response.data.length; y++){
-                                   opforregion += `<option value="${response.data[y].id}">${response.data[y].name}</option>`;
+                                   opforcity += `<option value="${response.data[y].id}">${response.data[y].name}</option>`;
                               }
 
-                              $(".region_id").append(opforregion);
+                              $(".city_id").append(opforcity);
                          },
                          error:function(response){
                               console.log("Error:( ",response);
@@ -301,23 +303,23 @@
                $(document).on("click",".editform",async function(e){
                     const getcountryid = $(this).attr("data-country");
                     // console.log(getcountryid);
-                    let opforcity = "";
+                    let opforregion = "";
 
                     await $.ajax({
-                         url: `/api/filter/cities/${getcountryid}`,
+                         url: `/api/filter/regions/${getcountryid}`,
                          type: "GET",
                          dataType:"json",
                          success:function(response){
                               console.log(response);
-                              $(".city_id").empty();
-                              opforcity += "<option selected disabled>Choose a city abcd</option>";
+                              $(".region_id").empty();
+                              opforregion += "<option selected disabled>Choose a region abcd</option>";
                               
                               console.log(response);
                               for(let x=0 ; x<response.data.length; x++){
-                                   opforcity += `<option value="${response.data[x].id}">${response.data[x].name}</option>`;
+                                   opforregion += `<option value="${response.data[x].id}">${response.data[x].name}</option>`;
                               }
 
-                              $(".city_id").append(opforcity);
+                              $(".region_id").append(opforregion);
 
                               // console.log(e.target.parentElement);
                               // $("#editcity_id").val($(e.target.parentElement).attr("data-city"));
@@ -328,23 +330,23 @@
                          }
                     });
 
-                    const getcityid = $(this).attr("data-city");
-                    let opforregion = "";
+                    const getregionid = $(this).attr("data-region");
+                    let opforcity = "";
                     await $.ajax({
-                         url: `/api/filter/regions/${getcityid}`,
+                         url: `/api/filter/cities/${getregionid}`,
                          type: "GET",
                          dataType:"json",
                          success:function(response){
                               // console.log(response);
-                              $(".region_id").empty();
-                              opforregion += "<option selected disabled>Choose a region ....</option>";
+                              $(".city_id").empty();
+                              opforcity += "<option selected disabled>Choose a citiy ....</option>";
                               
                               console.log(response);
                               for(let y=0 ; y<response.data.length; y++){
-                                   opforregion += `<option value="${response.data[y].id}">${response.data[y].name}</option>`;
+                                   opforcity += `<option value="${response.data[y].id}">${response.data[y].name}</option>`;
                               }
 
-                              $(".region_id").append(opforregion);
+                              $(".city_id").append(opforcity);
 
                               // $("#editregion_id").val($(e.target.parentElement).attr("data-region"));
                          },
@@ -353,8 +355,6 @@
                               // console.log("Error:( ",response.responseText);
                          }
                     });
-
-
 
 
                     // console.log($(this).attr("data-id"),$(this).attr("data-name"));

@@ -7,10 +7,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 use App\Models\Country;
 use App\Models\Region;
+use App\Models\City;
 use App\Models\User;
 use App\Models\Status;
 
-class CitiesResource extends JsonResource
+class TownshipsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -25,6 +26,7 @@ class CitiesResource extends JsonResource
             "slug"=>$this->slug,
             "country_id"=>$this->country_id,
             "region_id"=>$this->region_id,
+            "city_id"=>$this->city_id,
             "status_id"=>$this->status_id,
             "user_id"=>$this->user_id,
             "created_at"=>$this->created_at->format("d m Y"),
@@ -32,6 +34,7 @@ class CitiesResource extends JsonResource
 
             "country"=>Country::where("id",$this->country_id)->select(["id","name"])->first(),
             "region"=>Region::where("id",$this->region_id)->select(["id","name"])->first(),
+            "city"=>City::where("id",$this->city_id)->select(["id","name"])->first(),
             "user"=>User::where("id",$this->user_id)->select(["id","name"])->first(),
             "status"=>Status::where("id",$this->status_id)->select(["id","name"])->first()
         ];

@@ -44,7 +44,9 @@
                               @foreach($roles as $idx=>$role)
                               <tr>
                                    <td>{{++$idx}}</td>
-                                   <td><img src="{{ asset($role->image) }}" class="rounded-circle" alt="{{$role->name}}" width="20" height="20"/> <a href="{{route('roles.show',$role->id)}}">{{$role->name}}</a></td>
+                                   <td>
+                                        <img src="{{ asset($role->image) }}" class="rounded-circle" alt="{{$role->name}}" width="20" height="20"/> 
+                                        <a href="{{route('roles.show',$role->slug)}}">{{$role->name}}</a></td>
                                    <td>{{ $role->status->name }}</td>
                                    <td>{{ $role->user["name"] }}</td>
                                    <td>{{ $role->created_at->format('d M Y') }}</td>

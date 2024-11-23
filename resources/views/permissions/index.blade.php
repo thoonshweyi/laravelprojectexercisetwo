@@ -1,42 +1,24 @@
 @extends("layouts.adminindex")
 
-@section("caption","Region List")
+@section("caption","Country List")
 @section("content")
                          
      <!-- Start Page Content Area -->
      <div class="container-fluid">
 
           <div class="col-md-12">
-               <form action="{{route('regions.store')}}" method="POST">
+               <form action="{{route('permissions.store')}}" method="POST">
                     {{ csrf_field() }}
                     <div class="row align-items-end">
-                         <div class="col-md-2 form-group mb-3">
-                              <label for="country_id">Country</label>
-                              <select name="country_id" id="country_id" class="form-control form-control-sm rounded-0 country_id">
-                                   <option value="" selected disabled>Choose a country</option>
-                                   @foreach($countries as $country)
-                                        <option value="{{$country['id']}}">{{$country['name']}}</option>
-                                   @endforeach     
-                              </select>
-                         </div>
-                         <!-- <div class="col-md-2 form-group mb-3">
-                              <label for="city_id">City</label>
-                              <select name="city_id" id="city_id" class="form-control form-control-sm rounded-0 city_id">
-                                   <option value="" selected disabled>Choose a city</option>
-                                   {{-- @foreach($cities as $city)
-                                        <option value="{{$city['id']}}">{{$city['name']}}</option>
-                                   @endforeach --}}     
-                              </select>
-                         </div> -->
-                         <div class="col-md-2 form-group mb-3">
-                              <label for="name">Region Name <span class="text-danger">*</span></label>
+                         <div class="col-md-3 form-group mb-3">
+                              <label for="name">Name <span class="text-danger">*</span></label>
                               @error("name")
                                    <span class="text-danger">{{ $message }}<span>
                               @enderror
-                              <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter Region Name" value="{{ old('name') }}"/>
+                              <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" placeholder="Enter Permission Name" value="{{ old('name') }}"/>
                          </div>
 
-                         <div class="col-md-2 form-group mb-3">
+                         <div class="col-md-3 form-group mb-3">
                               <label for="status_id">Status</label>
                               <select name="status_id" id="status_id" class="form-control form-control-sm rounded-0">
                                    @foreach($statuses as $status)
@@ -45,7 +27,7 @@
                               </select>
                          </div>
 
-                         <div class="col-md-2 mb-3 text-sm-end text-md-start">
+                         <div class="col-md-6 mb-3 text-sm-end text-md-start">
                               <button type="reset" class="btn btn-secondary btn-sm rounded-0">Cancel</button>
                               <button type="submit" class="btn btn-primary btn-sm rounded-0 ms-3">Submit</button>
                          </div>
@@ -81,8 +63,6 @@
                          </th>
                          <th>No</th>
                          <th>Name</th>
-                         <!-- <th>City</th> -->
-                         <th>Country</th>
                          <th>Status</th>
                          <th>By</th>
                          <th>Created At</th>
@@ -91,30 +71,27 @@
                     </thead>
           
                     <tbody>
-                         @foreach($regions as $idx=>$region)
-                         <tr id="tablerole_{{$region->id}}">
+                         @foreach($permissions as $idx=>$permission)
+                         <tr id="tablerole_{{$permission->id}}">
                               <td>
-                                   <input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="{{$region->id}}"/>
+                                   <input type="checkbox" name="singlechecks" class="form-check-input singlechecks" value="{{$permission->id}}"/>
                               </td>
                               <td>{{++$idx}}</td>
-                              <td>{{ $region->name }}</td>
-                              {{-- <td>{{ $region->city["name"] }}</td> --}}
-                              <td>{{ $region->country["name"] }}</td>
-                              
+                              <td>{{ $permission->name }}</td>
                               <td>
                                    <div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input change-btn" {{ $region->status_id === 3 ? "checked" : "" }} data-id="{{ $region->id }}"/>
+                                        <input type="checkbox" class="form-check-input change-btn" {{ $permission->status_id === 3 ? "checked" : "" }} data-id="{{ $permission->id }}"/>
                                    </div>
                               </td>
-                              <td>{{ $region->user["name"] }}</td>
-                              <td>{{ $region->created_at->format('d M Y') }}</td>
-                              <td>{{ $region->updated_at->format('d M Y') }}</td>
+                              <td>{{ $permission->user["name"] }}</td>
+                              <td>{{ $permission->created_at->format('d M Y') }}</td>
+                              <td>{{ $permission->updated_at->format('d M Y') }}</td>
                               <td>
-                                   <a href="javascript:void(0);" class="text-info editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$region->id}}" data-name="{{$region->name}}" data-country="{{ $region->country_id }}" data-city="{{ $region->city_id }}" data-status="{{ $region->status_id }}"><i class="fas fa-pen"></i></a>
+                                   <a href="javascript:void(0);" class="text-info editform" data-bs-toggle="modal" data-bs-target="#editmodal" data-id="{{$permission->id}}" data-name="{{$permission->name}}" data-status="{{ $permission->status_id }}"><i class="fas fa-pen"></i></a>
                                    <a href="#" class="text-danger ms-2 delete-btns" data-idx="{{$idx}}"><i class="fas fa-trash-alt"></i></a>
                               
                               </td>
-                              <form id="formdelete-{{ $idx }}" class="" action="{{route('regions.destroy',$region->id)}}" method="POST">
+                              <form id="formdelete-{{ $idx }}" class="" action="{{route('permissions.destroy',$permission->id)}}" method="POST">
                                    @csrf
                                    @method("DELETE")
                               </form>
@@ -145,29 +122,11 @@
                                         {{ method_field('PUT') }}
                                         <div class="row align-items-end">
                                              <div class="col-md-6 form-group mb-3">
-                                                  <label for="editcountry_id">Country</label>
-                                                  <select name="editcountry_id" id="editcountry_id" class="form-control form-control-sm rounded-0 country_id">
-                                                       @foreach($countries as $country)
-                                                            <option value="{{$country['id']}}">{{$country['name']}}</option>
-                                                       @endforeach     
-                                                  </select>
-                                             </div>
-
-                                             <!-- <div class="col-md-6 form-group mb-3">
-                                                  <label for="editcity_id">City</label>
-                                                  <select name="editcity_id" id="editcity_id" class="form-control form-control-sm rounded-0 city_id">
-                                                       {{-- @foreach($cities as $city)
-                                                            <option value="{{$city['id']}}">{{$city['name']}}</option>
-                                                       @endforeach --}}     
-                                                  </select>
-                                             </div> -->
-
-                                             <div class="col-md-6 form-group mb-3">
                                                   <label for="editname">Name <span class="text-danger">*</span></label>
-                                                  <input type="text" name="editname" id="editname" class="form-control form-control-sm rounded-0" placeholder="Enter region Name" value="{{ old('name') }}"/>
+                                                  <input type="text" name="editname" id="editname" class="form-control form-control-sm rounded-0" placeholder="Enter permission Name" value="{{ old('name') }}"/>
                                              </div>
 
-                                             <div class="col-md-6 form-group mb-3">
+                                             <div class="col-md-4 form-group mb-3">
                                                   <label for="editstatus_id">Status</label>
                                                   <select name="editstatus_id" id="editstatus_id" class="form-control form-control-sm rounded-0">
                                                        @foreach($statuses as $status)
@@ -176,7 +135,7 @@
                                                   </select>
                                              </div>
                     
-                                             <div class="col-md-12 text-sm-end text-start mb-3">
+                                             <div class="col-md-2 text-sm-end text-start mb-3">
                                                   <button type="submit" class="btn btn-primary btn-sm rounded-0">Update</button>
                                              </div>
                                         </div>
@@ -194,37 +153,11 @@
 @endsection
 
 
+
 @section("scripts")
+
      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
      <script type="text/javascript">
-
-          // Start Dynamic Select Option 
-          // $(document).on("change",".country_id",function(){
-          //      const getcountryid = $(this).val();
-          //      // console.log(getcountryid);
-
-          //      let opforcity = "";
-          //      $.ajax({
-          //           url: `/api/filter/cities/${getcountryid}`,
-          //           type: "GET",
-          //           dataType:"json",
-          //           success:function(response){
-          //                $(".city_id").empty();
-          //                opforcity += "<option selected disabled>Choose a city abcd</option>";
-                         
-          //                console.log(response);
-          //                for(let x=0 ; x<response.data.length; x++){
-          //                     opforcity += `<option value="${response.data[x].id}">${response.data[x].name}</option>`;
-          //                }
-
-          //                $(".city_id").append(opforcity);
-          //           },
-          //           error:function(response){
-          //                console.log("Error:( ",response);
-          //           }
-          //      });
-          // });
-          // End Dynamic Select Option
 
           $(document).ready(function(){
                // Start Delete Item
@@ -245,45 +178,13 @@
 
                // Start Edit Form
                $(document).on("click",".editform",function(e){
-                    const getcountryid = $(this).attr("data-country");
-                    // console.log(getcountryid);
-                    let opforcity = "";
-
-                    $.ajax({
-                         url: `/api/filter/cities/${getcountryid}`,
-                         type: "GET",
-                         dataType:"json",
-                         success:function(response){
-                              console.log(response);
-                              $(".city_id").empty();
-                              opforcity += "<option selected disabled>Choose a city abcd</option>";
-                              
-                              console.log(response);
-                              for(let x=0 ; x<response.data.length; x++){
-                                   opforcity += `<option value="${response.data[x].id}">${response.data[x].name}</option>`;
-                              }
-
-                              $(".city_id").append(opforcity);
-
-                              // console.log(e.target.parentElement);
-                              $("#editcity_id").val($(e.target.parentElement).attr("data-city"));
-
-                         },
-                         error:function(response){
-                              console.log("Error:( ",response);
-                         }
-                    });
-
-
-
                     // console.log($(this).attr("data-id"),$(this).attr("data-name"));
                     
                     $("#editname").val($(this).attr("data-name"));
-                    $("#editcountry_id").val($(this).attr("data-country"));
                     $("#editstatus_id").val($(this).attr("data-status"));
 
                     const getid = $(this).attr("data-id");
-                    $("#formaction").attr("action",`/regions/${getid}`);
+                    $("#formaction").attr("action",`/permissions/${getid}`);
 
                     e.preventDefault();
                });
@@ -319,7 +220,7 @@
                          if (result.isConfirmed) {
                               // data remove 
                               $.ajax({
-                                   url:"{{ route('regions.bulkdeletes') }}",
+                                   url:"{{ route('permissions.bulkdeletes') }}",
                                    type:"DELETE",
                                    dataType:"json",
                                    data:{
@@ -362,7 +263,7 @@
                     // console.log(setstatus); // 3 4
 
                     $.ajax({
-                         url:"regionsstatus",
+                         url:"permissionsstatus",
                          type:"GET",
                          dataType:"json",
                          data:{"id":getid,"status_id":setstatus},
@@ -379,8 +280,6 @@
                     });
                });
                // End change btn
-
-
           });
 
 

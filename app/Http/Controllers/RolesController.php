@@ -66,9 +66,15 @@ class RolesController extends Controller
        return redirect(route("roles.index"));
     }
 
-    public function show(string $id)
+    // public function show(string $id)
+    // {
+    //     $role = Role::findOrFail($id);
+    //     return view("roles.show",["role"=>$role]);
+    // }
+
+    // note: we have to defined route binding into Providers > RouteServiceProvider.php
+    public function show(Role $role)
     {
-        $role = Role::findOrFail($id);
         return view("roles.show",["role"=>$role]);
     }
 

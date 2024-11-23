@@ -38,8 +38,8 @@ class TownshipsController extends Controller
     {
         $this->validate($request,[
             "country_id"=>"required",
-            "city_id"=>"required",
             "region_id"=>"required",
+            "city_id"=>"required",
             "name" => "required|unique:townships,name",
         ]);
 
@@ -50,8 +50,8 @@ class TownshipsController extends Controller
        $township->name = $request["name"];
        $township->slug = Str::slug($request["name"]);
        $township->country_id = $request["country_id"];
-       $township->city_id = $request["city_id"];
        $township->region_id = $request["region_id"];
+       $township->city_id = $request["city_id"];
        $township->status_id = $request["status_id"];
        $township->user_id = $user_id;
 
@@ -64,8 +64,8 @@ class TownshipsController extends Controller
     {
         $this->validate($request,[
             "editcountry_id"=>"required",
-            "editcity_id"=>"required",
             "editregion_id"=>"required",
+            "editcity_id"=>"required",
             "editname" => "required|unique:townships,name,".$id,
         ]);
 
@@ -76,8 +76,8 @@ class TownshipsController extends Controller
        $township->name = $request["editname"];
        $township->slug = Str::slug($request["editname"]);
        $township->country_id = $request["editcountry_id"];
-       $township->city_id = $request["editcity_id"];
        $township->region_id = $request["editregion_id"];
+       $township->city_id = $request["editcity_id"];
        $township->status_id = $request["editstatus_id"];
        $township->user_id = $user_id;
 

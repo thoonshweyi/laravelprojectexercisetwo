@@ -156,10 +156,10 @@ class StudentsController extends Controller
        $student->religion_id = $request["religion_id"];
        $student->email = $request["email"];
        $student->nationalid = $request["nationalid"];
-       $student->country_id = $request["country_id"];
-       $student->region_id = 1;
-       $student->city_id = $request["city_id"];
-       $student->township_id = 1;
+       $student->country_id = $request["editcountry_id"];
+       $student->region_id = $request["editregion_id"];
+       $student->city_id = $request["editcity_id"];
+       $student->township_id = $request["edittownship_id"];
        $student->address = $request["address"];
        $student->remark = $request["remark"];
        $student->user_id = $user_id;

@@ -207,11 +207,11 @@
                                         <div class="acctitle shown">Email</div>
                                         <div class="acccontent">
                                              <div class="col-md-12 py-3">
-                                                  <form action="{{ route('students.mailbox') }}" method="POST">
+                                                  <form action="{{ route('compose.mail') }}" method="POST">
                                                        @csrf
                                                        <div class="row">
                                                             <div class="col-md-6 form-group mb-3">
-                                                                 <input type="email" name="cmpemail" id="cmpemail" class="form-control form-control-sm border-0 rounded-0" placeholder="To:" value="{{ $user->lead['email'] }}" readonly />
+                                                                 <input type="email" name="cmpemail" id="cmpemail" class="form-control form-control-sm border-0 rounded-0" placeholder="To:" value="{{ $user->getAdminEmail() }}" readonly />
                                                             </div>
                                                             <div class="col-md-6 form-group mb-3">
                                                                  <input type="ext" name="cmpsubject" id="cmpsubject" class="form-control form-control-sm border-0 rounded-0" placeholder="Subject" value="" />
@@ -320,6 +320,8 @@
                                                             @endforeach     
                                                        </select>
                                                   </div>
+                                                  
+                                                  
                                                   <div class="col-md-3 form-group mb-3">
                                                        <label for="city_id">City</label>
                                                        <select name="city_id" id="city_id" class="form-control form-control-sm rounded-0 city_id">
@@ -329,6 +331,8 @@
                                                             @endforeach  
                                                        </select>
                                                   </div>
+
+                                                  
 
                                                   @if($lead->isconverted())
                                                        <small class="text-danger">This lead have already been converted to a student. Editing is disabled.</small>
@@ -412,21 +416,40 @@
                                                        </div>
 
                                                        <div class="col-md-3 form-group mb-3">
-                                                            <label for="country_id">Country</label>
-                                                            <select name="country_id" id="country_id" class="form-control form-control-sm rounded-0 country_id">
+                                                            <label for="editcountry_id">Country</label>
+                                                            <select name="editcountry_id" id="editcountry_id" class="form-control form-control-sm rounded-0 country_id">
                                                                  <option value="" disabled>Choose a country</option>
                                                                  @foreach($countries as $country)
-                                                                      <option value="{{$country['id']}}" {{ $country['id'] === $student->country_id ? 'selected' : '' }}>{{$country['name']}}</option>
+                                                                      <option value="{{$country['id']}}" {{ $country['id'] == $student->country_id ? 'selected' : '' }}>{{$country['name']}}</option>
                                                                  @endforeach     
                                                             </select>
                                                        </div>
                                                        <div class="col-md-3 form-group mb-3">
-                                                            <label for="city_id">City</label>
-                                                            <select name="city_id" id="city_id" class="form-control form-control-sm rounded-0 city_id">
+                                                            <label for="editregion_id">Region</label>
+                                                            <select name="editregion_id" id="editregion_id" class="form-control form-control-sm rounded-0 region_id" data-selected="{{ old('region_id',$student->region_id) }}">
+                                                                 {{-- @foreach($regions as $region)
+                                                                      <option value="{{$region['id']}}" {{ $region['id'] == $student->region_id ? 'selected' : '' }} >{{$region['name']}}</option>
+                                                                 @endforeach --}}
+                                                            </select>
+                                                       </div>
+                                                       <div class="col-md-3 form-group mb-3">
+                                                            <label for="editcity_id">City</label>
+                                                            <select name="editcity_id" id="editcity_id" class="form-control form-control-sm rounded-0 city_id" data-selected="{{ old('city_id',$student->city_id) }}">
                                                                  <option value="" disabled>Choose a city</option>
+                                                                 {{-- 
                                                                  @foreach($cities as $city)
                                                                       <option value="{{$city['id']}}" {{ $city['id'] === $student->city_id ? 'selected' : '' }}>{{$city['name']}}</option>
-                                                                 @endforeach  
+                                                                 @endforeach  --}}
+                                                            </select>
+                                                       </div>
+                                                       <div class="col-md-3 form-group mb-3">
+                                                            <label for="edittownship_id">Township</label>
+                                                            <select name="edittownship_id" id="edittownship_id" class="form-control form-control-sm rounded-0 township_id" data-selected="{{ old('township_id',$student->township_id) }}">
+                                                                 {{-- 
+                                                                 @foreach($townships as $township)
+                                                                      <option value="{{$township['id']}}" {{ $township['id'] === $student->township_id ? 'selected' : '' }}>{{$township['name']}}</option>
+                                                                 @endforeach 
+                                                                 --}}
                                                             </select>
                                                        </div>
 
@@ -777,29 +800,193 @@
                     const getcountryid = $(this).val();
                     // console.log(getcountryid);
 
+                    let opforregion = "";
                     let opforcity = "";
+                    let opfortownship = "";
                     $.ajax({
-                         url: `/api/filter/cities/${getcountryid}`,
+                         url: `/api/filter/regions/${getcountryid}`,
                          type: "GET",
                          dataType:"json",
                          success:function(response){
+                              $(".region_id").empty();
                               $(".city_id").empty();
-                              opforcity += "<option selected disabled>Choose a city abcd</option>";
+                              $(".township_id").empty();
+
+                              opforregion += "<option selected disabled>Choose a region ....</option>";
+                              opforcity += "<option selected disabled>Choose a city ....</option>";
+                              opfortownship += "<option selected disabled>Choose a township ....</option>";
                               
                               console.log(response);
                               for(let x=0 ; x<response.data.length; x++){
-                                   opforcity += `<option value="${response.data[x].id}">${response.data[x].name}</option>`;
+                                   opforregion += `<option value="${response.data[x].id}">${response.data[x].name}</option>`;
                               }
-
+                              $(".region_id").append(opforregion);
                               $(".city_id").append(opforcity);
+                              $(".township_id").append(opfortownship);
                          },
                          error:function(response){
                               console.log("Error:( ",response);
                          }
                     });
                });
+               $(document).on("change",".region_id",function(){
+                    const getregionid = $(this).val();
+                    console.log(getregionid);
+
+                    let opforcity = "";
+                    let opfortownship = "";
+                    $.ajax({
+                         url: `/api/filter/cities/${getregionid}`,
+                         type: "GET",
+                         dataType:"json",
+                         success:function(response){
+                              // console.log(response);
+                              $(".city_id").empty();
+                              $(".township_id").empty();
+                              opforcity += "<option selected disabled>Choose a city ....</option>";
+                              opfortownship += "<option selected disabled>Choose a township ....</option>";
+                              
+                              console.log(response);
+                              for(let y=0 ; y<response.data.length; y++){
+                                   opforcity += `<option value="${response.data[y].id}">${response.data[y].name}</option>`;
+                              }
+
+                              $(".city_id").append(opforcity);
+                              $(".township_id").append(opfortownship);
+                         },
+                         error:function(response){
+                              console.log("Error:( ",response);
+                              // console.log("Error:( ",response.responseText);
+                         }
+                    });
+               });
+               $(document).on("change",".city_id",function(){
+                    const getcityid = $(this).val();
+                    console.log(getcityid);
+
+                    let opfortownship = "";
+                    $.ajax({
+                         url: `/api/filter/townships/${getcityid}`,
+                         type: "GET",
+                         dataType:"json",
+                         success:function(response){
+                              // console.log(response);
+                              $(".township_id").empty();
+                              opfortownship += "<option selected disabled>Choose a township ....</option>";
+                              
+                              console.log(response);
+                              for(let y=0 ; y<response.data.length; y++){
+                                   opfortownship += `<option value="${response.data[y].id}">${response.data[y].name}</option>`;
+                              }
+
+                              $(".township_id").append(opfortownship);
+                         },
+                         error:function(response){
+                              console.log("Error:( ",response);
+                              // console.log("Error:( ",response.responseText);
+                         }
+                    });
+               });
                // End Dynamic Select Option
 
+               // Start Auto Selected Dynamic Select Option
+               const countryid = $('#editcountry_id').val();
+               const regionid = $('#editregion_id').data('selected');
+               const cityid = $('#editcity_id').data('selected');
+               const townshipid = $('#edittownship_id').data('selected');
+          
+               console.log(countryid,regionid,cityid,townshipid);
+
+               if(countryid){
+                    loadregions(countryid,regionid,cityid,townshipid)
+               }
+               function loadregions(countryid,regionid,cityid,townshipid){
+                    let opforregion = "";
+                    $.ajax({
+                         url: `/api/filter/regions/${countryid}`,
+                         type: "GET",
+                         dataType:"json",
+                         success:function(response){
+
+                              opforregion += "<option selected disabled>Choose a region ....</option>";
+                            
+                              console.log(response);
+                              for(let x=0 ; x<response.data.length; x++){
+                                   opforregion += `<option value="${response.data[x].id}" ${ response.data[x].id === regionid ? 'selected' : '' }>${response.data[x].name}</option>`;
+                              }
+                              $(".region_id").html(opforregion);
+                              
+                              if(regionid){
+                                   loadcities(regionid,cityid,townshipid);
+                              }
+                         },
+                         error:function(response){
+                              console.log("Error:( ",response);
+                         }
+                    });
+               }
+
+               function loadcities(regionid,cityid,townshipid){
+                    let opforcity = "";
+                    $.ajax({
+                         url: `/api/filter/cities/${regionid}`,
+                         type: "GET",
+                         dataType:"json",
+                         success:function(response){
+                              // console.log(response);
+                              $(".city_id").empty();
+                              opforcity += "<option selected disabled>Choose a city ....</option>";
+                              console.log(response);
+                              for(let y=0 ; y<response.data.length; y++){
+                                   opforcity += `<option value="${response.data[y].id}" ${ response.data[y].id === cityid ? 'selected' : '' }>${response.data[y].name}</option>`;
+                              }
+
+                              $(".city_id").html(opforcity);
+
+                              if(cityid){
+                                   loadtownships(cityid,townshipid);
+                              }
+
+                         },
+                         error:function(response){
+                              console.log("Error:( ",response);
+                              // console.log("Error:( ",response.responseText);
+                         }
+                    });
+               }
+
+               function loadtownships(cityid,townshipid){
+                    let opfortownship = "";
+                    $.ajax({
+                         url: `/api/filter/townships/${cityid}`,
+                         type: "GET",
+                         dataType:"json",
+                         success:function(response){
+                              // console.log(response);
+                              $(".township_id").empty();
+                              opfortownship += "<option selected disabled>Choose a township ....</option>";
+                              
+                              console.log(response);
+                              // for(let y=0 ; y<response.data.length; y++){
+                              //      opfortownship += `<option value="${response.data[y].id}"  ${ response.data[y].id === townshipid ? 'selected' : '' }>${response.data[y].name}</option>`;
+                              // }
+
+                              response.data.forEach(township=>{
+                                   const selected = township.id === townshipid ? 'selected' : '';
+                                   opfortownship += `<option value="${township.id}" ${selected} >${township.name}</option>`;
+                              });
+
+                              $(".township_id").append(opfortownship);
+                         },
+                         error:function(response){
+                              console.log("Error:( ",response);
+                              // console.log("Error:( ",response.responseText);
+                         }
+                    }); 
+               }
+
+
+               // End Auto Selected Dynamic Select Option
 
                // Start Add / Remove Phone for (createpage/editpage)
                //   Note:: do not forget to put multiphone, createpage or editpage / phone selector names 

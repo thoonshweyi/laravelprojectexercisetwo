@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('townships', function (Blueprint $table) {
+        Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('slug');
-            $table->unsignedBigInteger('country_id');
-            $table->unsignedBigInteger('region_id');
-            $table->unsignedBigInteger('city_id');
-            $table->unsignedBigInteger('status_id')->default(1);
+            $table->unsignedBigInteger('status_id');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
         });
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('townships');
+        Schema::dropIfExists('permissions');
     }
 };

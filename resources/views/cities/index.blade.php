@@ -12,10 +12,20 @@
                     <div class="row align-items-end">
                          <div class="col-md-2 form-group mb-3">
                               <label for="country_id">Country</label>
-                              <select name="country_id" id="country_id" class="form-control form-control-sm rounded-0">
+                              <select name="country_id" id="country_id" class="form-control form-control-sm rounded-0 country_id">
+                                   <option value="" selected disabled>Choose a country</option>
                                    @foreach($countries as $country)
                                         <option value="{{$country['id']}}">{{$country['name']}}</option>
                                    @endforeach     
+                              </select>
+                         </div>
+                         <div class="col-md-2 form-group mb-3">
+                              <label for="region_id">Region</label>
+                              <select name="region_id" id="region_id" class="form-control form-control-sm rounded-0 region_id">
+                                   <option value="" selected disabled>Choose a city</option>
+                                   {{-- @foreach($cities as $city)
+                                        <option value="{{$city['id']}}">{{$city['name']}}</option>
+                                   @endforeach --}}     
                               </select>
                          </div>
                          <div class="col-md-2 form-group mb-3">
@@ -81,6 +91,7 @@
                               <th>Id</th>
                               <th>Name</th>
                               <th>Country</th>
+                              <th>Region</th>
                               <th>Status</th>
                               <th>By</th>
                               <th>Created At</th>
@@ -124,21 +135,29 @@
                                    <form id="editform">
                             
                                         <div class="row align-items-end">
-                                             <div class="col-md-4 form-group mb-3">
+                                             <div class="col-md-6 form-group mb-3">
                                                   <label for="editcountry_id">Country</label>
-                                                  <select name="editcountry_id" id="editcountry_id" class="form-control form-control-sm rounded-0">
+                                                  <select name="editcountry_id" id="editcountry_id" class="form-control form-control-sm rounded-0 country_id">
                                                        @foreach($countries as $country)
                                                             <option value="{{$country['id']}}">{{$country['name']}}</option>
                                                        @endforeach     
                                                   </select>
                                              </div>
-                                             <div class="col-md-5 form-group mb-3">
+                                             <div class="col-md-6 form-group mb-3">
+                                                  <label for="editregion_id">Region</label>
+                                                  <select name="editregion_id" id="editregion_id" class="form-control form-control-sm rounded-0 region_id">
+                                                       {{-- @foreach($cities as $city)
+                                                            <option value="{{$city['id']}}">{{$city['name']}}</option>
+                                                       @endforeach --}}     
+                                                  </select>
+                                             </div>
+                                             <div class="col-md-6 form-group mb-3">
                                                   <label for="editname">Name <span class="text-danger">*</span></label>
                                                   <input type="text" name="editname" id="editname" class="form-control form-control-sm rounded-0" placeholder="Enter city Name" value="{{ old('name') }}"/>
                                              </div>
                                              
 
-                                             <div class="col-md-3 form-group mb-3">
+                                             <div class="col-md-6 form-group mb-3">
                                                   <label for="status_id">Status</label>
                                                   <select name="editstatus_id" id="editstatus_id" class="form-control form-control-sm rounded-0">
                                                        @foreach($statuses as $status)
@@ -222,6 +241,34 @@
 
      <script type="text/javascript">
 
+          // Start Dynamic Select Option 
+          $(document).on("change",".country_id",function(){
+               const getcountryid = $(this).val();
+               console.log(getcountryid);
+
+               let opforregion = "";
+               $.ajax({
+                    url: `/api/filter/regions/${getcountryid}`,
+                    type: "GET",
+                    dataType:"json",
+                    success:function(response){
+                         $(".city_id").empty();
+                         opforregion += "<option selected disabled>Choose a region abcd</option>";
+                         
+                         console.log(response);
+                         for(let x=0 ; x<response.data.length; x++){
+                              opforregion += `<option value="${response.data[x].id}">${response.data[x].name}</option>`;
+                         }
+
+                         $(".region_id").html(opforregion);
+                    },
+                    error:function(response){
+                         console.log("Error:( ",response);
+                    }
+               });
+          });
+          // End Dynamic Select Option
+
           // Start Filter
           const getfilterbtn = document.getElementById("btn-search");
           getfilterbtn.addEventListener("click",function(e){
@@ -289,6 +336,7 @@
                               <td>${data.id}</td>
                               <td>${data.name}</td>
                               <td>${data.country["name"]}</td>
+                              <td>${data.region["name"]}</td>
                               <td>
                                    <div class="form-checkbox form-switch">
                                         <input type="checkbox" class="form-check-input change-btn" ${data.status_id == 3 ? "checked" : "" }  data-id="${data.id}" />
@@ -398,6 +446,7 @@
                                              <td>${data.id}</td>
                                              <td>${data.name}</td>
                                              <td>${data.country["name"]}</td>
+                                             <td>${data.region["name"]}</td>
 
                                              <td>
                                                   <div class="form-checkbox form-switch">
@@ -438,11 +487,14 @@
                // End Create Form
 
                // Start Edit Form
-               $(document).on("click",".edit-btns",function(){
+               $(document).on("click",".edit-btns",async function(){
+                    
+                    
+
                     const getid = $(this).data("id");
                     // console.log(getid);
 
-                    $.get(`cities/${getid}/edit`,function(response){
+                    await $.get(`cities/${getid}/edit`,async function(response){
                          // console.log(response); // {id: 9, name: 'myanmar', slug: 'myanmar', status_id: 3, user_id: 1, …}
                     
                          $("#editmodal").modal("show"); // toggle() can also used.
@@ -451,6 +503,37 @@
                          $("#editname").val(response.name);
                          $("#editcountry_id").val(response.country_id);
                          $("#editstatus_id").val(response.status_id);
+
+                         const getcountryid = $(editcountry_id).val();
+                         // console.log(getcountryid);
+                         let opforregion = "";
+
+                         await $.ajax({
+                              url: `/api/filter/regions/${getcountryid}`,
+                              type: "GET",
+                              dataType:"json",
+                              success:function(response){
+                                   console.log(response);
+                                   $(".city_id").empty();
+                                   opforregion += "<option selected disabled>Choose a city abcd</option>";
+                                   
+                                   console.log(response);
+                                   for(let x=0 ; x<response.data.length; x++){
+                                        opforregion += `<option value="${response.data[x].id}">${response.data[x].name}</option>`;
+                                   }
+
+                                   $(".region_id").html(opforregion);
+
+                                   // console.log(e.target.parentElement);
+                                   // $("#editregion").val($(e.target.parentElement).attr("data-city"));
+
+                              },
+                              error:function(response){
+                                   console.log("Error:( ",response);
+                              }
+                         });
+                         $("#editregion_id").val(response.region_id);
+
                     });
                });
                // End Edit Form
@@ -490,6 +573,7 @@
                                              <td>${data.id}</td>
                                              <td>${data.name}</td>
                                              <td>${data.country["name"]}</td>
+                                             <td>${data.region["name"]}</td>
                                              <td>
                                                   <div class="form-checkbox form-switch">
                                                        <input type="checkbox" class="form-check-input change-btn" ${data.status_id == 3 ? "checked" : "" }  data-id="${data.id}" />

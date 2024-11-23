@@ -12,7 +12,9 @@ use Illuminate\View\View;
 use App\Models\Religion;
 use App\Models\Gender;
 use App\Models\Country;
+use App\Models\Region;
 use App\Models\City;
+use App\Models\Township;
 use App\Models\Lead;
 
 use App\Models\Student;
@@ -32,7 +34,9 @@ class ProfileController extends Controller
         $genders = Gender::orderBy("name","asc")->get();
         $religions = Religion::orderBy("name","asc")->where("status_id",3)->get();
         $countries = Country::orderBy("name","asc")->where("status_id",3)->get();
+        $regions = Region::orderBy("name","asc")->where("status_id",3)->get();
         $cities = City::orderBy("name","asc")->where("status_id",3)->where("country_id",$lead->country_id)->get();
+        $townships = Township::orderBy("name","asc")->where("status_id",3)->get();
 
         $student = null;
         $studentphones = null;
@@ -46,7 +50,9 @@ class ProfileController extends Controller
             'genders'=>$genders,
             'religions'=>$religions,
             'countries'=>$countries,
+            'regions'=>$regions,
             'cities'=>$cities,
+            'townships'=>$townships,
             'student'=>$student,
             'studentphones'=>$studentphones
         ]);

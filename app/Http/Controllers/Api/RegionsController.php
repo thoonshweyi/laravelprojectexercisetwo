@@ -50,8 +50,8 @@ class RegionsController extends Controller
         //
     }
 
-    public function filterbycityid($filter){
+    public function filterbycountryid($filter){
         // return City::where("country_id",$filter)->where('status_id',3)->get();
-        return RegionsResource::collection(Region::where("city_id",$filter)->where('status_id',3)->orderBy("name","asc")->get());
+        return RegionsResource::collection(Region::where("country_id",$filter)->where('status_id',3)->orderBy("name","asc")->get());
     }
 }
