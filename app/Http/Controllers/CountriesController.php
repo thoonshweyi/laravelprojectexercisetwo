@@ -13,6 +13,8 @@ class CountriesController extends Controller
 {
     public function index()
     {
+            $this->authorize('view',Country::class);
+
         // http://127.0.0.1:8000/countries?filtername=mm
         // dd(request("filtername")); // mm
 
@@ -39,6 +41,8 @@ class CountriesController extends Controller
        $user_id = $user->id;
 
        $country = new Country();
+            $this->authorize('create',$country);
+
        $country->name = $request["name"];
        $country->status_id = $request["status_id"];
        $country->slug = Str::slug($request["name"]);
@@ -59,6 +63,7 @@ class CountriesController extends Controller
        $user_id = $user['id'];
 
        $country = Country::findOrFail($id);
+            $this->authorize('edit',$country);
        $country->name = $request["editname"];
        $country->status_id = $request["editstatus_id"];
        $country->slug = Str::slug($request["name"]);
@@ -72,6 +77,7 @@ class CountriesController extends Controller
     public function destroy(string $id)
     {
         $country = Country::findOrFail($id);
+            $this->authorize('delete',$country);
         $country->delete();
         return redirect()->back();
     }

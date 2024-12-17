@@ -19,6 +19,8 @@ class PermissionMid
     {
         if(!Auth::check() || !Auth::user()->hasPermission($permission)){
             abort('403',"Unauthorized from permission middleware");
+            // return redirect()->back()->with('error',"Unauthorized Permission Access");
+            
         }
         return $next($request);
     }

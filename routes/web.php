@@ -88,8 +88,17 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth',"autologout","verified")->group(function () {
 
-    Route::middleware(['role:Admin,Teacher,Student'])->group(function () {
-        Route::resource("announcements",AnnouncementsController::class);
+    Route::middleware(['roles:Admin,Teacher,Student'])->group(function () {
+        // Route::resource("announcements",AnnouncementsController::class);
+    
+        Route::get("/announcements",[AnnouncementsController::class,"index"])->name("announcements.index");
+        Route::get("/announcements/create",[AnnouncementsController::class,"create"])->name("announcements.create");
+        Route::post("/announcements",[AnnouncementsController::class,"store"])->name("announcements.store");
+        Route::get("/announcements/{id}",[AnnouncementsController::class,"show"])->name("announcements.show");
+        Route::get("/announcements/{id}/edit",[AnnouncementsController::class,"edit"])->name("announcements.edit");
+        Route::put("/announcements/{id}",[AnnouncementsController::class,"update"])->name("announcements.update");
+        Route::delete("/announcements/{id}",[AnnouncementsController::class,"destroy"])->name("announcements.destroy");
+    
     });
 
     Route::get("/dashboards",[DashboardsController::class,'index'])->name("dashboard.index");
@@ -162,13 +171,24 @@ Route::middleware('auth',"autologout","verified")->group(function () {
     Route::resource("pointtransfers",PointTransfersController::class);
     Route::post("/pointtransfers/transfer",[PointTransfersController::class,"transfers"])->name("pointtransfers.transfers");
 
-    Route::resource("posts",PostsController::class);
+    
+    Route::get("/posts",[PostsController::class,"index"])->name("posts.index")->middleware("roles:Admin,Teacher,Student,Guest");
+    
+    Route::middleware(['roles:Admin,Teacher'])->group(function () {
+        Route::get("/posts/create",[PostsController::class,"create"])->name("posts.create");
+        Route::post("/posts",[PostsController::class,"store"])->name("posts.store");
+        Route::get("/posts/{post}/edit",[PostsController::class,"edit"])->name("posts.edit");
+        Route::put("/posts/{post}",[PostsController::class,"update"])->name("posts.update");
+        Route::delete("/posts/{post}",[PostsController::class,"destroy"])->name("posts.destroy");
+
+    });
+    Route::get("/posts/{post}",[PostsController::class,"show"])->name("posts.show")->middleware("roles:Admin,Teacher,Student,Guest"); // show must be underneath of posts.create
     Route::post("/posts/{post}/like",[PostsLikeController::class,"like"])->name("posts.like");
     Route::post("/posts/{post}/unlike",[PostsLikeController::class,"unlike"])->name("posts.unlike");
+    Route::post("/postliveviewerinc/{post}",[PostLiveViewersController::class,"incrementviewer"])->middleware("roles:Admin,Teacher,Student"); // here must be {post}, can't {id} cuz controller using (Post $post)
+    Route::post("/postliveviewerdec/{post}",[PostLiveViewersController::class,"decrementviewer"])->middleware("roles:Admin,Teacher,Studen");
 
-    Route::post("/postliveviewerinc/{post}",[PostLiveViewersController::class,"incrementviewer"]); // here must be {post}, ca't {id} cuz controller using (Post $post)
-    Route::post("/postliveviewerdec/{post}",[PostLiveViewersController::class,"decrementviewer"]);
-
+   
     Route::post("/trackdurations",[PostViewDurationsController::class,"trackduration"]);
 
     Route::resource("relatives",RelativesController::class);

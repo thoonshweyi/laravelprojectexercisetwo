@@ -37,20 +37,24 @@ class LeaveRequest extends FormRequest
                 "post_id" => "required",
                 "startdate" => "required",
                 "enddate" => "required",
-                "tag" => "required",
+                "tag" => "required|array",
+                "tag.*"=>"exists:users.id",
                 "title" => "required|max:50",
                 "content" => "required",
-                "image" => "nullable|image|mimes:jpg,jpeg,png|max:1024",
+                "images" => "nullable|image|mimes:jpg,jpeg,png|max:1024",
+                "images.*" => "nullable|image|mimes:jpg,jpeg,png|max:1024",
             ];
         }else{
             return [
                 "post_id" => "required",
                 "startdate" => "required",
                 "enddate" => "required",
-                "tag" => "required",
+                "tag" => "required|array",
+                "tag.*"=>"exists:users.id",
                 "title" => "required|max:50",
                 "content" => "required",
-                "image" => "nullable|image|mimes:jpg,jpeg,png|max:1024",
+                "images" => "nullable|image|mimes:jpg,jpeg,png|max:1024",
+                "images.*" => "nullable|image|mimes:jpg,jpeg,png|max:1024",
             ];
         }
         

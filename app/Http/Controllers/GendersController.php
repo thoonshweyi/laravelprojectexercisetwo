@@ -12,6 +12,7 @@ class GendersController extends Controller
     public function index()
     {
         $genders = Gender::all();
+            $this->authorize('view',Gender::class);
         return view("genders.index",compact("genders"));
     }
 
@@ -25,6 +26,7 @@ class GendersController extends Controller
        $user_id = $user->id;
 
        $gender = new Gender();
+            $this->authorize('create',$gender);
        $gender->name = $request["name"];
        $gender->slug = Str::slug($request["name"]);
        $gender->user_id = $user_id;
@@ -44,6 +46,7 @@ class GendersController extends Controller
        $user_id = $user['id'];
 
        $gender = Gender::findOrFail($id);
+            $this->authorize('edit',$gender);
        $gender->name = $request["name"];
        $gender->slug = Str::slug($request["name"]);
        $gender->user_id = $user_id;
@@ -56,6 +59,7 @@ class GendersController extends Controller
     public function destroy(string $id)
     {
         $gender = Gender::findOrFail($id);
+            $this->authorize('delete',$gender);
         $gender->delete();
         return redirect()->back();
     }

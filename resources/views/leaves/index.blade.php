@@ -7,8 +7,10 @@
      <div class="container-fluid">
           <div class="col-md-12">
 
+               @can('create',App\Models\Leave::class)
                <a href="{{route('leaves.create')}}" class="btn btn-primary btn-sm rounded-0">Create</a>
                <hr/>
+               @endcan
                
                <table id="mytable" class="table table-sm table-hover border">
           

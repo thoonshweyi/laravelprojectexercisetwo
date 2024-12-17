@@ -75,7 +75,7 @@ class Kernel extends HttpKernel
         
         'autologout'=>\App\Http\Middleware\AutoLogoutMid::class,
     
-        'role'=>\App\Http\Middleware\RoleMid::class,
+        'roles'=>\App\Http\Middleware\RoleMid::class,
         'permission'=>\App\Http\Middleware\PermissionMid::class,
         
     ];

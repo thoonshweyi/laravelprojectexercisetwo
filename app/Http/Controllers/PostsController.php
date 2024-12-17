@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Carbon;
+
 use Illuminate\Support\Str;
 use App\Models\Comment;
 use App\Models\Day;
@@ -20,29 +22,39 @@ class PostsController extends Controller
 {
     public function index()
     {
-        $posts = Post::all();
+            // $this->authorize('view',Post::class);
+
+        $posts = Post::orderBy('created_at','desc')->get();
         return view("posts.index",compact("posts"));
     }
 
     public function create()
     {    
+            $this->authorize('create',Post::class);
+
+
         $attshows = Status::whereIn("id",[3,4])->get();
         $days = Day::where("status_id",3)->get();
         $statuses = Status::whereIn("id",[7,10,11])->get();
         $tags = Tag::where("status_id",3)->get();
         $types = Type::whereIn("id",[1,2])->get();
 
-        return view("posts.create",compact("attshows","days","statuses","tags","types"));
+        $gettoday = Carbon::today()->format("Y-m-d");
+        $gettime = Carbon::now()->format("H:i");
+
+        return view("posts.create",compact("attshows","days","statuses","tags","types","gettoday","gettime"));
     }
 
 
     public function store(Request $request)
     {
+        $this->authorize('create',Post::class);
+        
         $this->validate($request,[
             "image" => "image|mimes:jpg,jpeg,png|max:1024",
             "title" => "required|max:50|unique:posts,title",
             "content" => "required",
-            "fee" => "required",
+            "fee" => "required|numeric",
             "startdate" => "required",
             "enddate" => "required",
             "starttime" => "required",
@@ -51,24 +63,19 @@ class PostsController extends Controller
             "tag_id" => "required",
             "attshow" => "required|in:3,4",
             "status_id" => "required|in:7,10,11",   
+            "day_id"=>"required|array",
+            'day_id.*'=>"exists:days,id"
         ]);
 
        $user = Auth::user();
        $user_id = $user->id;
 
        $post = new Post();
-       $post->title = $request["title"];
+        $post->fill($request->only([
+            'title', 'content' , 'fee' , 'startdate' , 'enddate', 'starttime','endtime','type_id','tag_id', 'attshow','status_id'
+        ]));
+
        $post->slug = Str::slug($request["name"]);
-       $post->content = $request["content"];
-       $post->fee = $request["fee"];
-       $post->startdate = $request["startdate"];
-       $post->enddate = $request["enddate"];
-       $post->starttime = $request["starttime"];
-       $post->endtime = $request["endtime"];
-       $post->type_id = $request["type_id"];
-       $post->tag_id = $request["tag_id"];
-       $post->attshow = $request["attshow"];
-       $post->status_id = $request["status_id"];
        $post->user_id = $user_id;
 
         // Single Image Upload
@@ -85,7 +92,7 @@ class PostsController extends Controller
         $post->save();
 
        
-        if($post->id){
+        if($post->id && $request->has('day_id')){
             // dd($request["day_id"]);
 
             // create dayable
@@ -103,27 +110,39 @@ class PostsController extends Controller
             // }
 
             // Methd 2
-            if(count($request["day_id"]) > 0){
+            // if(count($request["day_id"]) > 0){
                             
-                foreach($request["day_id"] as $key=>$value){
-                    $day = [
-                        // "day_id"=>$request["day_id"][$key],
-                        "day_id"=>$value,
-                        "dayable_id"=>$post["id"],
-                        "dayable_type"=>$request["dayable_type"]
-                    ];
-                    Dayable::insert($day);
-                }
-            }
+            //     foreach($request["day_id"] as $key=>$value){
+            //         $day = [
+            //             // "day_id"=>$request["day_id"][$key],
+            //             "day_id"=>$value,
+            //             "dayable_id"=>$post["id"],
+            //             "dayable_type"=>$request["dayable_type"]
+            //         ];
+            //         Dayable::insert($day);
+            //     }
+            // }
 
+            // Method 3
+            $day = array_map(function($dayid) use ($post,$request){
+                return [
+                    "day_id"=>$dayid,
+                    "dayable_id"=>$post["id"],
+                    "dayable_type"=>$request["dayable_type"]    // Post::class
+                ];
+            },$request->day_id);
+            Dayable::insert($day);
         }
+
+        // Email Noti
        
        return redirect(route("posts.index"));
     }
 
-    public function show(string $id)
+    public function show(Post $post)
     {
-        $post = Post::findOrFail($id);
+            $this->authorize('view',$post);
+
 
         // dd($post->checkenroll(1)); // true
 
@@ -139,11 +158,10 @@ class PostsController extends Controller
     }
 
 
-    public function edit(string $id)
+    public function edit(Post $post)
     {
+            $this->authorize('edit',$post);
 
-        $post = Post::findOrFail($id);
-        // dd($post); // Post object
         $days = Day::where("status_id",3)->get();
         $dayables = $post->days()->get();
         // dd($dayables); // Day object
@@ -155,11 +173,13 @@ class PostsController extends Controller
         return view("posts.edit")->with("post",$post)->with("attshows",$attshows)->with("days",$days)->with("dayables",$dayables)->with("statuses",$statuses)->with("tags",$tags)->with("types",$types);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, Post $post)
     {
+            $this->authorize('update',$post);
+
         $this->validate($request,[
             "image" => "image|mimes:jpg,jpeg,png|max:1024",
-            "title" => "required|max:50|unique:posts,title,".$id,
+            "title" => "required|max:50|unique:posts,title,".$post->id,
             "content" => "required",
             "fee" => "required",
             "startdate" => "required",
@@ -170,38 +190,30 @@ class PostsController extends Controller
             "tag_id" => "required",
             "attshow" => "required|in:3,4",
             "status_id" => "required|in:7,10,11",   
+            "day_id"=>"required|array",
+            'day_id.*'=>"exists:days,id"
         ]);
 
         $user = Auth::user();
         $user_id = $user["id"];
 
-        $post = Post::findOrFail($id);
-        $post->title = $request["title"];
+        $post->fill($request->only([
+            'title', 'content' , 'fee' , 'startdate' , 'enddate', 'starttime','endtime','type_id','tag_id', 'attshow','status_id'
+        ]));
+
         $post->slug = Str::slug($request["name"]);
-        $post->content = $request["content"];
-        $post->fee = $request["fee"];
-        $post->startdate = $request["startdate"];
-        $post->enddate = $request["enddate"];
-        $post->starttime = $request["starttime"];
-        $post->endtime = $request["endtime"];
-        $post->type_id = $request["type_id"];
-        $post->tag_id = $request["tag_id"];
-        $post->attshow = $request["attshow"];
-        $post->status_id = $request["status_id"];
         $post->user_id = $user_id;
 
 
-        // Remove Old Image
-        if($request->hasFile("image")){
-            $path = $post->image;
 
+        if($request->hasFile("image")){
+            // Remove Old Image
+            $path = $post->image;
             if(File::exists($path)){
                 File::delete($path);
             }
-        }
 
-        // Single Image Update
-        if($request->hasFile("image")){
+            // Single Image Update
             $file = $request->file("image");
             $fname = $file->getClientOriginalName();
             $imagenewname = uniqid($user_id).$post['id'].$fname;
@@ -213,54 +225,18 @@ class PostsController extends Controller
 
         $post->save();
 
-        // if($request["day_id"] > 0){
-        //         // dd($request["day_id"]);
-        //         $post->days()->sync($request["day_id"]);
-        // }else{
-        //     $post->days()->detach();
-        // }
-        
-        // $post->days()->detach();
-        // if(!empty($request["day_id"])){
-        //     foreach($request["day_id"] as $key=>$value){
-        //         Dayable::create([
-        //         "day_id"=>$value,
-        //         "dayable_id"=>$post->id,
-        //         "dayable_type"=>$request["dayable_type"]
-        //         ]);
-        //     }
-        // }
-        
-        // =Js Method
-        // Start Day Action
-        // dd($request["newday_id"]); // null ,or [1 3 5]
-        
-            if(isset($request["newday_id"])){
-                // remove all day first
-                foreach($request["newday_id"] as $key=>$value){
-                    $dayable = Dayable::where("dayable_id",$post["id"])->where("dayable_type",$request["dayable_type"]);
-                    $dayable->delete();
-                }
-                // add renewday
-                foreach($request["newday_id"] as $key=>$value){
-                    $day = [
-                        // "day_id"=>$request["day_id"][$key],
-                        "day_id"=>$request["newday_id"][$key],
-                        "dayable_id"=>$post["id"],
-                        "dayable_type"=>$request["dayable_type"]
-                    ];
-                    Dayable::insert($day);
-                }
-            }
-        // End Day Action
+        // Update Days 
+        $post->days()->sync($request->day_id);
+
 
         return redirect(route("posts.index"));
     }
 
 
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        $post = Post::findOrFail($id);
+            $this->authorize('delete',$post);
+
         
         // Remove Old Image
         $path = $post->image;
@@ -268,6 +244,13 @@ class PostsController extends Controller
             File::delete($path);
         }
         
+        // Delete post and it's related Dayable records
+        // Method 1
+        // Dayable::where('dayable_id',"=",$post['id'])->delete();
+
+        // Method 2
+        $post->days()->detach();
+
         $post->delete();
         return redirect()->back();
     }

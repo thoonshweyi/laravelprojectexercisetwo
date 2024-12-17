@@ -17,7 +17,7 @@ class TownshipsController extends Controller
     {
         // http://127.0.0.1:8000/townships?filtername=mm
         // dd(request("filtername")); // mm
-
+            $this->authorize('view',Township::class);
         $townships = Township::where(function($query){
             if($getname = request("filtername")){
                 $query->where("name","LIKE","%".$getname."%");
@@ -47,6 +47,7 @@ class TownshipsController extends Controller
        $user_id = $user->id;
 
        $township = new Township();
+            $this->authorize('create',$township);
        $township->name = $request["name"];
        $township->slug = Str::slug($request["name"]);
        $township->country_id = $request["country_id"];
@@ -73,6 +74,7 @@ class TownshipsController extends Controller
        $user_id = $user['id'];
 
        $township = Township::findOrFail($id);
+            $this->authorize('edit',$township);
        $township->name = $request["editname"];
        $township->slug = Str::slug($request["editname"]);
        $township->country_id = $request["editcountry_id"];
@@ -89,6 +91,7 @@ class TownshipsController extends Controller
     public function destroy(string $id)
     {
         $township = Township::findOrFail($id);
+            $this->authorize('delete',$township);
         $township->delete();
         return redirect()->back();
     }

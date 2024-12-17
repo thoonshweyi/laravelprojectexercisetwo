@@ -12,6 +12,7 @@ class ReligionsController extends Controller
 {
     public function index()
     {
+            $this->authorize('view',Religion::class);
         $religions = Religion::where(function($query){
             if($getname = request("filtername")){
                 $query->where("name","LIKE","%".$getname."%");
@@ -45,6 +46,7 @@ class ReligionsController extends Controller
        $user_id = $user->id;
 
        $religion = new Religion();
+            $this->authorize('create',$religion);
        $religion->name = $request["name"];
        $religion->slug = Str::slug($request["name"]);
        $religion->status_id = $request["status_id"];
@@ -64,6 +66,7 @@ class ReligionsController extends Controller
         $user_id = $user["id"];
 
         $religion = Religion::findOrFail($id);
+            $this->authorize('edit',$religion);
         $religion->name = $request["name"];
         $religion->slug = Str::slug($request["name"]);
         $religion->status_id = $request["status_id"];
@@ -76,6 +79,7 @@ class ReligionsController extends Controller
     public function destroy(string $id)
     {
         $religion = Religion::findOrFail($id);
+            $this->authorize('delete',$religion);
         $religion->delete();
         return redirect()->back();
     }

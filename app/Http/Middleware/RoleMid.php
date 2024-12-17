@@ -28,6 +28,7 @@ class RoleMid
     {
         if(!Auth::check() || !Auth::user()->hasRoles($roles)){
             abort('403',"Unauthorized from role middleware");
+            // return redirect()->back()->with('error',"Unauthorized Role Access");
         }
         return $next($request);
     }

@@ -15,6 +15,7 @@ class CitiesController extends Controller
 {
      public function index()
      {
+            // $this->authorize('view',City::class);
          $cities = City::paginate(30);
          return  CitiesResource::collection($cities);
      }
@@ -33,6 +34,7 @@ class CitiesController extends Controller
          ]);
  
         $city = new City();
+            // $this->authorize('create',$city);
         $city->name = $request["name"];
         $city->slug = Str::slug($request["name"]);
         $city->country_id = $request["country_id"];
@@ -68,6 +70,7 @@ class CitiesController extends Controller
          ]);
  
         $city = City::findOrFail($id);
+            // $this->authorize('edit',$city);
         $city->name = $request["editname"];
         $city->slug = Str::slug($request["editname"]);
         $city->country_id = $request["editcountry_id"];
@@ -88,6 +91,7 @@ class CitiesController extends Controller
      public function destroy(string $id)
      {
          $city = City::findOrFail($id);
+            // $this->authorize('delete',$city);
          $city->delete();
          return new CitiesResource($city);
      }

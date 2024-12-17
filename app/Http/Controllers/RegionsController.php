@@ -18,7 +18,7 @@ class RegionsController extends Controller
     {
         // http://127.0.0.1:8000/regions?filtername=mm
         // dd(request("filtername")); // mm
-
+            $this->authorize('view',Region::class);
         $regions = Region::where(function($query){
             if($getname = request("filtername")){
                 $query->where("name","LIKE","%".$getname."%");
@@ -45,6 +45,7 @@ class RegionsController extends Controller
        $user_id = $user->id;
 
        $region = new Region();
+            $this->authorize('create',$region);
        $region->name = $request["name"];
        $region->slug = Str::slug($request["name"]);
        $region->country_id = $request["country_id"];
@@ -69,6 +70,7 @@ class RegionsController extends Controller
        $user_id = $user['id'];
 
        $region = Region::findOrFail($id);
+            $this->authorize('edit',$region);
        $region->name = $request["editname"];
        $region->slug = Str::slug($request["editname"]);
        $region->country_id = $request["editcountry_id"];
@@ -84,6 +86,7 @@ class RegionsController extends Controller
     public function destroy(string $id)
     {
         $region = Region::findOrFail($id);
+            $this->authorize('delete',$region);
         $region->delete();
         return redirect()->back();
     }

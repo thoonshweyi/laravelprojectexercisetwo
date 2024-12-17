@@ -14,6 +14,7 @@ class TownshipsController extends Controller
 {
     public function index()
      {
+            $this->authorize('view',Township::class);
          $townships = Township::paginate(30);
          return  TownshipsResource::collection($townships);
      }

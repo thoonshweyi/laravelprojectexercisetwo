@@ -79,9 +79,9 @@ class RolesController extends Controller
     }
 
 
-    public function edit(string $id)
+    public function edit(Role $role)
     {
-        $role = Role::findOrFail($id);
+        // $role = Role::findOrFail($id);
         $statuses = Status::whereIn("id",[3,4])->get();
         return view("roles.edit")->with("role",$role)->with("statuses",$statuses);
     }

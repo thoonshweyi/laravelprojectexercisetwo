@@ -5,8 +5,10 @@ namespace App\Policies;
 use App\Models\Announcement;
 use App\Models\User;
 
+use Illuminate\Auth\Access\HandlesAuthorization;
 class AnnouncementPol
 {
+    use HandlesAuthorization;
     /**
      * Create a new policy instance.
      */

@@ -48,8 +48,13 @@
                               <td>{{ $post->created_at->format('d M Y') }}</td>
                               <td>{{ $post->updated_at->format('d M Y') }}</td>
                               <td>
-                                   <a href="{{ route('posts.edit',$post->id) }}" class="text-info"><i class="fas fa-pen"></i></a>
-                                   <a href="#" class="text-danger ms-2 delete-btns" data-idx="{{$idx}}"><i class="fas fa-trash-alt"></i></a>
+                                   @can('edit',$post)
+                                        <a href="{{ route('posts.edit',$post->id) }}" class="text-info"><i class="fas fa-pen"></i></a>
+                                   @endcan
+                                   @can('delete',$post)
+                                        <a href="#" class="text-danger ms-2 delete-btns" data-idx="{{$idx}}"><i class="fas fa-trash-alt"></i></a>
+                                   @endcan
+
                               </td>
                               <form id="formdelete-{{ $idx }}" class="" action="{{route('posts.destroy',$post->id)}}" method="POST">
                                    @csrf

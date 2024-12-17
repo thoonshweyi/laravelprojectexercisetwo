@@ -51,7 +51,7 @@
                                    <div class="col-md-12 for-group">
                                         <label for="">Days</label>
                                         <div class="d-flex flex-wrap">
-                                             @foreach($days as $idx=>$day)
+                                             {{-- @foreach($days as $idx=>$day)
                                                   <div class="form-check form-switch mx-3">
                                                        <input type="checkbox" name="day_id[]" id="day_id{{$idx}}" class="form-check-input dayactions" value="{{$day->id}}" 
                                                             @foreach($dayables as $dayable)
@@ -59,6 +59,15 @@
                                                                       checked
                                                                  @endif
                                                             @endforeach
+                                                       /> 
+                                                       <label for="day_id{{$idx}}">{{$day->name}}</label>
+                                                  </div>
+                                             @endforeach --}}
+
+                                             @foreach($days as $idx=>$day)
+                                                  <div class="form-check form-switch mx-3">
+                                                       <input type="checkbox" name="day_id[]" id="day_id{{$idx}}" class="form-check-input" value="{{$day->id}}" 
+                                                            {{ in_array($day->id,$post->days->pluck('id')->toArray()) ? 'checked' : '' }}
                                                        /> 
                                                        <label for="day_id{{$idx}}">{{$day->name}}</label>
                                                   </div>
@@ -252,30 +261,31 @@
 
                // Start Day Action
                $(".dayactions").click(function(){
-                    var checkboxs = $("input[type='checkbox']");
-                    // console.log(checkboxs);
+                    var checkboxs = $("input[type='checkbox'].dayactions");
+                    console.log(checkboxs);
                     
-                    // var checked = checkboxs.filter(":checked").map(function(){
-                    //      // return this.value;
-                    //      $(this).attr("name","newday_id[]");
-                    // });
+                    var checked = checkboxs.filter(":checked").map(function(){
+                         // return this.value;
+                         $(this).attr("name","newday_id[]");
+                    });
 
-                    // var unchecked = checkboxs.not(":checked").map(function(uncheck){
-                    //      // return this.value;
-                    //      $(this).attr("name","oldday_id[]");
+                    var unchecked = checkboxs.not(":checked").map(function(uncheck){
+                         // return this.value;
+                         $(this).attr("name","oldday_id[]");
                          
-                    //      // console.log(uncheck);
-                    // });
+                         // console.log(uncheck);
+                    });
 
                     // check or uncheck
-                    // if($(this).prop('checked')){
-                    //      // console.log("yes");
-                    //      console.log("checked");
-                    // }else{
-                    //      // console.log("no");
-                    //      console.log("unchecked");
-                    // }
+                    if($(this).prop('checked')){
+                         // console.log("yes");
+                         console.log("checked");
+                    }else{
+                         // console.log("no");
+                         console.log("unchecked");
+                    }
                });
+               // End Day Action
           });
      </script>
 @endsection

@@ -24,7 +24,7 @@
 
                                    <div class="col-md-6 mb-3">
                                         <label for="startdate">Start Date <span class="text-danger">*</span></label>
-                                        <input type="date" name="startdate" id="startdate" class="form-control form-control-sm rounded-0" value="{{ old('startdate') }}"/>
+                                        <input type="date" name="startdate" id="startdate" class="form-control form-control-sm rounded-0" value="{{ old('startdate',$gettoday) }}"/>
                                         @error("startdate")
                                              <span class="text-danger">{{ $message }}<span>
                                         @enderror
@@ -32,7 +32,7 @@
 
                                    <div class="col-md-6 mb-3">
                                         <label for="enddate">End Date <span class="text-danger">*</span></label>
-                                        <input type="date" name="enddate" id="enddate" class="form-control form-control-sm rounded-0" value="{{ old('enddate') }}"/>
+                                        <input type="date" name="enddate" id="enddate" class="form-control form-control-sm rounded-0" value="{{ old('enddate',now()->format('Y-m-d')) }}"/>
                                         @error("enddate")
                                              <span class="text-danger">{{ $message }}<span>
                                         @enderror
@@ -40,7 +40,7 @@
 
                                    <div class="col-md-6 mb-3">
                                         <label for="starttime">Start Time <span class="text-danger">*</span></label>
-                                        <input type="time" name="starttime" id="starttime" class="form-control form-control-sm rounded-0" value="{{ old('starttime') }}"/>
+                                        <input type="time" name="starttime" id="starttime" class="form-control form-control-sm rounded-0" value="{{ old('starttime',$gettime) }}"/>
                                         @error("starttime")
                                              <span class="text-danger">{{ $message }}<span>
                                         @enderror
@@ -48,7 +48,7 @@
 
                                    <div class="col-md-6 mb-3">
                                         <label for="endtime">End Time <span class="text-danger">*</span></label>
-                                        <input type="time" name="endtime" id="endtime" class="form-control form-control-sm rounded-0" value="{{ old('endtime') }}"/>
+                                        <input type="time" name="endtime" id="endtime" class="form-control form-control-sm rounded-0" value="{{ old('endtime',now()->format('H:m')) }}"/>
                                         @error("endtime")
                                              <span class="text-danger">{{ $message }}<span>
                                         @enderror
@@ -87,7 +87,7 @@
                                         <label for="type_id">Type <span class="text-danger">*</span></label>
                                         <select name="type_id" id="type_id" class="form-control form-control-sm rounded-0">
                                              @foreach($types as $type)
-                                                  <option value="{{$type->id}}">{{ $type->name }}</option>
+                                                  <option value="{{$type->id}}" {{ old('type_id') == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
                                              @endforeach
                                         </select>
                                         @error("type_id")
@@ -112,10 +112,10 @@
                                    </div>
 
                                    <div class="col-md-3 mb-3">
-                                        <label for="tag_id">Type <span class="text-danger">*</span></label>
+                                        <label for="tag_id">Tag <span class="text-danger">*</span></label>
                                         <select name="tag_id" id="tag_id" class="form-control form-control-sm rounded-0">
                                              @foreach($tags as $tag)
-                                                  <option value="{{$tag->id}}">{{ $tag->name }}</option>
+                                                  <option value="{{$tag->id}}" {{ old('tag_id') == $tag->id ? 'selected' : '' }}>{{ $tag->name }}</option>
                                              @endforeach
                                         </select>
                                         @error("tag_id")
@@ -127,7 +127,7 @@
                                         <label for="attshow">Show on Att Form <span class="text-danger">*</span></label>
                                         <select name="attshow" id="attshow" class="form-control form-control-sm rounded-0">
                                              @foreach($attshows as $attshow)
-                                                  <option value="{{$attshow->id}}">{{ $attshow->name }}</option>
+                                                  <option value="{{$attshow->id}}" {{ old('attshow') == $attshow->id ? 'selected' : '' }}>{{ $attshow->name }}</option>
                                              @endforeach
                                         </select>
                                         @error("attshow")
@@ -139,7 +139,7 @@
                                         <label for="name">Status <span class="text-danger">*</span></label>
                                         <select type="text" name="status_id" id="status_id" class="form-control form-control-sm rounded-0">
                                              @foreach($statuses as $status)
-                                                  <option value="{{$status->id}}">{{ $status->name }}</option>
+                                                  <option value="{{$status->id}}" {{ old('status_id') == $status->id ? 'selected' : '' }}>{{ $status->name }}</option>
                                              @endforeach
                                         </select>
                                         @error("status_id")

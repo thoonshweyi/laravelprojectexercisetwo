@@ -21,14 +21,22 @@ class LeavesController extends Controller
 {
     public function index()
     {
-        $leaves = Leave::all();
+        if(auth()->user()->can('viewany',Leave::class)){
+            $leaves = Leave::all(); // Admin,Teacher can see all leaves
+        }else{
+            $leaves = Leave::where('user_id',auth()->id())->get();
+        }
+
         return view("leaves.index",compact("leaves"));
     }
 
     public function create()
     {    
+            $this->authorize('create',Leave::class);
         $data["posts"] = \DB::table("posts")->where("attshow",3)->orderBy("title","asc")->pluck("title","id");
-        $data["tags"] = User::orderBy("name","asc")->get()->pluck("name","id");
+        $data["tags"] = User::whereHas('roles',function($query){
+            $query->whereIn('name',['Admin','Teacher']);
+        })->orderBy("name","asc")->get()->pluck("name","id");
         $data["gettoday"] = Carbon::today()->format("Y-m-d"); // get today // "2024-02-26"
         // dd($data["gettoday"]);
         return view("leaves.create",$data);
@@ -94,14 +102,19 @@ class LeavesController extends Controller
 
     public function show(string $id)
     {
-        $leave = Leave::findOrFail($id);
-        
+        $user = Auth::user();
+        $user_id = $user->id;
+
+
+        $leave = Leave::findOrFail($id);   
         $type = "App\Notifications\LeaveNotify";
 
         
         $getnoti = \DB::table("notifications")->where("notifiable_id",$user_id)->where("type",$type)->where('data->id',$id)->pluck('id');
         // dd($getnoti);
-        \DB::table("notifications")->where('id',$getnoti)->update(["read_at"=>now()]);
+        if(count($getnoti) != 0){
+            \DB::table("notifications")->where('id',$getnoti)->update(["read_at"=>now()]);
+        }
         
         return view("leaves.show",["leave"=>$leave]);
     }
@@ -111,9 +124,12 @@ class LeavesController extends Controller
     {
 
         $data["leave"] = Leave::findOrFail($id);
+            $this->authorize('edit',$data['leave']);
 
         $data["posts"] = \DB::table("posts")->where("attshow",3)->orderBy("title","asc")->pluck("title","id");
-        $data["tags"] = User::orderBy("name","asc")->get()->pluck("name","id");
+        $data["tags"] = User::whereHas('roles',function($query){
+            $query->whereIn('name',['Admin','Teacher']);
+        })->orderBy("name","asc")->get()->pluck("name","id");
 
         return view("leaves.edit",$data);
     }
@@ -134,6 +150,8 @@ class LeavesController extends Controller
         $user_id = $user["id"];
 
         $leave = Leave::findOrFail($id);
+            $this->authorize('edit',$leave);
+
         $leave->post_id = $request["post_id"];
         $leave->startdate = $request["startdate"];
         $leave->enddate = $request["enddate"];
@@ -185,6 +203,8 @@ class LeavesController extends Controller
     public function destroy(string $id)
     {
         $leave = Leave::findOrFail($id);
+            $this->authorize('delete',$leave);
+
         
         // Remove Old Image
         $leavefiles = LeaveFile::where('leave_id',$id)->get();

@@ -21,7 +21,7 @@ class PermissionRolesController extends Controller
         // http://127.0.0.1:8000/permissionroles?filtername=mm
         // dd(request("filtername")); // mm
 
-        $permissionroles = PermissionRole::get();
+        $permissionroles = PermissionRole::orderBy('id')->get();
         // dd($permissionroles);
 
         $roles = Role::orderBy("name")->where("status_id",3)->get();

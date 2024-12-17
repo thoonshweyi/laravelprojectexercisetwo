@@ -54,14 +54,13 @@
  
                                    <div class="col-md-6 mb-3">
                                         <label for="tag">Tag <span class="text-danger">*</span></label>
-                                        <select name="tag" id="tag" class="form-control form-control-sm rounded-0">
-                                             <option selected disabled value="">Choose authorize person</option>     
+                                        <select name="tag[]" id="tag" class="form-control form-control-sm rounded-0 select2" multiple>
+                                             <!-- <option selected disabled value="">Choose authorize person</option>      -->
                                              
                                              @foreach($tags as $id=>$name)
                                                   <option value="{{$id}}">{{ $name }}</option>
                                              @endforeach
                                         </select>
-                               
                                    </div>
 
                                    <div class="col-md-12 mb-3">
@@ -118,11 +117,14 @@
                display: none;
           }
      </style>
+     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
             
 @endsection
 
 @section("scripts")
+     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
      {{-- summernote css1 js1 --}}
      <script src="{{ asset('assets/libs/summernote-0.8.18-dist/summernote-lite.min.js') }}" type="text/javascript"></script>
      <script type="text/javascript">
@@ -162,7 +164,7 @@
                     previewimages(this,'.gallery');
                });
 
-               // text editor for content
+               // Start text editor for content
                $('#content').summernote({
                     placeholder: 'Say Something....',
                     tabsize: 2,
@@ -174,6 +176,12 @@
                          ['para', ['ul', 'ol', 'paragraph']],
                          ['insert', ['link']],
                     ]
+               });
+               // End text editor for content
+
+
+               $('.select2').select2({
+                    placeholder: 'Choose autorize person'
                });
           });
      </script>

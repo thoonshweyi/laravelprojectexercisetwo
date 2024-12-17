@@ -13,6 +13,7 @@ class CitiesController extends Controller
 {
     public function index()
     {
+            // $this->authorize('view',City::class);
         $cities = City::where(function($query){
             if($getname = request("filtername")){
                 $query->where("name","LIKE","%".$getname."%");
@@ -35,6 +36,7 @@ class CitiesController extends Controller
        $user_id = $user->id;
 
        $city = new City();
+            $this->authorize('create',$citiy);
        $city->name = $request["name"];
        $city->slug = Str::slug($request["name"]);
        $city->country_id = Str::slug($request["name"]);
@@ -59,6 +61,7 @@ class CitiesController extends Controller
        $user_id = $user['id'];
 
        $city = City::findOrFail($id);
+            $this->authorize('edit',$citiy);
        $city->name = $request["name"];
        $city->slug = Str::slug($request["name"]);
        $city->user_id = $user_id;
@@ -71,6 +74,7 @@ class CitiesController extends Controller
     public function destroy(string $id)
     {
         $city = City::findOrFail($id);
+                $this->authorize('delete',$citiy);
         $city->delete();
         return redirect()->back();
     }

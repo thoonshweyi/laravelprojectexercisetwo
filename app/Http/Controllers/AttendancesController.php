@@ -17,6 +17,7 @@ class AttendancesController extends Controller
 {
     public function index()
     {
+            $this->authorize('view',Attendance::class);
         $attendances = Attendance::orderBy('updated_at','desc')->get();
         // $posts = Post::where("attshow",3)->get();
         $posts = DB::table("posts")->where("attshow",3)->orderBy("title","asc")->get();
@@ -40,6 +41,7 @@ class AttendancesController extends Controller
        $getattcode = Str::upper($request["attcode"]);
 
        $attendance = new Attendance();
+            $this->authorize('create',$attendance);
        if($attendance->checkattcode($getclassdate,$getpostid,$getattcode)){
             $attendance->classdate = $getclassdate;
             $attendance->post_id = $getpostid;
@@ -66,6 +68,7 @@ class AttendancesController extends Controller
         $user_id = $user["id"];
 
         $attendance = Attendance::findOrFail($id);
+            $this->authorize('edit',$attendance);
         $attendance->post_id = $request["post_id"];
         $attendance->attcode = $request["attcode"];
         $attendance->save();
