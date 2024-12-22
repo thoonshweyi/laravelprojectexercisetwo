@@ -59,10 +59,10 @@ class LeavesController extends Controller
        $user_id = $user->id;
 
        $leave = new Leave();
-       $leave->post_id = $request["post_id"];
+       $leave->post_id = json_encode($request["post_id"]);
        $leave->startdate = $request["startdate"];
        $leave->enddate = $request["enddate"];
-       $leave->tag = $request["tag"];
+       $leave->tag = json_encode($request["tag"]);
        $leave->title = $request["title"];
        $leave->content = $request["content"];
        $leave->user_id = $user_id;
@@ -152,10 +152,10 @@ class LeavesController extends Controller
         $leave = Leave::findOrFail($id);
             $this->authorize('edit',$leave);
 
-        $leave->post_id = $request["post_id"];
+        $leave->post_id = json_encode($request["post_id"]);
         $leave->startdate = $request["startdate"];
         $leave->enddate = $request["enddate"];
-        $leave->tag = $request["tag"];
+        $leave->tag = json_encode($request["tag"]);
         $leave->title = $request["title"];
         $leave->content = $request["content"];
         $leave->save();

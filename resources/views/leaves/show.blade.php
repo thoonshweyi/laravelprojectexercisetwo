@@ -38,7 +38,11 @@
                                                             <div class="">Authorize</div>
                                                        </div>
                                                        <div class="col-auto">
-                                                            <div class="">{{ $leave["user"]["name"] }}</div>
+                                                            <div class="">
+                                                                 @foreach($leave->tagpersons($leave->tag) as $id=>$name)
+                                                                      <a href="{{ route('students.show',$leave->tagpersonurl($id)) }}">{{ $name }}</a>
+                                                                 @endforeach
+                                                            </div>
                                                        </div>
                                                   </div>
                                              </div>
@@ -110,7 +114,50 @@
                     </div>
 
                     <div class="col-md-8">
+
+                         <h6>Compose</h6>
+                         <div class="card border-0 rounded-0 shadow mb-4">
+                              <div class="card-body">
+                                   <div class="accordion">
+                                        <div class="acctitle">Email</div>
+                                        <div class="acccontent">
+                                             <div class="col-md-12 py-3">
+                                                  <form action="{{ route('compose.mail') }}" method="POST">
+                                                       @csrf
+                                                       <div class="row">
+                                                            <div class="col-md-6 form-group mb-3">
+                                                                 <input type="email" name="cmpemail" id="cmpemail" class="form-control form-control-sm border-0 rounded-0" placeholder="To:" value="{{ $leave->user['email'] }}" readonly />
+                                                            </div>
+                                                            <div class="col-md-6 form-group mb-3">
+                                                                 <input type="ext" name="cmpsubject" id="cmpsubject" class="form-control form-control-sm border-0 rounded-0" placeholder="Subject" value="" />
+                                                            </div>
+                                                            <div class="col-md-12 form-group mb-3">
+                                                                 <textarea name="cmpcontent" id="cmpcontent" class="form-control form-control-sm border-0 rounded-0" style="resize:none;" rows="3" placeholder="Your message here...."></textarea>
+                                                            </div>
+
+                                                            <div class="col d-flex justify-content-end align-items-end">
+                                                                 <button type="submit" class="btn btn-secondary btn-sm rounded-0">Send</button>
+                                                            </div>
+
+                                                       </div>
+                                                  </form>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+                         </div>
                          
+                         <h6>Class</h6>
+                         <div class="card border-0 rounded-0 shadow mb-4">
+                              <div class="card-body d-flex flex-wrap gap-3">
+                                   
+                                   @foreach($leave->tagposts($leave->post_id) as $id=>$title)
+                                   <div class="border shadow p-3 mb-3 enrollboxes">
+                                        <a href="{{ route('posts.show',$id) }}">{{ $title }}</a>
+                                   </div>
+                                   @endforeach
+                              </div>
+                         </div>
 
                          <h6>Additional Info</h6>
                          <div class="card border-0 rounded-0 shadow mb-4">
@@ -226,6 +273,52 @@
           }
           /* End Image Preview */
 
+ /* Start Accordion */
+ .accordion{
+               width: 100%;
+               }
+               .acctitle{
+               font-size: 13px;
+               user-select: none;
+
+               padding: 5px;
+               margin: 0;
+
+               cursor: pointer;
+
+               user-select: none;
+
+               position: relative;
+               }
+               .acctitle::after{
+               content: '\f0e0';
+               font-family: 'Font Awesome 5 Free';
+
+               /* position: absolute;
+               right: 15px;
+               top: 50%;
+               transform: translateY(-50%); */
+
+               float: right;
+               }
+               /* .active.acctitle::after{
+               content: '\f068';
+               } */
+               .shown::after{
+               content: '\f2B6';
+               }
+               .acccontent{
+               height: 0;
+               background-color: #f4f4f4;
+               text-align: justify;
+
+               padding: 0 10px;
+
+               overflow: hidden;
+
+               transition: height 0.3s ease-in-out;
+               }
+          /* End Accordion */
 
            /* Start Tag Box */
            .nav{
@@ -306,6 +399,38 @@
 
                document.getElementById('autoclick').click();
           // End Tag Box
+
+            // Start Accordion
+            var getacctitles = document.getElementsByClassName('acctitle');
+               // console.log(getacctitles);
+               var getacccontents = document.querySelectorAll('.acccontent');
+               // console.log(getacccontents);
+
+
+               for(var x = 0 ; x < getacctitles.length ; x++){
+               
+               getacctitles[x].addEventListener('click',function(e){
+                    // console.log(e.target);
+                    // console.log(this);
+
+                    this.classList.toggle('shown');
+
+                    var getcontent = this.nextElementSibling;
+                    // console.log(getcontent);
+
+                    if(getcontent.style.height){
+                         getcontent.style.height = null; //beware can't set 0
+                    }else{
+                         // console.log(getcontent.scrollHeight);
+                         getcontent.style.height = getcontent.scrollHeight + 'px';
+                    }
+               });
+
+               if(getacctitles[x].classList.contains('shown')){
+                    getacccontents[x].style.height = getacccontents[x].scrollHeight + 'px';
+               }
+               }
+          // End Accordion
 
           $(document).ready(function(){
 

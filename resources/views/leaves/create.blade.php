@@ -43,8 +43,8 @@
 
                                    <div class="col-md-6 mb-3">
                                         <label for="post_id">Class <span class="text-danger">*</span></label>
-                                        <select name="post_id" id="post_id" class="form-control form-control-sm rounded-0">
-                                        <option selected disabled value="">Choose Class</option>     
+                                        <select name="post_id[]" id="post_id" class="form-control form-control-sm rounded-0" multiple>
+                                        <!-- <option selected disabled value="">Choose Class</option>      -->
                                              @foreach($posts as $id=>$name)
                                                   <option value="{{$id}}">{{ $name }}</option>
                                              @endforeach
@@ -88,7 +88,9 @@
 @section("css")
      {{-- summernote css1 js1 --}}
      <link href="{{ asset('assets/libs/summernote-0.8.18-dist/summernote-lite.min.css') }}" rel="stylesheet" type="text/css"/>
-     
+     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+          
      <style type="text/css">
           .gallery{
                width: 100%;
@@ -117,13 +119,12 @@
                display: none;
           }
      </style>
-     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-            
+       
 @endsection
 
 @section("scripts")
      <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
      {{-- summernote css1 js1 --}}
      <script src="{{ asset('assets/libs/summernote-0.8.18-dist/summernote-lite.min.js') }}" type="text/javascript"></script>
@@ -180,8 +181,17 @@
                // End text editor for content
 
 
-               $('.select2').select2({
+               $('#tag').select2({
                     placeholder: 'Choose autorize person'
+               });
+               $('#post_id').select2({
+                    placeholder: 'Choose class'
+               });
+
+               $("#startdate,#enddate").flatpickr({
+                    dateFormat: "Y-m-d",
+                    minDate: "today",
+                    maxDate: new Date().fp_incr(30)
                });
           });
      </script>

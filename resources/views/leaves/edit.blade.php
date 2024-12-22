@@ -51,12 +51,14 @@
 
                                    <div class="col-md-6">
                                         <label for="post_id">Class <span class="text-danger">*</span></label>
-                                        <select name="post_id" id="post_id" class="form-control form-control-sm rounded-0">
+                                        <select name="post_id[]" id="post_id" class="form-control form-control-sm rounded-0" multiple>
+                                             <!-- ?? Coalescing Operator 
+                                              
+                                                  $variable = $variable ?? $default value
+                                             -->
                                              @foreach($posts as $id=>$name)
                                                   <option value="{{$id}}"
-                                                       @if($id === $leave["post_id"])
-                                                            selected
-                                                       @endif
+                                                       {{  in_array($id,json_decode($leave->post_id,true) ?? [] ) ? 'selected' : '' }}
                                                   >{{ $name }}</option>
                                              @endforeach
                                         </select>
@@ -64,12 +66,10 @@
 
                                    <div class="col-md-6">
                                         <label for="tag">Tag <span class="text-danger">*</span></label>
-                                        <select name="tag" id="tag" class="form-control form-control-sm rounded-0">
+                                        <select name="tag[]" id="tag" class="form-control form-control-sm rounded-0" multiple>
                                              @foreach($tags as $id=>$name)
                                                   <option value="{{$id}}"
-                                                       @if($id === $leave["tag"])
-                                                            selected
-                                                       @endif
+                                                       {{ in_array($id,json_decode($leave->tag,true) ?? []) ? 'selected' : '' }}
                                                   >{{ $name }}</option>
                                              @endforeach
                                         </select>
@@ -103,6 +103,9 @@
      {{-- summernote css1 js1 --}}
      <link href="{{ asset('assets/libs/summernote-0.8.18-dist/summernote-lite.min.css') }}" rel="stylesheet" type="text/css"/>
      
+     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+          
      <style type="text/css">
           .gallery{
                width: 100%;
@@ -139,6 +142,10 @@
 
      {{-- summernote css1 js1 --}}
      <script src="{{ asset('assets/libs/summernote-0.8.18-dist/summernote-lite.min.js') }}" type="text/javascript"></script>
+     
+     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
      <script type="text/javascript">
           $(document).ready(function(){
 
@@ -191,30 +198,45 @@
                });
 
                // Start Day Action
-               $(".dayactions").click(function(){
-                    var checkboxs = $("input[type='checkbox']");
-                    // console.log(checkboxs);
+               // $(".dayactions").click(function(){
+               //      var checkboxs = $("input[type='checkbox']");
+               //      // console.log(checkboxs);
                     
-                    // var checked = checkboxs.filter(":checked").map(function(){
-                    //      // return this.value;
-                    //      $(this).attr("name","newday_id[]");
-                    // });
+               //      // var checked = checkboxs.filter(":checked").map(function(){
+               //      //      // return this.value;
+               //      //      $(this).attr("name","newday_id[]");
+               //      // });
 
-                    // var unchecked = checkboxs.not(":checked").map(function(uncheck){
-                    //      // return this.value;
-                    //      $(this).attr("name","oldday_id[]");
+               //      // var unchecked = checkboxs.not(":checked").map(function(uncheck){
+               //      //      // return this.value;
+               //      //      $(this).attr("name","oldday_id[]");
                          
-                    //      // console.log(uncheck);
-                    // });
+               //      //      // console.log(uncheck);
+               //      // });
 
-                    // check or uncheck
-                    // if($(this).prop('checked')){
-                    //      // console.log("yes");
-                    //      console.log("checked");
-                    // }else{
-                    //      // console.log("no");
-                    //      console.log("unchecked");
-                    // }
+               //      // check or uncheck
+               //      // if($(this).prop('checked')){
+               //      //      // console.log("yes");
+               //      //      console.log("checked");
+               //      // }else{
+               //      //      // console.log("no");
+               //      //      console.log("unchecked");
+               //      // }
+               // });
+               // End Day Action
+
+
+               $('#tag').select2({
+                    placeholder: 'Choose autorize person'
+               });
+               $('#post_id').select2({
+                    placeholder: 'Choose class'
+               });
+
+               $("#startdate,#enddate").flatpickr({
+                    dateFormat: "Y-m-d",
+                    minDate: "today",
+                    maxDate: new Date().fp_incr(30)
                });
           });
      </script>

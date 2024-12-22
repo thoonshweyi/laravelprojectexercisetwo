@@ -32,11 +32,12 @@
                          @foreach($leaves as $idx=>$leave)
                          <tr>
                               <td>{{++$idx}}</td>
+                              <td><a href="{{ route('leaves.show',$leave->id) }}">{{Str::limit($leave->title,20)}}</a></td>
                               <td><a href="{{ route('students.show',$leave->studenturl()) }}">{{ $leave->student($leave->user_id) }}</a></td>
-                              <td><a href="{{ route('posts.show',$leave->post_id) }}"> {{ $leave->post["title"] }}</a></td>
+                              {{-- <td><a href="{{ route('posts.show',$leave->post_id) }}"> {{ $leave->post["title"] }}</a></td> --}} 
                               <td>{{ $leave->startdate }}</td>
                               <td>{{ $leave->enddate }}</td>
-                              <td>{{ $leave->tagperson["name"] }}</td>
+                              {{-- <td>{{ $leave->tagperson["name"] }}</td> --}} 
                               <td>{{ $leave->stage["name"] }}</td>
                               <td>{{ $leave->user["name"] }}</td>
                               <td>{{ $leave->created_at->format('d M Y') }}</td>

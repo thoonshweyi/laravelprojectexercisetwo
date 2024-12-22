@@ -55,7 +55,26 @@ class Leave extends Model
         return Student::where("user_id",$this->user_id)->get(["students.id"])->first();
     }
 
+    public function tagpersonurl($tagid){
+        // return Student::where("user_id",$tagid)->get(["students.id"])->first();
+        return Student::where("user_id",$tagid)->value('id');
+    }
+
+    public function tagposts($postjson){
+        $postids = json_decode($postjson,true); // Decode Json-encoded tags
+
+        $posts = Post::whereIn('id',$postids)->pluck('title','id'); // Fetch users in a single query
+        return $posts;
+    }
+
     public function tagperson(){
         return $this->belongsTo(User::class,"tag");
+    }
+
+    public function tagpersons($tagjson){
+        $tagids = json_decode($tagjson,true); // Decode Json-encoded tags
+
+        $tags = User::whereIn('id',$tagids)->pluck('name','id'); // Fetch users in a single query
+        return $tags;
     }
 }

@@ -34,11 +34,12 @@ class LeaveRequest extends FormRequest
         // ];
         if($this->method() == "POST"){
             return [
-                "post_id" => "required",
+                "post_id" => "required|array",
+                "post_id.*"=>"exists:posts,id",
                 "startdate" => "required",
-                "enddate" => "required",
+                "enddate" => "required|after_or_equal:startdate",
                 "tag" => "required|array",
-                "tag.*"=>"exists:users.id",
+                "tag.*"=>"exists:users,id",
                 "title" => "required|max:50",
                 "content" => "required",
                 "images" => "nullable|image|mimes:jpg,jpeg,png|max:1024",
@@ -46,11 +47,12 @@ class LeaveRequest extends FormRequest
             ];
         }else{
             return [
-                "post_id" => "required",
+                "post_id" => "required|array",
+                "post_id.*"=>"exists:posts,id",
                 "startdate" => "required",
-                "enddate" => "required",
+                "enddate" => "required|after_or_equal:startdate",
                 "tag" => "required|array",
-                "tag.*"=>"exists:users.id",
+                "tag.*"=>"exists:users,id",
                 "title" => "required|max:50",
                 "content" => "required",
                 "images" => "nullable|image|mimes:jpg,jpeg,png|max:1024",
