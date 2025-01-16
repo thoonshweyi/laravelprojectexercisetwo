@@ -17,7 +17,7 @@
                               <div class="row">
                                    <div class="col-md-12 mb-3">
 
-                                        <div class="row">
+                                        {{-- <div class="row">
                                              <div class="col-md-6 text-sm-center">
                                                   <img src="{{asset($post->image)}}" width="200" alt="{{$post->title}}"/>
                                              </div>
@@ -26,6 +26,18 @@
                                                   <input type="file" name="image" id="image" class="form-control form-control-sm rounded-0" value="{{ $post->image }}" hidden/>
                                              </div>
                                         </div>
+
+                                        --}}
+                                        <label for="image" class="gallery">
+                                        @if($post->image)
+                                             <img src="{{ asset($post->image) }}" alt="" class="img-thumbnail" width="100" height="100"/>
+                                        @else
+                                             <span>Choose Images</span>
+                                        @endif
+                                        </label>
+                                        <input type="file" name="image" id="image" class="form-control form-control-sm rounded-0" value="{{ $post->image }}" hidden/>
+
+
                                    </div>
 
                                    <div class="col-md-6 mb-3">

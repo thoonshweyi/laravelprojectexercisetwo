@@ -17,15 +17,18 @@
                               <div class="row">
                                    <div class="col-md-12 mb-3">
 
-                                        <div class="row">
-                                             <div class="col-md-6 text-sm-center">
-                                                  <img src="{{asset($leave->image)}}" width="200" alt="{{$leave->title}}"/>
-                                             </div>
-                                             <div class="col-md-6">
-                                                  <label for="images" class="gallery"><span>Choose Images</span></label>
-                                                  <input type="file" name="images[]" id="images" class="form-control form-control-sm rounded-0" value="{{ old('image',$leave->image) }}" multiple hidden/>
-                                             </div>
-                                        </div>
+                                        <label for="images" class="gallery">
+                                             @if(!empty($leavefiles) && count($leavefiles) > 0)
+                                                  @foreach($leavefiles as $leavefile)
+                                                       <img src="{{ asset($leavefile->image) }}" alt="{{ $leavefile->id }}" class="img-thumbnail" width="100" height="100"/>
+                                                  @endforeach
+                                             @else
+                                                  <span>Choose Images</span>
+                                             @endif
+                                        </label>
+
+                                        <!-- input for upload new images -->
+                                        <input type="file" name="images[]" id="images" class="form-control form-control-sm rounded-0" value="{{ old('images') }}" multiple hidden/>
                                    </div>
 
                                    <div class="col-md-6 mb-3">
@@ -81,10 +84,13 @@
                                         <textarea name="content" id="content" class="form-control form-control-sm rounded-0" rows="5" placeholder="Say Something....">{{$leave->content}}</textarea>
                                    </div>                                   
 
+                                   @if($leave->isconverted())
+                                        <small class="text-danger">This leave for has already been converted to an authorized stage. Editing is disabled.</small>
+                                   @endif
                                    <div class="col-md-12 d-flex justify-content-end align-items-end">
                                         <div class="">
                                              <a href="{{route('leaves.index')}}" class="btn btn-secondary btn-sm rounded-0 me-3">Cancel</a>
-                                             <button type="submit" class="btn btn-primary btn-sm rounded-0">Submit</button>
+                                             <button type="submit" class="btn btn-primary btn-sm rounded-0"  {{ $leave->isconverted() ? 'disabled' : '' }}>Submit</button>
                                         </div>
                                    </div>
                               </div>
@@ -114,8 +120,9 @@
                color: #aaa;
 
                display:flex;
-               justify-content:center;
+               /* justify-content:center; */
                align-items:center;
+               flex-wrap: wrap;
 
                text-align: center;
                padding: 10px;
@@ -128,7 +135,7 @@
                object-fit: cover;
 
                padding: 5px;
-               margin: 0 5px;
+               margin: 5px 5px;
           }
           .removetxt span{
                display: none;
@@ -153,7 +160,7 @@
                     var previewimages = function(input,output){
 
                     // console.log(input.files);
-
+                    $('.gallery').html('');
                     if(input.files){
                          var totalfiles = input.files.length;
                          // console.log(totalfiles);
@@ -179,7 +186,7 @@
                     };
 
                     $('#images').change(function(){
-                    previewimages(this,'.gallery');
+                         previewimages(this,'.gallery');
                     });
                // End Single Image Preview 
                

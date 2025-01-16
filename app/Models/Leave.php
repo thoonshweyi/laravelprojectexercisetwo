@@ -67,14 +67,26 @@ class Leave extends Model
         return $posts;
     }
 
-    public function tagperson(){
-        return $this->belongsTo(User::class,"tag");
-    }
+    // public function tagperson(){
+    //     return $this->belongsTo(User::class,"tag");
+    // }
 
     public function tagpersons($tagjson){
         $tagids = json_decode($tagjson,true); // Decode Json-encoded tags
 
         $tags = User::whereIn('id',$tagids)->pluck('name','id'); // Fetch users in a single query
         return $tags;
+    }
+
+    public function maptagtonames($users = null){
+        $tagids = json_decode($this->tag,true); // Decode Json-encoded tags
+        $tagnames = collect($tagids)->map(function($id) use($users){
+             return $users[$id];
+        });
+        return $tagnames->join(", ");
+    }
+
+    public function isconverted(){
+        return $this->stage_id != 2; // 2 = pending
     }
 }

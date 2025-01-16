@@ -22,7 +22,7 @@
                                         <div class="text-muted">
                                              <span>{{ $leave["stage"]["name"] }}</span>
                                         </div>
-                                        <img src="{{ asset($leave->image) }}" class="" alt="{{$leave->title}}" width="200"/>
+                                        {{-- <img src="{{ asset($leave->image) }}" class="" alt="{{$leave->title}}" width="200"/> --}}
                                    </div>
 
                                    <div class="mb-5">
@@ -171,12 +171,65 @@
 
                                    <div id="content" class="tab-pane">
                                         <p>{!! $leave->content !!}</p>
+
+                                        @if(!empty($leavefiles) && count($leavefiles) > 0)
+                                             @foreach($leavefiles as $leavefile)
+                                                  <a href="{{ asset($leavefile->image) }}" data-lightbox="image" data-title="My caption">
+                                                       <img src="{{ asset($leavefile->image) }}" alt="{{ $leavefile->id }}" class="img-thumbnail" width="100" height="100"/>
+                                                  </a>
+                                             
+                                             @endforeach
+                                        @else
+                                             <span>No Files</span>
+                                        @endif
                                    </div>
 
                                    
 
                               </div>
                          </div>
+
+                         @if(auth()->user()->hasRoles(["Admin","Teacher"]))
+                         <h6>Control Session</h6>
+                         <div class="card border-0 rounded-0 shadow mb-4">
+                              <ul class="nav">
+                                   <li class="nav-item">
+                                        <button type="button" id="autoclick" class="tablinks" onclick="gettab(event,'authorizationtag')">Authorization</button>
+                                   </li>
+                              </ul>
+
+                              <div class="tab-content">
+
+                                   <div id="authorizationtag" class="tab-pane">
+                                        <form action="{{ route('leaves.updatestage',$leave->id) }}" method="POST">
+                                             @csrf
+                                             @method("PUT")
+
+                                                
+                                                  <div class="col-md-3 form-group mb-3">
+                                                       <select name="stage_id" id="stage_id" class="form-control form-control-sm rounded-0 country_id">
+                                                            <option value="" disabled selected>Choose a country</option>
+                                                            @foreach($stages as $stage)
+                                                                 <option value="{{$stage['id']}}" {{ $leave->stage_id == $stage->id ? 'selected' : '' }}>{{$stage['name']}}</option>
+                                                            @endforeach     
+                                                       </select>
+                                                  </div>
+                                                
+
+                                                  @if($leave->isconverted())
+                                                       <small class="text-danger">This leave for has already been converted to an authorized stage. Editing is disabled.</small>
+                                                  @endif
+
+                                                  <div class="col-md-3">
+                                                       <div class="d-flex justify-content-end">
+                                                            <button type="submit" class="btn btn-primary btn-sm rounded-0 ms-3" {{ $leave->isconverted() ? 'disabled' : '' }}>Update</button>
+                                                       </div>
+                                                  </div>
+                                        </form>
+                                   </div>
+                              </div>
+                         </div>
+                         @endif
                     </div>
 
                     
@@ -235,6 +288,8 @@
 @endsection
 
 @section("css")
+     <!-- Lightbox2 css1 js1  -->
+     <link href="{{ asset('assets/libs/lightbox2-dev/dist/css/lightbox.min.css') }}" type="text/css" rel="stylesheet"/>
      <style type="text/css">
           /* start comment */
           .chat-boxs{
@@ -358,6 +413,9 @@
 @endsection
 
 @section("scripts")
+     <!-- Lightbox2 css1 js1  -->
+     <script src="{{ asset('assets/libs/lightbox2-dev/dist/js/lightbox.min.js') }}" type="text/javascript"></script>
+     
      <script type="text/javascript">
           // Start Back Btn
           const getbtnback = document.getElementById("btn-back");
@@ -466,5 +524,10 @@
                     previewimages(this,'.gallery');
                });
           });
+
+          lightbox.option({
+               'resizeDuration': 100,
+               // 'wrapAround': true
+          })
      </script>
 @endsection

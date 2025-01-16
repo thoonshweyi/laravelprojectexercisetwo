@@ -16,11 +16,10 @@
           
                     <thead>
                          <th>No</th>
-                         <th>Student Id</th>
-                         <th>Class</th>
+                         <th>Title</th>
+                         <th>Tag</th>
                          <th>Start Date</th>
                          <th>End Date</th>
-                         <th>Tag</th>
                          <th>Stage</th>
                          <th>By</th>
                          <th>Created At</th>
@@ -33,11 +32,19 @@
                          <tr>
                               <td>{{++$idx}}</td>
                               <td><a href="{{ route('leaves.show',$leave->id) }}">{{Str::limit($leave->title,20)}}</a></td>
-                              <td><a href="{{ route('students.show',$leave->studenturl()) }}">{{ $leave->student($leave->user_id) }}</a></td>
-                              {{-- <td><a href="{{ route('posts.show',$leave->post_id) }}"> {{ $leave->post["title"] }}</a></td> --}} 
+                              <td>
+                                   @php 
+                                        $tagids = json_decode($leave->tag,true); // Decode Json-encoded tags
+                                        $tagnames = collect($tagids)->map(function($id) use($users){
+                                             return $users[$id];
+                                        });
+                                   @endphp
+                                   {{ $tagnames->join(',') }} {{-- Display names comma-seperate --}}
+                                   
+                                   {{-- $leave->maptagtonames($users) --}}
+                              </td>
                               <td>{{ $leave->startdate }}</td>
                               <td>{{ $leave->enddate }}</td>
-                              {{-- <td>{{ $leave->tagperson["name"] }}</td> --}} 
                               <td>{{ $leave->stage["name"] }}</td>
                               <td>{{ $leave->user["name"] }}</td>
                               <td>{{ $leave->created_at->format('d M Y') }}</td>

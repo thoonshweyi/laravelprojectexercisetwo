@@ -147,6 +147,7 @@ Route::middleware('auth',"autologout","verified")->group(function () {
 
 
     Route::resource("leaves",LeavesController::class);
+    Route::put('/leaves/{id}/updatestage',[LeavesController::class,'updatestage'])->name('leaves.updatestage');
     Route::get("notify/markasread",[LeavesController::class,"markasread"])->name('leaves.markasread');
 
     Route::post("/generateotps",[OtpsController::class,"generate"]);

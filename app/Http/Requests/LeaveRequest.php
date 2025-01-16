@@ -42,8 +42,8 @@ class LeaveRequest extends FormRequest
                 "tag.*"=>"exists:users,id",
                 "title" => "required|max:50",
                 "content" => "required",
-                "images" => "nullable|image|mimes:jpg,jpeg,png|max:1024",
-                "images.*" => "nullable|image|mimes:jpg,jpeg,png|max:1024",
+                "image" => "nullable|image|mimes:jpg,jpeg,png|max:2048",
+                "images.*" => "nullable|image|mimes:jpg,jpeg,png|max:2048",
             ];
         }else{
             return [
@@ -55,8 +55,8 @@ class LeaveRequest extends FormRequest
                 "tag.*"=>"exists:users,id",
                 "title" => "required|max:50",
                 "content" => "required",
-                "images" => "nullable|image|mimes:jpg,jpeg,png|max:1024",
-                "images.*" => "nullable|image|mimes:jpg,jpeg,png|max:1024",
+                "image" => "nullable|image|mimes:jpg,jpeg,png|max:2048",
+                "images.*" => "nullable|image|mimes:jpg,jpeg,png|max:2048",
             ];
         }
         

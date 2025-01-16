@@ -15,6 +15,7 @@ use App\Notifications\LeaveNotify;
 
 use App\Models\Leave;
 use App\Models\LeaveFile;
+use App\Models\Stage;
 use App\Models\User;
 
 class LeavesController extends Controller
@@ -27,7 +28,8 @@ class LeavesController extends Controller
             $leaves = Leave::where('user_id',auth()->id())->get();
         }
 
-        return view("leaves.index",compact("leaves"));
+        $users = User::pluck('name','id');
+        return view("leaves.index",compact("leaves","users"));
     }
 
     public function create()
@@ -90,13 +92,22 @@ class LeavesController extends Controller
         
         session()->flash("success","New Leave Created");
 
+        // Notify to single tagged user
         // $users = User::all();
-        $tagperson = $leave->tagperson()->get();
+        // $tagperson = $leave->tagperson()->get();
         // dd($tagperson);
-
+        // $studentid = $leave->student($user_id);
+        // Notification::send($tagperson,new LeaveNotify($leave->id,$leave->title,$studentid));
+        
+        
+        // =>Notify to multi tagged users
+        $tags = $request['tag'];
+        $tagpersons = User::whereIn('id',$tags)->get(); // fetch all users at once
         $studentid = $leave->student($user_id);
+        Notification::send($tagpersons,new LeaveNotify($leave->id,$leave->title,$studentid));
 
-        Notification::send($tagperson,new LeaveNotify($leave->id,$leave->title,$studentid));
+
+
         return redirect(route("leaves.index"));
     }
 
@@ -105,18 +116,18 @@ class LeavesController extends Controller
         $user = Auth::user();
         $user_id = $user->id;
 
-
         $leave = Leave::findOrFail($id);   
-        $type = "App\Notifications\LeaveNotify";
+        $leavefiles = LeaveFile::where('leave_id',$id)->get(); // load all assiciated images
+        $stages = Stage::whereIn('id',[1,2,3])->where("status_id",3)->get();
 
-        
+
+        $type = "App\Notifications\LeaveNotify";
         $getnoti = \DB::table("notifications")->where("notifiable_id",$user_id)->where("type",$type)->where('data->id',$id)->pluck('id');
         // dd($getnoti);
         if(count($getnoti) != 0){
             \DB::table("notifications")->where('id',$getnoti)->update(["read_at"=>now()]);
         }
-        
-        return view("leaves.show",["leave"=>$leave]);
+        return view("leaves.show",["leave"=>$leave,"leavefiles"=>$leavefiles,"stages"=>$stages]);
     }
 
 
@@ -124,6 +135,7 @@ class LeavesController extends Controller
     {
 
         $data["leave"] = Leave::findOrFail($id);
+        $data["leavefiles"] = LeaveFile::where('leave_id',$id)->get(); // load all assiciated images
             $this->authorize('edit',$data['leave']);
 
         $data["posts"] = \DB::table("posts")->where("attshow",3)->orderBy("title","asc")->pluck("title","id");
@@ -158,11 +170,17 @@ class LeavesController extends Controller
         $leave->tag = json_encode($request["tag"]);
         $leave->title = $request["title"];
         $leave->content = $request["content"];
+
+        if($leave->isconverted()){
+            return redirect()->back()->with('error',"This leave for has already been converted to an authorized stage. Editing is disabled.");
+        }
+
         $leave->save();
 
-        // Remove Old Image
-        $leavefiles = LeaveFile::where('leave_id',$leave->id)->get();
         if($request->hasFile('images')){
+
+            // Remove Old Image
+            $leavefiles = LeaveFile::where('leave_id',$leave->id)->get();
             foreach($leavefiles as $leavefile){
                 $path = $leavefile->image;
 
@@ -170,11 +188,11 @@ class LeavesController extends Controller
                     File::delete($path);
                 }
             }
-        }
 
+            // Remove Old Image Path
+            LeaveFile::where('leave_id',$leave->id)->delete();
 
-        // Multi Images Upload 
-        if($request->hasFile('images')){
+            // Multi Images Upload 
             foreach($request->file("images") as $image){
                 $leavefile = new LeaveFile();
                 $leavefile->leave_id = $leave->id;
@@ -205,7 +223,10 @@ class LeavesController extends Controller
         $leave = Leave::findOrFail($id);
             $this->authorize('delete',$leave);
 
-        
+        if($leave->isconverted()){
+            return redirect()->back()->with('error',"Already been converted to an authorized stage. Delete function is not allowed.");
+        }
+    
         // Remove Old Image
         $leavefiles = LeaveFile::where('leave_id',$id)->get();
         foreach($leavefiles as $leavefile){
@@ -214,6 +235,9 @@ class LeavesController extends Controller
                 File::delete($path);
             }
         }
+        // Delete associate records from database
+        LeaveFile::where('leave_id',$leave->id)->delete();
+
         $leave->delete();
         return redirect()->back();
     }
@@ -234,5 +258,13 @@ class LeavesController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function updatestage(Request $request,$id){
+        $leave = Leave::findOrFail($id);
+        $leave->stage_id = $request->stage_id;
+        $leave->save();
+
+        return redirect()->back()->with("success","Stage update Successfully");
     }
 }
