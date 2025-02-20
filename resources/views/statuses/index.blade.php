@@ -140,12 +140,16 @@
 
           $(document).ready(function(){
 
-                // Start Passing Header Token
+               const token = "Bearer {{ config('app.passport_token')}}";
+               // Start Passing Header Token
+
                $.ajaxSetup({
-                    header:{
-                         'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr("content"),
+                    headers:{
+                         "X-CSRF-TOKEN": $("meta[name='csrf-token']").attr("content"),
+                         "Authorization": token,
+                         "Accept": "application/json"
                     }
-               })
+               });
                // End Passing Header Token
                     
                // Start Fetch All Datas 

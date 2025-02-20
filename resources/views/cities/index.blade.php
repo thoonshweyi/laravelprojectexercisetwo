@@ -289,11 +289,17 @@
 
           $(document).ready(function(){
                // Start Passing Header Token
+               const token = "Bearer {{ config('app.passport_token')}}";
+               // console.log(token);
+               // Start Passing Header Token
                $.ajaxSetup({
                     headers:{
-                         "X-CSRF-TOKEN": $("meta[name='csrf-token']").attr("content")
+                         "X-CSRF-TOKEN": $("meta[name='csrf-token']").attr("content"),
+                         "Authorization": token,
+                         "Accept": "application/json"
                     }
                });
+
                // End Passing Header Token
 
                // Start Fetch All Datas by paginate
@@ -304,28 +310,44 @@
                async function fetchalldatasbypaginate(){
                     const url = `api/cities?page=${page}`;
 
-                    let results;
+                    var results;
 
-                    await fetch(url).then(response=>{
-                         // console.log(response);
-                         return response.json();
-                    }).then(data=>{
-                         // console.log(data); // object
-                         results = data.data;
-                         // console.log(results);
-                    }).catch(err=>{
-                         console.log(err);
+                    // await fetch(url).then(response=>{
+                    //      console.log(response);
+                    //      return response.json();
+                    // }).then(data=>{
+                    //      // console.log(data); // object
+                    //      results = data.data;
+                    //      console.log(results);
+                    // }).catch(err=>{
+                    //      console.log(err);
+                    // });
+                    // return results;
+
+
+                    const ajaxReq = await $.ajax({
+                         url: url,
+                         type: "GET",
+                         dataType:"json",
+                         success:function(response){
+                              results = response.data
+                         },
+                         error:function(response){
+                              console.log("Error:( ",response);
+                         }
                     });
+                    if(ajaxReq.readyState == 4 && ajaxReq.status == 200){
+                         results = ajaxReq.responseJSON.data
+                    }
 
+                    console.log(results);
                     return results;
-
-          
                }
                // fetchalldatasbypaginate();
 
                async function alldatastodom(){
                     const getresults = await fetchalldatasbypaginate()
-                    // console.log(getresults);
+                    console.log(getresults);
 
                     getresults.forEach((data)=>{
                          const newtr = document.createElement("tr");

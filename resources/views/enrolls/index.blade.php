@@ -59,8 +59,9 @@
                          <tr>
                               <td>{{++$idx}}</td>
                               {{-- <td>{{ $enroll->student($enroll->user_id) }}</td> --}}
-                              <td><a href="{{route('students.show',$enroll->studenturl())}}">{{$enroll->student()}}</a></td>
-                              <td>{{$enroll->post["title"]}}</td>
+                              {{-- <td><a href="{{route('students.show',$enroll->studenturl())}}">{{$enroll->student()}}</a></td> --}}
+                              <td><a href="{{route('enrolls.show',$enroll->id)}}">{{$enroll->student()}}</a></td>
+                              <td><a href="{{route('posts.show',$enroll->post_id)}}">{{$enroll->post["title"]}}</a></td>
                               <td>{{ $enroll->stage->name }}</td>
                               <td>{{ $enroll->created_at->format('d M Y') }}</td>
                               <td>{{ $enroll->updated_at->format('d M Y') }}</td>

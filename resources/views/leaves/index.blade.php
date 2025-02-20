@@ -5,6 +5,45 @@
                          
      <!-- Start Page Content Area -->
      <div class="container-fluid">
+
+          <div class="col-md-12">
+               <div class="row">
+                    <div class="col-md-3">
+                         <div class="card border-0 bg-primary rounded text-white  mb-3">
+                              <div class="card-body">
+                                   <h6 class="card-title">Total Leaves</h6>
+                                   <span class="card-text">{{ $totalleaves }}</span>
+                              </div>
+                         </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="card bg-success border-0 rounded text-white  mb-3">
+                              <div class="card-body">
+                                   <h6 class="card-title">Approved</h6>
+                                   <span class="card-text">{{ $approvedcount }}</span>
+                              </div>
+                         </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="card bg-warning border-0 rounded text-white  mb-3">
+                              <div class="card-body">
+                                   <h6 class="card-title">Pending</h6>
+                                   <span class="card-text">{{ $pendingcount }}</span>
+                              </div>
+                         </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="card bg-danger border-0 rounded text-white  mb-3">
+                              <div class="card-body">
+                                   <h6 class="card-title">Rejected</h6>
+                                   <span class="card-text">{{ $rejectedcount }}</span>
+                              </div>
+                         </div>
+                    </div>
+                   
+               </div>
+          </div>
+
           <div class="col-md-12">
 
                @can('create',App\Models\Leave::class)

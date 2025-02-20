@@ -32,7 +32,8 @@ class EnrollsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-            "image" => "image|mimes:jpg,jpeg,png|max:1024",
+            "image" => "required|image|mimes:jpg,jpeg,png|max:1024",
+            "remark"=> "nullable|string"
         ]);
 
        $user = Auth::user();
@@ -56,13 +57,18 @@ class EnrollsController extends Controller
         }    
 
        $enroll->save();
+
+        session()->flash("success","Enroll Created");
        return redirect()->back();
     }
 
     public function show(string $id)
     {
         $enroll = Enroll::findOrFail($id);
-        return view("enrolls.show",["enroll"=>$enroll]);
+        $stages = Stage::whereIn('id',[1,2,3])->where("status_id",3)->get();
+        // Retrieve all enrollments for the current user
+        $enrollments = Enroll::where('user_id',$enroll->user_id)->get();
+        return view("enrolls.show",["enroll"=>$enroll,"stages"=>$stages,"enrollments"=>$enrollments]);
     }
 
 
@@ -109,5 +115,14 @@ class EnrollsController extends Controller
         
         $enroll->delete();
         return redirect()->back();
+    }
+
+
+    public function updatestage(Request $request,$id){
+        $enroll = Enroll::findOrFail($id);
+        $enroll->stage_id = $request->stage_id;
+        $enroll->save();
+
+        return redirect()->back()->with("success","Stage update Successfully");
     }
 }

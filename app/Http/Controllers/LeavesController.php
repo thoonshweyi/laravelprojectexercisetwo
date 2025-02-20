@@ -23,13 +23,22 @@ class LeavesController extends Controller
     public function index()
     {
         if(auth()->user()->can('viewany',Leave::class)){
-            $leaves = Leave::all(); // Admin,Teacher can see all leaves
+            $leavesQuery = Leave::query(); // Admin,Teacher can see all leaves
         }else{
-            $leaves = Leave::where('user_id',auth()->id())->get();
+            $leavesQuery = Leave::where('user_id',auth()->id());
         }
+        $leaves = $leavesQuery
+                    ->orderBy('startdate','desc')
+                    ->get();
+
+        $totalleaves = $leaves->count();
+        $approvedcount = $leaves->where('stage_id',1)->count();
+        $pendingcount = $leaves->where('stage_id',2)->count();
+        $rejectedcount = $leaves->where('stage_id',3)->count();
+
 
         $users = User::pluck('name','id');
-        return view("leaves.index",compact("leaves","users"));
+        return view("leaves.index",compact("leaves","totalleaves","approvedcount","pendingcount","rejectedcount","users"));
     }
 
     public function create()

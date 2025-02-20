@@ -562,6 +562,39 @@
           // End Pusher Post Live Viewer 
 
 
-          
+          $(document).ready(function(){
+
+               var previewimages = function(input,output){
+
+                    console.log(input.files);
+
+                    if(input.files){
+                         var totalfiles = input.files.length;
+                         console.log(totalfiles);
+                         if(totalfiles > 0){
+                              $('.gallery').addClass('removetxt');
+                         }else{
+                              $('.gallery').removeClass('removetxt');
+                         }
+                         for(var i = 0 ; i < totalfiles ; i++){
+                              var filereader = new FileReader();
+
+
+                              filereader.onload = function(e){
+                                   $(output).html(""); 
+                                   $($.parseHTML('<img>')).attr('src',e.target.result).appendTo(output);
+                              }
+
+                              filereader.readAsDataURL(input.files[i]);
+
+                         }
+                    }
+
+               };
+
+               $('#image').change(function(){
+                    previewimages(this,'.gallery');
+               });
+          });
      </script>
 @endsection

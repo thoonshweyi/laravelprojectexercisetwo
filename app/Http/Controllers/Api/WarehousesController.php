@@ -11,6 +11,7 @@ use App\Models\Warehouse;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class WarehousesController extends Controller
 {
@@ -23,7 +24,8 @@ class WarehousesController extends Controller
         // return new WarehousesCollection($warehouses);
 
         $warehouses = Warehouse::paginate(5);
-        return  WarehousesResource::collection($warehouses);
+
+        return $this->sendRespond(new WarehousesCollection($warehouses),"Warehouses retrived successfully");
     }
 
     /**
@@ -31,11 +33,16 @@ class WarehousesController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $validator = Validator::make($request->all(),[
             "name" => "required|unique:warehouses,name",
             "status_id" => "required",
             "user_id" => "required"
         ]);
+        
+
+        if($validator->fails()){
+            return $this->sendError("Validation Error",$validator->errors());
+        }
 
        $warehouse = new Warehouse();
        $warehouse->name = $request["name"];
@@ -45,8 +52,7 @@ class WarehousesController extends Controller
 
        $warehouse->save();
 
-       return new WarehousesResource($warehouse);
-        
+       return $this->sendRespond(new WarehousesResource($warehouse),"Warehouses created successfully");
     }
 
     /**
@@ -54,7 +60,11 @@ class WarehousesController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $warehouse = Warehouse::findOrFail();
+        if(is_null($warehouse)){
+            return $this->sendError("Warehouse not found.");
+        }
+       return $this->sendRespond(new WarehousesResource($warehouse),"Warehouses retrived successfully");
     }
 
     /**
@@ -62,11 +72,14 @@ class WarehousesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $this->validate($request,[
-            "name" => "required|unique:warehouses,name,".$id,
+        $validator = Validator::make($request->all(),[
+            "name" => "required|unique:warehouses,name".$id,
             "status_id" => "required",
             "user_id" => "required"
         ]);
+        if($validator->fails()){
+            return $this->sendError("Validation Error",$validator->errors());
+        }
 
        $warehouse = Warehouse::findOrFail($id);
        $warehouse->name = $request["name"];
@@ -76,7 +89,7 @@ class WarehousesController extends Controller
 
        $warehouse->save();
 
-       return new WarehousesResource($warehouse);
+       return $this->sendRespond(new WarehousesResource($warehouse),"Warehouses updated successfully");
         
     }
 
@@ -88,7 +101,9 @@ class WarehousesController extends Controller
     {
         $warehouse = Warehouse::findOrFail($id);
         $warehouse->delete();
-        return new WarehousesResource($warehouse);
+        return $this->sendRespond(new WarehousesResource($warehouse),"Warehouses deleted successfully");
+
+        
     }
 
     public function typestatus(Request $request){
@@ -96,6 +111,7 @@ class WarehousesController extends Controller
         $warehouse->status_id = $request["status_id"];
         $warehouse->save();
 
-        return new WarehousesResource($warehouse);
+        return $this->sendRespond(new WarehousesResource($warehouse),"Warehouses status changed.");
+
     }
 }

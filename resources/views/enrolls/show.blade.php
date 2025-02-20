@@ -1,13 +1,13 @@
 @extends("layouts.adminindex")
 
-@section("caption","leave Show")
+@section("caption","enroll Show")
 @section("content")
                          
      <!-- Start Page Content Area -->
      <div class="container-fluid">
           <div class="col-md-12">
                <a href="javascript:void(0);" id="btn-back" class="btn btn-secondary btn-sm rounded-0">Back</a>
-               <a href="{{route('leaves.index')}}" class="btn btn-secondary btn-sm rounded-0">Close</a>
+               <a href="{{route('enrolls.index')}}" class="btn btn-secondary btn-sm rounded-0">Close</a>
 
                <hr/>
                
@@ -18,11 +18,11 @@
                          <div class="card border-0 rounded-0 shadow">
                               <div class="card-body">
                                    <div class="d-flex flex-column align-items-center mb-3">
-                                        <div class="h5 mb-1">{{ $leave->title }} </div>
+                                        <div class="h5 mb-1">{{ $enroll->title }} </div>
                                         <div class="text-muted">
-                                             <span>{{ $leave["stage"]["name"] }}</span>
+                                             <span>{{ $enroll["stage"]["name"] }}</span>
                                         </div>
-                                        {{-- <img src="{{ asset($leave->image) }}" class="" alt="{{$leave->title}}" width="200"/> --}}
+                                        {{-- <img src="{{ asset($enroll->image) }}" class="" alt="{{$enroll->title}}" width="200"/> --}}
                                    </div>
 
                                    <div class="mb-5">
@@ -39,9 +39,7 @@
                                                        </div>
                                                        <div class="col-auto">
                                                             <div class="">
-                                                                 @foreach($leave->tagpersons($leave->tag) as $id=>$name)
-                                                                      <a href="{{ route('students.show',$leave->tagpersonurl($id)) }}">{{ $name }}</a>
-                                                                 @endforeach
+                                                                 
                                                             </div>
                                                        </div>
                                                   </div>
@@ -58,7 +56,7 @@
                                                             <div class="">Created</div>
                                                        </div>
                                                        <div class="col-auto">
-                                                            <div class="">{{date('d M Y',strtotime($leave->created_at))}} | {{date('h:i:s A',strtotime($leave->created_at))}}</div>
+                                                            <div class="">{{date('d M Y',strtotime($enroll->created_at))}} | {{date('h:i:s A',strtotime($enroll->created_at))}}</div>
                                                        </div>
                                                   </div>
                                              </div>
@@ -74,7 +72,7 @@
                                                             <div class="">Updated</div>
                                                        </div>
                                                        <div class="col-auto">
-                                                            <div class="">{{date('d M Y h:i:s A',strtotime($leave->updated_at))}}</div>
+                                                            <div class="">{{date('d M Y h:i:s A',strtotime($enroll->updated_at))}}</div>
                                                        </div>
                                                   </div>
                                              </div>
@@ -126,7 +124,7 @@
                                                        @csrf
                                                        <div class="row">
                                                             <div class="col-md-6 form-group mb-3">
-                                                                 <input type="email" name="cmpemail" id="cmpemail" class="form-control form-control-sm border-0 rounded-0" placeholder="To:" value="{{ $leave->user['email'] }}" readonly />
+                                                                 <input type="email" name="cmpemail" id="cmpemail" class="form-control form-control-sm border-0 rounded-0" placeholder="To:" value="{{ $enroll->user['email'] }}" readonly />
                                                             </div>
                                                             <div class="col-md-6 form-group mb-3">
                                                                  <input type="ext" name="cmpsubject" id="cmpsubject" class="form-control form-control-sm border-0 rounded-0" placeholder="Subject" value="" />
@@ -151,11 +149,9 @@
                          <div class="card border-0 rounded-0 shadow mb-4">
                               <div class="card-body d-flex flex-wrap gap-3">
                                    
-                                   @foreach($leave->tagposts($leave->post_id) as $id=>$title)
                                    <div class="border shadow p-3 mb-3 enrollboxes">
-                                        <a href="{{ route('posts.show',$id) }}">{{ $title }}</a>
+                                        <a href="{{ route('posts.show',$enroll->post->id) }}">{{ $enroll->post['title'] }}</a>
                                    </div>
-                                   @endforeach
                               </div>
                          </div>
 
@@ -163,25 +159,51 @@
                          <div class="card border-0 rounded-0 shadow mb-4">
                               <ul class="nav">
                                    <li class="nav-item">
-                                        <button type="button" id="autoclick" class="tablinks" onclick="gettab(event,'content')">Content</button>
+                                        <button type="button" id="autoclick" class="tablinks" onclick="gettab(event,'remarktab')">Remark</button>
+                                   </li>
+
+                                   <li class="nav-item">
+                                        <button type="button" id="autoclick" class="tablinks" onclick="gettab(event,'enrollmentstab')">Enrollments</button>
                                    </li>
                               </ul>
 
                               <div class="tab-content">
 
-                                   <div id="content" class="tab-pane">
-                                        <p>{!! $leave->content !!}</p>
+                                   <div id="remarktab" class="tab-pane">
+                                        <p>{!! $enroll->remark !!}</p>
+                                        <a href="{{ asset($enroll->image) }}" data-lightbox="image" data-title="My caption">
+                                             <img src="{{ asset($enroll->image) }}" alt="{{ $enroll->id }}" class="img-thumbnail" width="100" height="100"/>
+                                        </a>
+                                   </div>
 
-                                        @if(!empty($leavefiles) && count($leavefiles) > 0)
-                                             @foreach($leavefiles as $leavefile)
-                                                  <a href="{{ asset($leavefile->image) }}" data-lightbox="image" data-title="My caption">
-                                                       <img src="{{ asset($leavefile->image) }}" alt="{{ $leavefile->id }}" class="img-thumbnail" width="100" height="100"/>
-                                                  </a>
-                                             
-                                             @endforeach
-                                        @else
-                                             <span>No Files</span>
-                                        @endif
+                                   <div id="enrollmentstab" class="tab-pane">
+                                        <p>{!! $enroll->remark !!}</p>
+                                        <table id="mytable" class="table table-sm table-hover border">
+          
+                                             <thead>
+                                                  <th>No</th>
+                                                  <th>Student Id</th>
+                                                  <th>Class</th>
+                                                  <th>Stage</th>
+                                                  <th>Created At</th>
+                                                  <th>Updated At</th>
+                                             </thead>
+                                             <tbody>
+                                                  @foreach($enrollments as $idx=>$enrollment)
+                                                  <tr>
+                                                       <td>{{++$idx}}</td>
+                                                       {{-- <td>{{ $enrollment->student($enrollment->user_id) }}</td> --}}
+                                                       {{-- <td><a href="{{route('students.show',$enrollment->studenturl())}}">{{$enrollment->student()}}</a></td> --}}
+                                                       <td><a href="{{route('enrolls.show',$enrollment->id)}}">{{$enrollment->student()}}</a></td>
+                                                       <td><a href="{{route('posts.show',$enrollment->post_id)}}">{{$enrollment->post["title"]}}</a></td>
+                                                       <td>{{ $enrollment->stage->name }}</td>
+                                                       <td>{{ $enrollment->created_at->format('d M Y') }}</td>
+                                                       <td>{{ $enrollment->updated_at->format('d M Y') }}</td>
+                                                  </tr>
+                                                  @endforeach
+                                             </tbody>
+
+                                        </table>
                                    </div>
 
                                    
@@ -201,7 +223,7 @@
                               <div class="tab-content">
 
                                    <div id="authorizationtag" class="tab-pane">
-                                        <form action="{{ route('leaves.updatestage',$leave->id) }}" method="POST">
+                                        <form action="{{ route('enrolls.updatestage',$enroll->id) }}" method="POST">
                                              @csrf
                                              @method("PUT")
 
@@ -210,19 +232,19 @@
                                                        <select name="stage_id" id="stage_id" class="form-control form-control-sm rounded-0 country_id">
                                                             <option value="" disabled selected>Choose a country</option>
                                                             @foreach($stages as $stage)
-                                                                 <option value="{{$stage['id']}}" {{ $leave->stage_id == $stage->id ? 'selected' : '' }}>{{$stage['name']}}</option>
+                                                                 <option value="{{$stage['id']}}" {{ $enroll->stage_id == $stage->id ? 'selected' : '' }}>{{$stage['name']}}</option>
                                                             @endforeach     
                                                        </select>
                                                   </div>
                                                 
 
-                                                  @if($leave->isconverted())
-                                                       <small class="text-danger">This leave for has already been converted to an authorized stage. Editing is disabled.</small>
+                                                  @if($enroll->isconverted())
+                                                       <small class="text-danger">This enroll form has already been converted to an authorized stage. Editing is disabled.</small>
                                                   @endif
 
                                                   <div class="col-md-3">
                                                        <div class="d-flex justify-content-end">
-                                                            <button type="submit" class="btn btn-primary btn-sm rounded-0 ms-3" {{ $leave->isconverted() ? 'disabled' : '' }}>Update</button>
+                                                            <button type="submit" class="btn btn-primary btn-sm rounded-0 ms-3" {{ $enroll->isconverted() ? 'disabled' : '' }}>Update</button>
                                                        </div>
                                                   </div>
                                         </form>
@@ -253,7 +275,7 @@
                          </div>
 
                          <div class="modal-body">
-                              <form id="" action="{{route('enrolls.store')}}" method="leave" enctype="multipart/form-data">
+                              <form id="" action="{{route('enrolls.store')}}" method="enroll" enctype="multipart/form-data">
                                    {{ csrf_field() }}
                                    <div class="row align-items-end">
                                         <div class="col-md-12 mb-3">
@@ -271,7 +293,7 @@
                                         </div>
 
                                         <!-- Start Hidden Fields -->
-                                        <input type="hidden" name="leave_id" value="{{$leave->id}}" />
+                                        <input type="hidden" name="leave_id" value="{{$enroll->id}}" />
                                         <!-- Start Hidden Fields -->
                                    </div>
                               </form>

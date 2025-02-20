@@ -15,6 +15,7 @@ class Region extends Model
         "slug",
         "country_id",
         // "city_id",
+        "status_id",
         "user_id"
     ];
 

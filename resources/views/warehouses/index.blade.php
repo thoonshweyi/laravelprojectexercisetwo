@@ -107,10 +107,14 @@
 
           $(document).ready(function(){
 
+               const token = "Bearer {{ config('app.passport_token')}}";
+               // console.log(token);
                // Start Passing Header Token
                $.ajaxSetup({
                     headers:{
-                         "X-CSRF-TOKEN": $("meta[name='csrf-token']").attr("content")
+                         "X-CSRF-TOKEN": $("meta[name='csrf-token']").attr("content"),
+                         "Authorization": token,
+                         "Accept": "application/json"
                     }
                });
                // End Passing Header Token
@@ -127,7 +131,7 @@
                          dataType:"json",
                          success:function(response){
                               console.log(response); // {status: 'scuccess', data: Array(2)}
-                              const datas = response.data;
+                              const datas = response.data.data;
                               // console.log(datas);
                               
                               let html;
@@ -184,7 +188,7 @@
 
                $("#formaction").validate({
                     rules:{
-                         name:"required"
+                         // name:"required"
                     },
                     messages:{
                          name:"Please enter the warehouse name"

@@ -145,4 +145,8 @@ class Enroll extends Model
     public function studenturl(){
         return Student::where("user_id",$this->user_id)->get(["students.id"])->first();
     }
+
+    public function isconverted(){
+        return $this->stage_id != 2; // 2 = pending
+    }
 }

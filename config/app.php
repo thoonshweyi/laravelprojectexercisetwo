@@ -189,4 +189,6 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    "passport_token"=> env("PASSPORT_TOKEN",null),
+
 ];

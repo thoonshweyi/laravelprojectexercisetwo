@@ -22,6 +22,7 @@ use App\Models\Post;
 use App\Policies\PostsPol;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -50,6 +51,16 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // $this->registerPolicies();
+        $this->registerPolicies();
+        // Passport::loadKeysFrom(storage_path('secrets/oauth'));
+        // Load keys from custom directory
+        Passport::loadKeysFrom(base_path('secrets/oauth'));
+
+        // Debugging Tips
+        // if(!file_exists(base_path('secrets/oauth/private.key')) || !file_exists(base_path('secrets/oauth/public.key'))){
+        //     \Log::error("oauth keys are missing");
+        // }else{
+        //     \Log::error("oauth keys are exists");
+        // }
     }
 }
