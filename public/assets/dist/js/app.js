@@ -37,26 +37,18 @@ document.getElementById("noticenter").addEventListener("click",function(e){
 // End Top Sidebar
 
 // Start Gauge Area
-var gaugeurs = new JustGage({
-	id: "gaugeusers", // the id of the html element
-	width : 200,
-	height: 200,
-	value: 50,
-	min: 0,
-	max: 70,
-	gaugeWidthScale: 0.6
- });
 
 
- var gaugecus = new JustGage({
-	id: "gaugecustomers", // the id of the html element
-	width : 200,
-	height: 200,
-	value: 7000000,
-	min: 0,
-	max: 9000000,
-	gaugeWidthScale: 0.6
- });
+
+//  var gaugecus = new JustGage({
+// 	id: "gaugecustomers", // the id of the html element
+// 	width : 200,
+// 	height: 200,
+// 	value: 7000000,
+// 	min: 0,
+// 	max: 9000000,
+// 	gaugeWidthScale: 0.6
+//  });
 
  var gaugeemps = new JustGage({
 	id: "gaugeemployees", // the id of the html element
@@ -80,12 +72,12 @@ var gaugeurs = new JustGage({
 
 
 // update the value randomly
-setInterval(() => {
-	gaugeurs.refresh(Math.random() * 100);
-	gaugecus.refresh(Math.random() * 100);
-	gaugeemps.refresh(Math.random() * 100);
-	gaugeinvs.refresh(Math.random() * 100);
-}, 5000);
+// setInterval(() => {
+// 	gaugeurs.refresh(Math.random() * 100);
+// 	gaugecus.refresh(Math.random() * 100);
+// 	gaugeemps.refresh(Math.random() * 100);
+// 	gaugeinvs.refresh(Math.random() * 100);
+// }, 5000);
 
 
 
@@ -93,50 +85,8 @@ setInterval(() => {
 
 // 22GG
 
-// Start Expense Area
-	const ctx = document.getElementById('mypiechart');
-
-	new Chart(ctx, {
-		type: 'doughnut',
-
-		data: {
-			datasets: [{
-				data: [12, 19, 3]
-			}]
-		},
-		options: {
-			responsive:false
-		}
-	});
-
-// End Expense Area
-
-// Start Earning Area
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart() {
-	var data = google.visualization.arrayToDataTable([
-		['Year', 'Sales', 'Expenses'],
-		['2004',  1000,      400],
-		['2005',  1170,      460],
-		['2006',  660,       1120],
-		['2007',  1030,      540]
-	]);
-
-	var options = {
-		title: 'Sale Performance',
-		curveType: 'function',
-		legend: { position: 'bottom' }
-	};
-
-	var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-
-	chart.draw(data, options);
-}
 
 
-// End Earning Area
 // End Js Area
 
 
@@ -297,3 +247,183 @@ showsaledatas();
 	const getfullyear = new Date().getFullYear();
 	getyear.textContent = getfullyear;
 // End Footer
+
+
+
+$(document).ready(function(){
+	// Start Lead Chat
+
+	$.ajax({
+		url: '/api/leadsdashboard',
+		method: 'GET',
+		success:function(data){
+			// console.log(data)
+			const ctx = document.getElementById('leadcharts');
+			ctx.height = 250;
+			new Chart(ctx, {
+				type: 'doughnut',
+
+				data: {
+					labels: Object.keys(data.leadsources),
+					datasets: [{
+						data:  Object.values(data.leadsources),
+						backgroundColor: ["green","blue","red"],
+						borderWidth:1
+					}]
+				},
+				options: {
+					responsive:false
+				}
+			});
+
+		}
+	})
+	// End Lead Chat
+
+	// Start Age Chart
+	$.ajax({
+		url: '/api/studentsdashboard',
+		method: 'GET',
+		success:function(data){
+			// console.log(data)
+
+			// age analysis
+			const agectx = document.getElementById('agechart');
+			agectx.height = 250;
+			new Chart(agectx, {
+				type: 'bar',
+
+				data: {
+					labels: Object.keys(data.agegroups),
+					datasets: [{
+						label: 'Age Analysis',
+						data:  Object.values(data.agegroups),
+						backgroundColor: "steelblue",
+						borderWidth:1
+					}]
+				},
+				options: {
+					responsive:true,
+					scales: {
+						y:{
+							beginAtZero: true
+						}
+					}
+				}
+			});
+
+
+			// student chart
+
+			$('#studentcount').text(data.totalstudents);
+			var gaugeurs = new JustGage({
+				id: "studentchart", // the id of the html element
+				width : 200,
+				height: 200,
+				value: data.activestudents,
+				min: 0,
+				max: data.totalstudents,
+				gaugeWidthScale: 0.6
+			 });
+		}
+	})
+	// End Age Chart
+
+
+	// Start Leave Chart
+	$.ajax({
+		url: '/api/leavesdashboard',
+		method: 'GET',
+		success:function(data){
+			console.log(data);
+
+			const datas = [
+				{icon:'fas fa-users',label: "Total Leaves",value:data.totalleaves},
+				{icon:'fas fa-check-circle',label: "Approved Leaves",value:data.approved},
+				{icon:'fas fa-hourglass-half',label: "Pending Leaves",value:data.pending},
+				{icon:'fas fa-times-circle',label: "Rejected Leaves",value:data.rejeted},
+		
+			];
+
+			let html = '';
+			$.each(datas,function(idx,data){
+				html += `
+				<div class="col-md-3 col-sm-6">
+					<div class="card-body">
+						<div class="d-flex justify-content-center align-items-center">
+							<i class="${data.icon} fa-2x text-primary me-4"></i>
+							<div class="text-center">
+								<p class="text-dark mb-0">${data.label}</p>
+								<h5 class="fw-bold text-dark mb-0">${data.value}</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+				`;
+
+				$('#leavechart').html(html);
+			})
+
+		},
+		error:function(){
+			$('#leavechart').html('<span class="text-danger">Failed to load leave data.<span>')
+		}
+	})
+	// End Leave Chart
+
+	// Start Earning Area
+// google.charts.load('current', {'packages':['corechart']});
+// google.charts.setOnLoadCallback(drawChart);
+
+// function drawChart() {
+// 	var data = google.visualization.arrayToDataTable([
+// 		['Year', 'Sales', 'Expenses'],
+// 		['2004',  1000,      400],
+// 		['2005',  1170,      460],
+// 		['2006',  660,       1120],
+// 		['2007',  1030,      540]
+// 	]);
+
+// 	var options = {
+// 		title: 'Sale Performance',
+// 		curveType: 'function',
+// 		legend: { position: 'bottom' }
+// 	};
+
+// 	var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+// 	chart.draw(data, options);
+// }
+
+
+// End Earning Area
+
+
+	// Start User Chart
+	$.ajax({
+		url: '/api/usersdashboard',
+		method: 'GET',
+		success:function(data){
+			// console.log(data)
+
+			$('#usercount').text(data.totalusers);
+			var gaugeurs = new JustGage({
+				id: "userchart", // the id of the html element
+				width : 200,
+				height: 200,
+				value: data.onlineusers,
+				min: 0,
+				max: data.totalusers,
+				gaugeWidthScale: 0.6
+			 });
+		},
+		error: function(){
+			$('#usercount').text("Error loading data");
+		}
+	})
+	
+	//  End User Chart
+	
+
+});
+

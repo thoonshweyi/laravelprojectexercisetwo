@@ -385,10 +385,10 @@
                                         <div class="row justify-content-center align-items-center">
                                         <div class="col d-flex justify-content-between">
                                              <h6 class="text-xs fw-bold text-primary text-uppercase mb-1">Users</h6>
-                                             <p class="h5 text-muted mb-0">50</p>
+                                             <p id="usercount" class="h5 text-muted mb-0">Loading ....</p>
                                         </div>
                                         <div class="col-auto">
-                                             <div id="gaugeusers"></div>
+                                             <div id="userchart"></div>
                                         </div>
                                         </div>
                                    </div>
@@ -399,11 +399,11 @@
                                    <div class="card-body">
                                         <div class="row justify-content-center align-items-center">
                                         <div class="col d-flex justify-content-between">
-                                             <h6 class="text-xs fw-bold text-primary text-uppercase mb-1">Customers</h6>
-                                             <p class="h5 text-muted mb-0">700,000</p>
+                                             <h6 class="text-xs fw-bold text-primary text-uppercase mb-1">Students</h6>
+                                             <p id="studentcount" class="h5 text-muted mb-0">loading....</p>
                                         </div>
                                         <div class="col-auto">
-                                             <div id="gaugecustomers"></div>
+                                             <div id="studentchart"></div>
                                         </div>
                                         </div>
                                    </div>
@@ -415,21 +415,15 @@
                                         <div class="row justify-content-center align-items-center">
                                         <div class="col d-flex justify-content-between">
                                              <h5 class="text-xs fw-bold text-primary text-uppercase mb-1">Employees</h5>
-                                             <div class="row">
-                                                  <div class="col-auto">
-                                                       <p class="h5 text-muted mb-0">80</p>
-                                                  </div>
-                                                  <div class="col-auto">
-                                                       <div id="gaugeemployees"></div>
-                                                  </div>
-                                             </div>
+                                             <p class="h5 text-muted mb-0">80</p>
+
                                         </div>
-                                        <!--                                             
+                                                
                                         <div class="col-auto">
-                                             <i class="fas fa-clipboard-list fa-2x text-secondary"></i>
-                                        </div> 
-                                        -->
+                                             <div id="gaugeemployees"></div>
                                         </div>
+                                        </div>
+                                      
                                    </div>
                               </div>
                          </div>
@@ -486,17 +480,14 @@
                          <div class="col-md-5 mb-3">
                               <div class="card">
                                    <div class="card-header py-2">
-                                        <h6 class="text-primary">Revenue Sourcs</h6>
+                                        <h6 class="text-primary">Lead Sources Overview</h6>
                                    </div>
                                    <div class="card-body">
                                         <div class="d-flex justify-content-center">
-                                        <canvas id="mypiechart"></canvas>
+                                        <canvas id="leadcharts"></canvas>
                                         </div>
                                         <div>
-                                        <span><i class="fas fa-circle text-warning"></i> Return</span>
-                                        <span class="mx-2"><i class="fas fa-circle text-primary"></i> Return</span>
-                                        <span><i class="fas fa-circle text-danger"></i> Return</span>
-
+                                    
                                         </div>
                                    </div>
                               </div>
@@ -510,7 +501,7 @@
                               <div class="card">
                                    <div class="card-header d-flex justify-content-between align-items-center py-2">
 
-                                        <h6>Earning Overview</h6>
+                                        <h6>Age Overview</h6>
                                         
                                         <div class="dropdown">
                                         <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown">
@@ -527,7 +518,7 @@
                                         </div>
                                    </div>
                                    <div class="card-body">
-                                        <div id="curve_chart" style="width: 100%;"></div>
+                                        <canvas id="agechart" style="width: 100%;"></canvas>
                                    </div>
                               </div>
                          </div>
@@ -575,55 +566,19 @@
                     <div class="row">
                          <div class="col-12">
                               <div class="card">
-                                   <div class="row">
-                                        <div class="col-md-3 col-sm-6">
-                                        <div class="card-body">
-                                             <div class="d-flex justify-content-center align-items-center">
-                                                  <i class="fas fa-users fa-2x text-primary me-4"></i>
-                                                  <div class="text-center">
-                                                       <p class="text-dark mb-0">Users</p>
-                                                       <h5 class="fw-bold text-dark mb-0">56,320</h5>
+                                   <div id="leavechart" class="row">
+                                        <!-- <div class="col-md-3 col-sm-6">
+                                             <div class="card-body">
+                                                  <div class="d-flex justify-content-center align-items-center">
+                                                       <i class="fas fa-users fa-2x text-primary me-4"></i>
+                                                       <div class="text-center">
+                                                            <p class="text-dark mb-0">Users</p>
+                                                            <h5 class="fw-bold text-dark mb-0">56,320</h5>
+                                                       </div>
                                                   </div>
+                                                  
                                              </div>
-                                             
-                                        </div>
-                                        </div>
-                                        <div class="col-md-3 col-sm-6">
-                                        <div class="card-body">
-                                             <div class="d-flex justify-content-center align-items-center">
-                                                  <i class="fas fa-check-circle fa-2x text-primary me-4"></i>
-                                                  <div class="text-center">
-                                                       <p class="text-dark mb-0">Feedbacks</p>
-                                                       <h5 class="fw-bold text-dark mb-0">3,200</h5>
-                                                  </div>
-                                             </div>
-                                             
-                                        </div>
-                                        </div>
-                                        <div class="col-md-3 col-sm-6">
-                                        <div class="card-body">
-                                             <div class="d-flex justify-content-center align-items-center">
-                                                  <i class="fas fa-trophy fa-2x text-primary me-4"></i>
-                                                  <div class="text-center">
-                                                       <p class="text-dark mb-0">Employees</p>
-                                                       <h5 class="fw-bold text-dark mb-0">56,320</h5>
-                                                  </div>
-                                             </div>
-                                             
-                                        </div>
-                                        </div>
-                                        <div class="col-md-3 col-sm-6">
-                                        <div class="card-body">
-                                             <div class="d-flex justify-content-center align-items-center">
-                                                  <i class="fas fa-star fa-2x text-primary me-4"></i>
-                                                  <div class="text-center">
-                                                       <p class="text-dark mb-0">Sales</p>
-                                                       <h5 class="fw-bold text-dark mb-0">12,860</h5>
-                                                  </div>
-                                             </div>
-                                             
-                                        </div>
-                                        </div>
+                                        </div>  -->
                                    </div>
                               </div>
                          </div>
@@ -772,3 +727,4 @@
      </div> 
      <!-- End Page Content Area -->
 @endsection
+

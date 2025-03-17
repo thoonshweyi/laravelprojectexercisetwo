@@ -177,4 +177,6 @@ class LeadsController extends Controller
         session()->flash("success","Pipe Successfully");
         return redirect()->back();
     }
+
+    
 }
