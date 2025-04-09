@@ -1,12 +1,12 @@
-$(document).ready(function(){
+// $(document).ready(function(){
 
-		// Start Left Side Bar
-		$(".sidebarlinks").click(function(){
-				$(".sidebarlinks").removeClass("currents");
-				$(this).addClass("currents");
-		});
-		// End Left Side Bar
-});
+// 		// Start Left Side Bar
+// 		$(".sidebarlinks").click(function(){
+// 				$(".sidebarlinks").removeClass("currents");
+// 				$(this).addClass("currents");
+// 		});
+// 		// End Left Side Bar
+// });
 
 // Start Js Area
 
@@ -40,15 +40,15 @@ document.getElementById("noticenter").addEventListener("click",function(e){
 
 
 
-//  var gaugecus = new JustGage({
-// 	id: "gaugecustomers", // the id of the html element
-// 	width : 200,
-// 	height: 200,
-// 	value: 7000000,
-// 	min: 0,
-// 	max: 9000000,
-// 	gaugeWidthScale: 0.6
-//  });
+ var gaugecus = new JustGage({
+	id: "gaugecustomers", // the id of the html element
+	width : 200,
+	height: 200,
+	value: 7000000,
+	min: 0,
+	max: 9000000,
+	gaugeWidthScale: 0.6
+ });
 
  var gaugeemps = new JustGage({
 	id: "gaugeemployees", // the id of the html element
@@ -60,15 +60,15 @@ document.getElementById("noticenter").addEventListener("click",function(e){
 	gaugeWidthScale: 0.6
  });
 
- var gaugeinvs = new JustGage({
-	id: "gaugeinverters", // the id of the html element
-	width : 200,
-	height: 200,
-	value: 40,
-	min: 0,
-	max: 50,
-	gaugeWidthScale: 0.6
- });
+//  var gaugeinvs = new JustGage({
+// 	id: "gaugeinverters", // the id of the html element
+// 	width : 200,
+// 	height: 200,
+// 	value: 40,
+// 	min: 0,
+// 	max: 50,
+// 	gaugeWidthScale: 0.6
+//  });
 
 
 // update the value randomly
@@ -277,7 +277,7 @@ $(document).ready(function(){
 			});
 
 		}
-	})
+	});
 	// End Lead Chat
 
 	// Start Age Chart
@@ -326,7 +326,7 @@ $(document).ready(function(){
 				gaugeWidthScale: 0.6
 			 });
 		}
-	})
+	});
 	// End Age Chart
 
 
@@ -335,7 +335,7 @@ $(document).ready(function(){
 		url: '/api/leavesdashboard',
 		method: 'GET',
 		success:function(data){
-			console.log(data);
+			// console.log(data);
 
 			const datas = [
 				{icon:'fas fa-users',label: "Total Leaves",value:data.totalleaves},
@@ -368,36 +368,53 @@ $(document).ready(function(){
 		error:function(){
 			$('#leavechart').html('<span class="text-danger">Failed to load leave data.<span>')
 		}
-	})
+	});
 	// End Leave Chart
 
-	// Start Earning Area
-// google.charts.load('current', {'packages':['corechart']});
-// google.charts.setOnLoadCallback(drawChart);
 
-// function drawChart() {
-// 	var data = google.visualization.arrayToDataTable([
-// 		['Year', 'Sales', 'Expenses'],
-// 		['2004',  1000,      400],
-// 		['2005',  1170,      460],
-// 		['2006',  660,       1120],
-// 		['2007',  1030,      540]
-// 	]);
-
-// 	var options = {
-// 		title: 'Sale Performance',
-// 		curveType: 'function',
-// 		legend: { position: 'bottom' }
-// 	};
-
-// 	var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-
-// 	chart.draw(data, options);
-// }
+	// Start Enrolls Chart
+	$.ajax({
+		url: '/api/enrollsdashboard',
+		method: 'GET',
+		success:function(data){
+			// console.log(data);
 
 
-// End Earning Area
+			$('#enrollcount').text(data.totalenrolls);
+			let $percentages = data.percentages;
 
+			let html = '';
+			$.each($percentages,function(stage,data){
+				let percent = data.percentage;
+				let progresscolor = '';
+				if(percent <= 20){
+					progresscolor = 'bg-danger'
+				}else if(percent <= 40){
+					progresscolor = 'bg-warning'
+				}else if(percent <= 60){
+					progresscolor = 'bg-primary'
+				}else if(percent <= 80){
+					progresscolor = 'bg-info'
+				}else{
+					progresscolor = 'bg-success'
+				}
+				html += `
+				<h4 class="small">${stage} <span>${percent}%</span></h4>
+				<div class="progress mb-2">
+					<div class="progress-bar ${progresscolor}" style="width: ${percent}%;" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100"></div>
+				</div>
+				`;
+
+			});
+
+			$('#enrollchart').html(html);
+
+		},
+		error:function(){
+			$('#enrollchart').html('<span class="text-danger">Failed to load leave data.<span>')
+		}
+	});
+	// End Enrolls Chart
 
 	// Start User Chart
 	$.ajax({
@@ -420,10 +437,190 @@ $(document).ready(function(){
 		error: function(){
 			$('#usercount').text("Error loading data");
 		}
-	})
-	
+	});
 	//  End User Chart
-	
 
+
+	// Start Posts Chart
+	$.ajax({
+		url: '/api/postsdashboard',
+		method: 'GET',
+		success:function(data){
+			// console.log(data);
+
+			let html = '';
+			$.each(data,function(idx,post){
+				
+			
+				html += `
+					<tr>
+						<td>
+							<div class="d-flex">
+								<img src="${post.image ?? ''}" class="img-sm me-3" width="100" alt="${post.title}" />
+								<div>
+									<div>Article</div>
+
+								   	<a href="javascript:void(0);" class="fw-bold mt-1" onclick="postshowlink(${post.id})">${post.title}</a>
+								</div>
+							</div>
+						</td>
+						<td>
+							Fee 
+							<div class="fw-bold mt-1">${post.fee} Ks.</div>
+						</td>
+						<td>
+							Status
+							<div class="fw-bold text-success mt-1">${post.status}</div>
+						</td>
+						<td>
+							Release
+							<div class="fw-bold mt-1">${post.created_at}</div>
+						</td>
+						
+					</tr>                  
+				`;
+
+			});
+
+			$('#postchart').html(html);
+
+		},
+		error:function(){
+			$('#postchart').html('<span class="text-danger">Failed to load articles data.<span>')
+		}
+	});
+	// End Posts Chart
+
+
+	// Start Contact Chart
+	$.ajax({
+		url: '/api/contactsdashboard',
+		method: 'GET',
+		success:function(data){
+			// console.log(data);
+
+			let html = '';
+
+			if(data.length > 0){
+				$.each(data,function(idx,contact){
+					html += `
+						<div class="d-flex align-items-center border-bottom py-2">
+							<img src="./assets/img/users/user1.jpg" class="rounded-circle" width="40px" height="40px" alt="user1"/>
+							<div class="ms-3">
+								<h6 class="mb-1 ms-1">${contact.firstname} ${contact.lastname}</h6>
+								<small class="text-muted fw-bold mb-0"><i class="fas fa-birthday-cake me-1 text-warning"></i>${contact.birthday}</small>
+							</div>
+							<div class="ms-auto d-flex align-items-center">
+								<span><i class="fas fa-user me-1 text-primary"></i>${contact.relative}</span>
+							</div>
+						</div>             
+					`;
+				});
+			}else{
+				html += `
+					<div class="text-center py-3">
+						<i class="fas fa-user-slash fa-2x text-muted"></i>
+						<p class="text-muted mt-3">No contacts available</p>
+					</div>
+				`;
+			}
+			
+
+			$('#contactchart').html(html);
+
+		},
+		error:function(){
+			$('#contactchart').html('<span class="text-danger">Failed to load contacts data.<span>')
+		}
+	});
+	// End Contact Chart
+
+	// Start Announcement Chart
+	$.ajax({
+		url: '/api/announcementsdashboard',
+		method: 'GET',
+		success:function(data){
+			// console.log(data);
+			let html = '';
+
+			if(data.length > 0){
+				$.each(data,function(idx,announcement){
+					let imagesrc = announcement.image ? announcement.image : './assets/img/fav/favicon.png';
+
+				html += `
+				 <div class="text-center">
+				<img src="${imagesrc}" class="" style="width:150px;" alt="${announcement.title}"/>
+				</div>
+
+				<div class="ms-3">
+					<h6 class="mb-1 fw-bold">${announcement.title}<h6>
+					<p class="text-muted small">${announcement.content.substring(0,300)}</p>
+					<a href="/announcements/${announcement.id}" class="text-primary">Read More</a>
+				</div>
+				`;
+
+				});
+			}else{
+				html += `
+					<div class="text-center py-3">
+						<i class="fas fa-user-slash fa-2x text-muted"></i>
+						<p class="text-muted mt-3">No contacts available</p>
+					</div>
+				`;
+			}
+			
+
+			$('#announcementchart').html(html);
+
+		},
+		error:function(){
+			$('#announcementchart').html('<span class="text-danger">Failed to load contacts data.<span>')
+		}
+	});
+	// End Announcement Chart
+
+
+	// Start Comment Chart
+	$.ajax({
+		url: '/api/commentsdashboard',
+		method: 'GET',
+		success:function(data){
+			console.log(data);
+			let html = '';
+
+			if(data.length > 0){
+				$.each(data,function(idx,comment){
+				html += `
+				<li class="list-group-item border-bottom d-flex justify-content-between align-items-center py-1">
+					<div>
+						<strong>${comment.user.name}</strong> 
+						<span class="block">commented on ${comment.commentable.title} : (${comment.commentable.type})</span>
+						<p class="text-muted mb-0">${comment.description}</p>
+						<small class="text-muted">${comment.created_at}</small>
+					</div>
+				</li>
+				`;
+
+				});
+			}else{
+				html += `
+					<li class="list-group-item text-muted">No comments available.</li>
+				`;
+			}
+			
+
+			$('#commentchart').html(html);
+
+		},
+		error:function(){
+			$('#commentchart').html('<span class="text-danger">Failed to load comments data.<span>')
+		}
+	});
+	// End Comment Chart
 });
 
+function postshowlink(id){
+	window.location.href = `/posts/${id}`;
+	// return 'hay'
+}
+{/* <a href="javascript:void(0);" class="fw-bold mt-1" onclick="window.location.href = '/posts/${post.id}'">${post.title}</a> */}

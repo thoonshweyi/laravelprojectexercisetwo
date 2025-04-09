@@ -123,13 +123,14 @@
 
         
         <!-- custom js js1 -->
-        <!-- <script src="{{ asset('assets/dist/js/app.js') }}" type="text/javascript"></script> -->
-        @vite(["public/assets/dist/js/app.js"]) 
+        <script src="{{ asset('assets/dist/js/app.js') }}" type="text/javascript"></script>
+         
+        <!-- @vite(["public/assets/dist/js/app.js"])  -->
 
         <!-- Extra js -->
         @yield('scripts')
 
-        <script>
+        <script type="text/javascript">
 
             // Start Quick Search
             $("#quicksearch-btn").on("click",function(e){

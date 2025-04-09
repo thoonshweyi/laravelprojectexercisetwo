@@ -6,14 +6,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 
 use App\Http\Controllers\Api\CitiesController;
+use App\Http\Controllers\Api\EnrollsController;
 use App\Http\Controllers\Api\LeadsController;
 use App\Http\Controllers\Api\LeavesController;
+use App\Http\Controllers\Api\PostsController;
 use App\Http\Controllers\Api\RegionsController;
 use App\Http\Controllers\Api\TownshipsController;
 use App\Http\Controllers\Api\StatusesController;
 use App\Http\Controllers\Api\StudentsController;
 use App\Http\Controllers\Api\WarehousesController;
 use App\Http\Controllers\Api\UsersController;
+use App\Http\Controllers\Api\ContactsController;
+use App\Http\Controllers\Api\AnnouncementsController;
+use App\Http\Controllers\Api\CommentsController;
 
 
 /*
@@ -59,8 +64,15 @@ Route::middleware(["auth:api"])->group(function(){
 // Route::apiResource("warehouses",WarehousesController::class);
 
 
+Route::get("/enrollsdashboard",[EnrollsController::class,"dashboard"]);
 
 Route::get("/leadsdashboard",[LeadsController::class,"dashboard"]);
 Route::get("/leavesdashboard",[LeavesController::class,"dashboard"]);
+Route::get("/postsdashboard",[PostsController::class,"dashboard"]);
 Route::get("/usersdashboard",[UsersController::class,"dashboard"]);
 Route::get("/studentsdashboard",[StudentsController::class,"dashboard"]);
+
+Route::get("/contactsdashboard",[ContactsController::class,"dashboard"]);
+Route::get("/announcementsdashboard",[AnnouncementsController::class,"dashboard"]);
+
+Route::get("/commentsdashboard",[CommentsController::class,"dashboard"]);

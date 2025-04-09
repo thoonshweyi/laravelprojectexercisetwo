@@ -83,7 +83,7 @@ class AnnouncementsController extends Controller
         $type = "App\Notifications\AnnouncementNotify";
         $getnoti = \DB::table("notifications")->where("notifiable_id",$user_id)->where("type",$type)->where('data->id',$id)->pluck('id');
         // dd($getnoti);
-        \DB::table("notifications")->where('id',$getnoti)->update(["read_at"=>now()]);
+        // \DB::table("notifications")->where('id',$getnoti)->update(["read_at"=>now()]);
     
         return view("announcements.show",["announcement"=>$announcement,"comments"=>$comments]);
     }

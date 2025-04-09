@@ -13,7 +13,7 @@
                                    <div class="card-body">
                                         <div class="row align-items-center">
                                         <div class="col">
-                                             <h5 class="text-xs fw-bold text-primary text-uppercase mb-1">Sales (Monthly)</h5>
+                                             <h6 class="text-xs fw-bold text-primary text-uppercase mb-1">Sales (Monthly)</h6>
                                              <p class="h5 text-muted mb-0">$ 50,0000</p>
                                         </div>
                                         <div class="col-auto">
@@ -28,7 +28,7 @@
                                    <div class="card-body">
                                         <div class="row align-items-center">
                                         <div class="col">
-                                             <h5 class="text-xs fw-bold text-primary text-uppercase mb-1">Rental Fee (Annual)</h5>
+                                             <h6 class="text-xs fw-bold text-primary text-uppercase mb-1">Rental Fee (Annual)</h6>
                                              <p class="h5 text-muted mb-0">$ 400,000</p>
                                         </div>
                                         <div class="col-auto">
@@ -43,7 +43,7 @@
                                    <div class="card-body">
                                         <div class="row align-items-center">
                                         <div class="col">
-                                             <h5 class="text-xs fw-bold text-primary text-uppercase mb-1">Debt Collect</h5>
+                                             <h6 class="text-xs fw-bold text-primary text-uppercase mb-1">Debt Collect</h6>
                                              <div class="row">
                                                   <div class="col-auto">
                                                        <p class="h5 text-muted mb-0">60%</p>
@@ -68,7 +68,7 @@
                                    <div class="card-body">
                                         <div class="row align-items-center">
                                         <div class="col">
-                                             <h5 class="text-xs fw-bold text-primary text-uppercase mb-1">Request Message</h5>
+                                             <h6 class="text-xs fw-bold text-primary text-uppercase mb-1">Request Message</h6>
                                              <p class="h5 text-muted mb-0">25</p>
                                         </div>
                                         <div class="col-auto">
@@ -97,7 +97,7 @@
                                                   
                                                   <div class="d-flex">
                                                        <h3 class="me-3">$ 58,664</h3>
-                                                       <h5 class="text-danger">+3.2%</h5>
+                                                       <h6 class="text-danger">+3.2%</h6>
                                                   </div>
                                                   
                                                   <div class="mb-3">
@@ -113,7 +113,7 @@
                                                   
                                                   <div class="d-flex">
                                                        <h3 class="me-3">$ 8,664</h3>
-                                                       <h5 class="text-danger">+2.3%</h5>
+                                                       <h6 class="text-danger">+2.3%</h6>
                                                   </div>
                                                   
                                                   <div class="mb-3">
@@ -129,7 +129,7 @@
                                                   
                                                   <div class="d-flex">
                                                        <h3 class="me-3">$ 664</h3>
-                                                       <h5 class="text-danger">+5.2%</h5>
+                                                       <h6 class="text-danger">+5.2%</h6>
                                                   </div>
                                                   
                                                   <div class="mb-3">
@@ -170,7 +170,7 @@
                                                   
                                                   <div class="d-flex">
                                                        <h3 class="me-3">$ 278,632</h3>
-                                                       <h5 class="text-danger">+1.2%</h5>
+                                                       <h6 class="text-danger">+1.2%</h6>
                                                   </div>
                                                   
                                                   <div class="mb-3">
@@ -186,7 +186,7 @@
                                                   
                                                   <div class="d-flex">
                                                        <h3 class="me-3">$ 2,664</h3>
-                                                       <h5 class="text-danger">+2.3%</h5>
+                                                       <h6 class="text-danger">+2.3%</h6>
                                                   </div>
                                                   
                                                   <div class="mb-3">
@@ -202,7 +202,7 @@
                                                   
                                                   <div class="d-flex">
                                                        <h3 class="me-3">$ 664</h3>
-                                                       <h5 class="text-danger">+5.2%</h5>
+                                                       <h6 class="text-danger">+5.2%</h6>
                                                   </div>
                                                   
                                                   <div class="mb-3">
@@ -242,7 +242,7 @@
                                                   
                                                   <div class="d-flex">
                                                        <h3 class="me-3">$ 58,664</h3>
-                                                       <h5 class="text-danger">+1.0%</h5>
+                                                       <h6 class="text-danger">+1.0%</h6>
                                                   </div>
                                                   
                                                   <div class="mb-3">
@@ -258,7 +258,7 @@
                                                   
                                                   <div class="d-flex">
                                                        <h3 class="me-3">$ 1,114</h3>
-                                                       <h5 class="text-danger">+1.1%</h5>
+                                                       <h6 class="text-danger">+1.1%</h6>
                                                   </div>
                                                   
                                                   <div class="mb-3">
@@ -274,7 +274,7 @@
                                                   
                                                   <div class="d-flex">
                                                        <h3 class="me-3">$ 364</h3>
-                                                       <h5 class="text-danger">+2.2%</h5>
+                                                       <h6 class="text-danger">+2.2%</h6>
                                                   </div>
                                                   
                                                   <div class="mb-3">
@@ -314,7 +314,7 @@
                                                   
                                                   <div class="d-flex">
                                                        <h3 class="me-3">$ 2,664</h3>
-                                                       <h5 class="text-danger">+1.2%</h5>
+                                                       <h6 class="text-danger">+1.2%</h6>
                                                   </div>
                                                   
                                                   <div class="mb-3">
@@ -330,7 +330,7 @@
                                                   
                                                   <div class="d-flex">
                                                        <h3 class="me-3">$ 8,664</h3>
-                                                       <h5 class="text-danger">+2.3%</h5>
+                                                       <h6 class="text-danger">+2.3%</h6>
                                                   </div>
                                                   
                                                   <div class="mb-3">
@@ -346,7 +346,7 @@
                                                   
                                                   <div class="d-flex">
                                                        <h3 class="me-3">$ 54</h3>
-                                                       <h5 class="text-danger">+3.2%</h5>
+                                                       <h6 class="text-danger">+3.2%</h6>
                                                   </div>
                                                   
                                                   <div class="mb-3">
@@ -414,7 +414,7 @@
                                    <div class="card-body">
                                         <div class="row justify-content-center align-items-center">
                                         <div class="col d-flex justify-content-between">
-                                             <h5 class="text-xs fw-bold text-primary text-uppercase mb-1">Employees</h5>
+                                             <h6 class="text-xs fw-bold text-primary text-uppercase mb-1">Employees</h6>
                                              <p class="h5 text-muted mb-0">80</p>
 
                                         </div>
@@ -432,7 +432,7 @@
                                    <div class="card-body">
                                         <div class="row align-items-center">
                                         <div class="col d-flex justify-content-between">
-                                             <h5 class="text-xs fw-bold text-primary text-uppercase mb-1">Inverters</h5>
+                                             <h6 class="text-xs fw-bold text-primary text-uppercase mb-1">Inverters</h6>
                                              <p class="h5 text-muted mb-0">40</p>
                                         </div>
                                         <div class="col-auto">
@@ -450,30 +450,17 @@
                     <div class="row">
                          <div class="col-md-7 mb-3">
                               <div class="card shadow">
-                                   <div class="card-header py-2">
-                                        <h6 class="text-primary">Expenses</h6>
+                                   <div class="card-header d-flex justify-content-between align-items-center py-2">
+                                        <h6 class="text-primary">Enrollments Progress</h6>
+                                        <h6 class="text-secondary">Total <span id="enrollcount">0</span></h6>
                                    </div>
-                                   <div class="card-body">
-                                        <h4 class="small">Other Expenses <span>20%</span></h4>
+                                   <div id="enrollchart" class="card-body">
+                                        <!-- <h4 class="small">Other Expenses <span>20%</span></h4>
                                         <div class="progress mb-2">
                                         <div class="progress-bar bg-danger" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <h4 class="small">Sale Tracking <span>40%</span></h4>
-                                        <div class="progress mb-2">
-                                        <div class="progress-bar bg-warning" style="width: 40%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <h4 class="small">Rental Fee <span>60%</span></h4>
-                                        <div class="progress mb-2">
-                                        <div class="progress-bar bg-primary" style="width: 60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <h4 class="small">Salary <span>80%</span></h4>
-                                        <div class="progress mb-2">
-                                        <div class="progress-bar bg-info" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <h4 class="small">Fixture <span>100%</span></h4>
-                                        <div class="progress mb-2">
-                                        <div class="progress-bar bg-success" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
+                                        </div> -->
+                                    
+                                        
                                    </div>
                               </div>
                          </div>
@@ -525,37 +512,20 @@
                          <div class="col-lg-4 mb-3">
                               <div class="card">
                                    <div class="card-body">
-                                        <h5>Regional Team</h5>
-                                        <div class="d-flex align-items-center border-bottom py-2">
-                                        <img src="./assets/img/users/user1.jpg" class="rounded-circle" width="40px" height="40px" alt="user1"/>
-                                        <div class="ms-3">
-                                             <h6 class="mb-1 ms-1">Ms. July</h6>
-                                             <small class="text-muted mb-0"><i class="fas fa-map-marker-alt me-1"></i>Mandalay City, Myanmar.</small>
-                                        </div>
-                                        <div class="badge bg-success p-1 ms-auto">
-                                             <i class="fas fa-plus"></i>
-                                        </div>
-                                        </div>
-                                        <div class="d-flex align-items-center border-bottom py-2">
-                                        <img src="./assets/img/users/user2.jpg" class="rounded-circle" width="40px" height="40px" alt="user2"/>
-                                        <div class="ms-3">
-                                             <h6 class="mb-1 ms-1">Mr. Anton</h6>
-                                             <small class="text-muted mb-0"><i class="fas fa-map-marker-alt me-1"></i>Yangon City, Myanmar.</small>
-                                        </div>
-                                        <div class="badge bg-success p-1 ms-auto">
-                                             <i class="fas fa-check"></i>
-                                        </div>
-                                        </div>
-                                        <div class="d-flex align-items-center border-bottom py-2">
-                                        <img src="./assets/img/users/user3.jpg" class="rounded-circle" width="40px" height="40px" alt="user3"/>
-                                        <div class="ms-3">
-                                             <h6 class="mb-1 ms-1">Ms. Yoon</h6>
-                                             <small class="text-muted mb-0"><i class="fas fa-map-marker-alt me-1"></i>Bago City, Myanmar.</small>
-                                        </div>
-                                        <div class="badge bg-success p-1 ms-auto">
-                                             <i class="fas fa-check"></i>
-                                        </div>
-                                        </div>
+                                      
+                                        <h6>Contact</h6>
+                                        <div id="contactchart"></div>
+                                        <!-- <div class="d-flex align-items-center border-bottom py-2">
+                                             <img src="./assets/img/users/user1.jpg" class="rounded-circle" width="40px" height="40px" alt="user1"/>
+                                             <div class="ms-3">
+                                                  <h6 class="mb-1 ms-1">Ms. July</h6>
+                                                  <small class="text-muted mb-0"><i class="fas fa-map-marker-alt me-1"></i>Mandalay City, Myanmar.</small>
+                                             </div>
+                                             <div class="badge bg-success p-1 ms-auto">
+                                                  <i class="fas fa-plus"></i>
+                                             </div>
+                                        </div> -->
+                                        
                                    </div>
                               </div>
                          </div>
@@ -573,7 +543,7 @@
                                                        <i class="fas fa-users fa-2x text-primary me-4"></i>
                                                        <div class="text-center">
                                                             <p class="text-dark mb-0">Users</p>
-                                                            <h5 class="fw-bold text-dark mb-0">56,320</h5>
+                                                            <h6 class="fw-bold text-dark mb-0">56,320</h6>
                                                        </div>
                                                   </div>
                                                   
@@ -585,122 +555,132 @@
                     </div>
                     <!-- End Result Area -->
 
-                    <!-- Start Project Status Area -->
+                    <!-- Start Post Area -->
                     <div class="row">
+
                          <div class="col-md-4">
                               <div class="card">
                                    <div class="card-body">
                                         <div>
-                                        <h5 class="card-itle">Sale Analysis Trend</h5>
+                                             <h6 class="card-title">Sale Analysis Trend</h6>
                                         </div>
 
-                                        <div class="salecontainer">
+                                        <div id="salescontainer">
 
-                                        </div>
-
-                                        <!-- <div class="mt-2">
-                                        <div class="d-flex justify-content-between">
-                                             <small>Order Value</small>
-                                             <small>120.8%</small>
-                                        </div>
-                                        <div class="progress">
-                                             <div class="progress-bar bg-secondary" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        </div> -->
-
-                                        <!-- <div class="mt-2">
-                                        <div class="d-flex justify-content-between">
-                                             <small>Total Products</small>
-                                             <small>325.2%</small>
-                                        </div>
-                                        <div class="progress">
-                                             <div class="progress-bar bg-success" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
                                         </div>
 
                                         <div class="mt-2">
-                                        <div class="d-flex justify-content-between">
-                                             <small>Quantiti</small>
-                                             <small>25.60%</small>
+                                             <div class="d-flex justify-content-between">
+                                                  <small>Order Value</small>
+                                                  <small>120.8%</small>
+                                             </div>
+                                             <div class="progress">
+                                                  <div class="progress-bar bg-secondary" style="width:80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                             </div>
                                         </div>
-                                        <div class="progress">
-                                             <div class="progress-bar bg-warning" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+
+                                        <div class="mt-2">
+                                             <div class="d-flex justify-content-between">
+                                                  <small>Total Products</small>
+                                                  <small>325.2%</small>
+                                             </div>
+                                             <div class="progress">
+                                                  <div class="progress-bar bg-success" style="width:50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                             </div>
                                         </div>
-                                        </div> -->
+
+                                        <div class="mt-2">
+                                             <div class="d-flex justify-content-between">
+                                                  <small>Quantity</small>
+                                                  <small>25.60%</small>
+                                             </div>
+                                             <div class="progress">
+                                                  <div class="progress-bar bg-warning" style="width:70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                             </div>
+                                        </div>
+
+
                                    </div>
                               </div>
                          </div>
 
                          <div class="col-md-8">
+                              
+                              <div class="card">
+                                   <div class="card-body">
+                                        <div>
+                                             <h6>Recent Articles</h6>
+                                        </div>
+                                        <div class="table-responsive">
+                                             <table class="table">
+                                                  <tbody id="postchart">
+                                                       <!-- <tr>
+                                                            <td>
+                                                                 <div class="d-flex">
+                                                                      <img src="./assets/img/clients/client1.png" class="img-sm me-3" width="100" alt="client1" />
+                                                                      <div>
+                                                                           <div>Company</div>
+                                                                           <div class="fw-bold mt-1">Sony Electronic</div>
+                                                                      </div>
+                                                                 </div>
+                                                            </td>
+                                                            <td>
+                                                                 Sales
+                                                                 <div class="fw-bold mt-1">$3250</div>
+                                                            </td>
+                                                            <td>
+                                                                 Status
+                                                                 <div class="fw-bold text-success mt-1">88%</div>
+                                                            </td>
+                                                            <td>
+                                                                 Deadline
+                                                                 <div class="fw-bold mt-1">10 June 2023</div>
+                                                            </td>
+                                                            <td>
+                                                                 <button type="button" class="btn btn-sm btn-secondary"><i class="fas fa-pen"></i> edit actions</button>
+                                                            </td>
+                                                       </tr>
+                                                     -->
+                                                  </tbody>
+                                             </table>
+                                        </div>
+                                   </div>
+                              </div>
 
                          </div>
-                    </div>
-                    <!-- End Project Status Area -->
 
-                    <!-- Start Todo LIst Area -->
+                    </div>
+                    <!-- End Post Area -->
+
+                    <!-- Start Comment Area -->
                     <div class="row">
                          <div class="col-lg-4">
                               <div class="card">
                                    <div class="card-body">
                                         <div class="d-flex justify-content-between">
-                                        <h4 class="card-title">Todo List</h4>
-                                        <div  class="dropdown">
-                                             <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></a>
-                                             <div class="dropdown-menu shadow">
-                                                  <a href="javascript:void(0);" class="dropdown-item">Action</a>
-                                                  <a href="javascript:void(0);" class="dropdown-item">Another Action</a>
-                                                  <a href="javascript:void(0);" class="dropdown-item">Something else here</a>
+                                             <h4 class="card-title">Comments List</h4>
+                                             <div  class="dropdown">
+                                                  <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></a>
+                                                  <div class="dropdown-menu shadow">
+                                                       <a href="javascript:void(0);" class="dropdown-item">Action</a>
+                                                       <a href="javascript:void(0);" class="dropdown-item">Another Action</a>
+                                                       <a href="javascript:void(0);" class="dropdown-item">Something else here</a>
 
+                                                  </div>
                                              </div>
                                         </div>
-                                        </div>
 
-                                        <div class="input-group">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Add list here..."/>
-                                        <button type="submit" class="btn btn-primary btn-sm form-group-text">Add to list</button>
-                                        </div>
+                                        
 
                                         <div>
-                                        <p class="text-muted">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                                        <ul class="list-unstyled">
-                                             <li class="d-flex justify-content-between">
-                                                  <label for="">
-                                                       <input type="checkbox" class="checkbox"/><span class="ms-2">when an unknown printer took a galley of type</span>
-                                                  </label>
-                                                  <i class="fas fa-trash-alt text-muted"></i>
-                                             </li>
-                                             <li class="d-flex justify-content-between">
-                                                  <label for="">
-                                                       <input type="checkbox" class="checkbox"/><span class="ms-2">when an unknown printer took a galley of type</span>
-                                                  </label>
-                                                  <i class="fas fa-trash-alt text-muted"></i>
-                                             </li>
-                                             <li class="d-flex justify-content-between">
-                                                  <label for="">
-                                                       <input type="checkbox" class="checkbox"/><span class="ms-2">when an unknown printer took a galley of type</span>
-                                                  </label>
-                                                  <i class="fas fa-trash-alt text-muted"></i>
-                                             </li>
-                                             <li class="d-flex justify-content-between">
-                                                  <label for="">
-                                                       <input type="checkbox" class="checkbox"/><span class="ms-2">when an unknown printer took a galley of type</span>
-                                                  </label>
-                                                  <i class="fas fa-trash-alt text-muted"></i>
-                                             </li>
-                                             <li class="d-flex justify-content-between">
-                                                  <label for="">
-                                                       <input type="checkbox" class="checkbox"/><span class="ms-2">when an unknown printer took a galley of type</span>
-                                                  </label>
-                                                  <i class="fas fa-trash-alt text-muted"></i>
-                                             </li>
-                                             <li class="d-flex justify-content-between">
-                                                  <label for="">
-                                                       <input type="checkbox" class="checkbox"/><span class="ms-2">when an unknown printer took a galley of type</span>
-                                                  </label>
-                                                  <i class="fas fa-trash-alt text-muted"></i>
-                                             </li>
-                                             
-                                        </ul>
+                                             <ul id="commentchart" class="list-unstyled">
+                                                  <!-- <li class="d-flex justify-content-between">
+                                                       <label>
+                                                            <input type="checkbox" class="checkbox" /><span class="ms-2">when an unknown printer took a galley of type.</span>
+                                                       </label>
+                                                       <i class="fas fa-trash-alt text-muted"></i>
+                                                  </li> -->
+                                             </ul>
                                         </div>
                                    </div>
                               </div>
@@ -709,20 +689,22 @@
                          <div class="col-lg-8">
                               <div class="card shadow">
                                    <div class="card-header">
-                                        <h5 class="m-0 text-primary">Illustrations</h5>
+                                        <h6 class="m-0 text-primary">Announcement</h6>
                                    </div>
 
                                    <div class="card-body">
-                                        <div class="text-center">
+                                        <div id="announcementchart"></div>
+
+                                        <!-- <div class="text-center">
                                         <img src="./assets/img/etc/studentgroup.png" class="" style="width:150px;" alt="studentgroup">
                                         </div>
                                         <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s</p>
-                                        <a href="javascript:void(0);">Browse Illustraions on more</a>
+                                        <a href="javascript:void(0);">Browse Illustraions on more</a> -->
                                    </div>
                               </div>
                          </div>
                     </div>
-                    <!-- End Todo List Area -->
+                    <!-- End Comment Area -->
           </div>
      </div> 
      <!-- End Page Content Area -->
